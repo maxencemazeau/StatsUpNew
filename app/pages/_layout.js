@@ -11,4 +11,4 @@ function HomeLayout() {
   );
 }
 
-export default HomeLayout()
+export default HomeLayout

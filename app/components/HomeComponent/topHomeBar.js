@@ -8,7 +8,7 @@ export default function TopHomeBar(){
 
     return(
         <View style={{paddingLeft:20, paddingTop :40}}>
-          <Button icon={<Users size="$4" color={"black"}/>} style={{ width :50, height:30, backgroundColor:"transparent"}}></Button>
+          <Button icon={<Users size="$3" color={"black"}/>} style={{ width :50, height:30, backgroundColor:"transparent"}}></Button>
         </View>
     )
 }

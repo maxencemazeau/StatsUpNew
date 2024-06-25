@@ -19,23 +19,23 @@ function BottomMenu() {
     return (
         <>
             <View style={style.container}>
-                <Separator />
-                <Group>
+                <Group orientation="horizontal" style={{display:"flex", justifyContent: "space-evenly", alignItems:"center",width:"100%", backgroundColor: "white", borderRadius:0}}>
                     <Group.Item>
-                        <Button icon={<Home size="$4" color={"black"}/>}/>
+                        <Button style={style.groupButton} icon={<Home size="$2" color={"black"}/>}/>
                     </Group.Item>
                     <Group.Item>
-                        <Button icon={<Plus size="$4" color={"black"}/>}/>
+                        <Button style={style.groupButton} icon={<Plus size="$2" color={"black"}/>}/>
                     </Group.Item>
                     <Group.Item>
-                        <Button icon={<Search size="$4" color={"black"}/>}/>
+                        <Button style={style.groupButton} icon={<Search size="$2" color={"black"}/>}/>
                     </Group.Item>
                     <Group.Item>
-                        <Avatar circular size="$10">
-                            {/* <Avatar.Image
+                        <Avatar circular size="$3">
+                            <Avatar.Image
                                 accessibilityLabel="Cam"
                                 source={require("../assets/maxence.jpg")}
-                            /> */}
+                            />
+                            <Avatar.Fallback bc="lightgrey" />
                         </Avatar>
                     </Group.Item>
                 </Group>
@@ -52,7 +52,17 @@ const style = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         left: 0,
-        right: 0
+        right: 0,
+        borderTopWidth: 1,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    groupButton:{
+        backgroundColor:"white",
+        border:"transparent"
     }
 })
 

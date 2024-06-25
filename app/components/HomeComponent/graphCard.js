@@ -1,34 +1,29 @@
-// import React from "react"
-// import Card from "@mui/material/Card"
-// import CardContent from "@mui/material/CardContent";
-// import Container from "@mui/material/Container"
-// import Divider from '@mui/material/Divider';
-// import { Typography, Button } from "@mui/material";
-// import Grid from "@mui/material/Grid"
-// import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins'
+import React from "react"
+import { View } from "react-native"
+import { Card, Text, Paragraph } from "tamagui"
 
 
-// export default function GraphCard() {
 
-//     const [fontsLoad] = useFonts({
-//         Poppins_400Regular, Poppins_700Bold,
-//     })
+export default function GraphCard() {
 
-//     return (
-//         <Container maxWidth="md" sx={{ paddingTop: 2, paddingRight: 2, paddingLeft: 2, paddingBottom: 0 }}>
-//             <Grid container spacing={2}>
-//                 <Grid item xs={6}>
-//                     <Card variant="outlined" sx={{ marginBottom: 3, borderRadius: 4, height: 150 }} sm={{ height: 200 }}>
-//                         <Typography sx={{paddingLeft:2, paddingTop:2, fontFamily:"Poppins_700Bold", fontSize:48 ,color : "#DD7A34"}}>46</Typography>
-//                         <Typography sx={{paddingLeft:2, fontFamily:"Poppins_700Bold", fontSize:18}}>Total activity</Typography>
-//                         <Typography sx={{paddingLeft:2, fontFamily:"Poppins_700Bold", fontSize:18}}>completed</Typography>
-//                     </Card>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                     <Card variant="outlined" sx={{ marginBottom: 3, borderRadius: 4, height: 150 }} sm={{ height: 200 }}>
-//                     </Card>
-//                 </Grid>
-//             </Grid>
-//         </Container>
-//     )
-// }
+
+    return (
+        <View maxWidth="md" style={{ display:"flex", flexDirection:"row", justifyContent:"space-between",paddingTop: 20, paddingRight: 20, paddingLeft: 20, paddingBottom: 0 }}>
+            <Card style={{padding:10, flex:1}}>
+                        <Text style={{paddingLeft:2, paddingTop:2,  fontSize:48 ,color : "#DD7A34"}}>46</Text>
+                        <Text style={{paddingLeft:2, fontSize:18}}>Total activity</Text>
+                        <Text style={{paddingLeft:2, fontSize:18}}>completed</Text>
+
+
+            </Card>
+            <View style={{ width: 20 }} />
+            <Card style={{padding:10, flex:1}}>
+                        <Text style={{paddingLeft:2, paddingTop:2,  fontSize:48 ,color : "#DD7A34"}}>46</Text>
+                        <Text style={{paddingLeft:2, fontSize:18}}>Total activity</Text>
+                        <Text style={{paddingLeft:2, fontSize:18}}>completed</Text>
+
+
+            </Card>
+        </View>
+    )
+}

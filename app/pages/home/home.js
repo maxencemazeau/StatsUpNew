@@ -46,8 +46,8 @@ export default function Home() {
             onScroll={loadMoreData}
             scrollEventThrottle={16}>
                 <TopHomeBar/>
-                {/* <GraphCard />
-                <ProgressBar />
+                <GraphCard />
+                {/* <ProgressBar />
                 <HomeNavigation />
                 {active === "ACTIVITY" ?
                 <ActivityCard activityOffset={activityOffset}/>
