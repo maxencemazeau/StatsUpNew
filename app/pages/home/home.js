@@ -13,27 +13,27 @@ import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 
 export default function Home() {
 
-    // const active = useSelector((state) => state.navigation.value) 
-    // const dispatch = useDispatch()
-    // const activityOffset = useSelector((state) => state.activityOffset.value)
-    // const goalOffset = useSelector((state) => state.goalOffset.value)
-    // const hasNoMoreActivityData = useSelector((state) => state.hasMoreActivityData.value)
-    // const hasNoMoreGoalData = useSelector((state) => state.hasMoreGoalData.value)
-    // const isActivityLoading = useSelector((state)=> state.isActivityLoading.value)
-    // const isGoalLoading = useSelector((state)=> state.isGoalLoading.value)
-    // const loadingError = useSelector((state) => state.loadingError.value)
+    const active = useSelector((state) => state.navigation.value) 
+    const dispatch = useDispatch()
+    const activityOffset = useSelector((state) => state.activityOffset.value)
+    const goalOffset = useSelector((state) => state.goalOffset.value)
+    const hasNoMoreActivityData = useSelector((state) => state.hasMoreActivityData.value)
+    const hasNoMoreGoalData = useSelector((state) => state.hasMoreGoalData.value)
+    const isActivityLoading = useSelector((state)=> state.isActivityLoading.value)
+    const isGoalLoading = useSelector((state)=> state.isGoalLoading.value)
+    const loadingError = useSelector((state) => state.loadingError.value)
 
     const loadMoreData = async(event) => {
-        // await new Promise((resolve) => setTimeout(resolve, 300))
-        // if(isCloseToBottom(event.nativeEvent)){
-        //     if(active === "ACTIVITY" && !hasNoMoreActivityData && !isActivityLoading && loadingError == false) {
-        //         dispatch(incrementActivityOffset())
-        //     }
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        if(isCloseToBottom(event.nativeEvent)){
+            if(active === "ACTIVITY" && !hasNoMoreActivityData && !isActivityLoading && loadingError == false) {
+                dispatch(incrementActivityOffset())
+            }
 
-        //     if (active !== "ACTIVITY" && !hasNoMoreGoalData && !isGoalLoading && loadingError == false) {
-        //         dispatch(incrementGoalOffset())
-        //     }
-        // }
+            if (active !== "ACTIVITY" && !hasNoMoreGoalData && !isGoalLoading && loadingError == false) {
+                dispatch(incrementGoalOffset())
+            }
+        }
     }
 
     const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize}) => {
@@ -47,11 +47,11 @@ export default function Home() {
             scrollEventThrottle={16}>
                 <TopHomeBar/>
                 <GraphCard />
-                {/* <ProgressBar />
-                <HomeNavigation />
-                {active === "ACTIVITY" ?
+                <ProgressBar />
+                {/* <HomeNavigation /> */}
+                {/* {active === "ACTIVITY" ? */}
                 <ActivityCard activityOffset={activityOffset}/>
-                :
+                {/* :
                 <GoalCard goalOffset={goalOffset}/>
                 } */}
             </ScrollView>
