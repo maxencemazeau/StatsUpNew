@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Pressable, ScrollView, View } from "react-native"
 import AddActivity from "../activity/addActivity"
 import AddGoal from "../goal/addGoal"
-import { Sheet, Text, Button } from "tamagui";
+import { Sheet, Text, Button, SizableText } from "tamagui";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 
 export default function CreateActivityAndGoal({ open, setOpen, position, setPosition }) {
@@ -29,10 +29,10 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
                         <View style={{ display: "flex", flexDirection: "row", padding: 0, paddingBottom: 2, alignItems: "center", gap: 20 }}>
                             <Button icon={<ArrowLeft size="$2" color={"black"} />} onPress={() => { setOpen(false) }} style={{ backgroundColor: "transparent" }} />
                             <Pressable onPress={() => setCreateNewActivityOrGoal(0)}>
-                                <Text size="$6" style={{ color: createNewActivityOrGoal == 0 ? "#DD7A34" : "black", textDecorationLine: createNewActivityOrGoal == 0 ? "underline" : "none" }}>ACTIVITY</Text>
+                                <SizableText size="$6" style={{ color: createNewActivityOrGoal == 0 ? "#DD7A34" : "black", textDecorationLine: createNewActivityOrGoal == 0 ? "underline" : "none" }}>ACTIVITY</SizableText>
                             </Pressable>
                             <Pressable onPress={() => setCreateNewActivityOrGoal(1)}>
-                                <Text size="$6" style={{ color: createNewActivityOrGoal == 1 ? "#DD7A34" : "black", textDecorationLine: createNewActivityOrGoal == 1 ? "underline" : "none" }}>GOAL</Text>
+                                <SizableText size="$6" style={{ color: createNewActivityOrGoal == 1 ? "#DD7A34" : "black", textDecorationLine: createNewActivityOrGoal == 1 ? "underline" : "none" }}>GOAL</SizableText>
                             </Pressable>
                         </View>
                         {createNewActivityOrGoal == 0 ? <AddActivity /> : <AddGoal />}
