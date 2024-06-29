@@ -1,57 +1,44 @@
-// import React, { useState } from "react"
-// import { Pressable, ScrollView } from "react-native"
-// import Typography from "@mui/material/Typography"
-// import { Container } from "@mui/material"
-// import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins'
-// import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-// import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-// import AddActivity from "../activity/addActivity"
-// import AddGoal from "../goal/addGoal"
+import React, { useState, useEffect } from "react"
+import { Pressable, ScrollView, View } from "react-native"
+import AddActivity from "../activity/addActivity"
+import AddGoal from "../goal/addGoal"
+import { Sheet, Text, Button } from "tamagui";
+import { ArrowLeft } from "@tamagui/lucide-icons";
 
-// export default function CreateActivityAndGoal({ state, setModal }) {
+export default function CreateActivityAndGoal({ open, setOpen, position, setPosition }) {
 
-//     const [createNewActivityOrGoal, setCreateNewActivityOrGoal] = useState(0)
-
-//     const toggleDrawer = (anchor, open) => (event) => {
-//         if (
-//             event &&
-//             event.type === 'keydown' &&
-//             (event.key === 'Tab' || event.key === 'Shift')
-//         ) {
-//             return;
-//         }
-
-//         setModal(open);
-//     };
+    const [createNewActivityOrGoal, setCreateNewActivityOrGoal] = useState(0)
 
 
-//     const [fontsLoad] = useFonts({
-//         Poppins_400Regular, Poppins_700Bold,
-//     })
-//     console.log(createNewActivityOrGoal)
-//     return (
-//         <>
-//             <ScrollView>
-//                 <SwipeableDrawer
-//                     anchor={'bottom'}
-//                     open={state}
-//                     onClose={toggleDrawer('bottom', false)}
-//                     onOpen={toggleDrawer('bottom', true)}
-//                 >
-//                     <Container sx={{ padding: 3 }}>
-//                             <Container sx={{display:"flex", flexDirection: "row", padding:0, paddingBottom:2, alignItems:"center", gap:2}}>
-//                                 <ArrowBackIcon onClick={toggleDrawer('bottom', false)} />
-//                                 <Pressable onPress={() => setCreateNewActivityOrGoal(0)}>
-//                                     <Typography variant="h6" sx={{ fontFamily: "Poppins_400Regular", color: createNewActivityOrGoal == 0 ? "#DD7A34" : "black", textDecorationLine: createNewActivityOrGoal == 0 ? "underline": "none" }}>ACTIVITY</Typography>
-//                                 </Pressable>
-//                                 <Pressable onPress={() => setCreateNewActivityOrGoal(1)}>
-//                                     <Typography variant="h6" sx={{ fontFamily: "Poppins_400Regular", color: createNewActivityOrGoal == 1 ? "#DD7A34" : "black", textDecorationLine: createNewActivityOrGoal == 1 ? "underline": "none" }}>GOAL</Typography>
-//                                 </Pressable>
-//                             </Container>
-//                            {createNewActivityOrGoal == 0 ? <AddActivity/> : <AddGoal/>}
-//                     </Container>
-//                 </SwipeableDrawer>
-//             </ScrollView>
-//         </>
-//     )
-// }
+    return (
+        <>
+            <Sheet
+                modal
+                open={open}
+                onOpenChange={setOpen}
+                position={position}
+                onPositionChange={setPosition}
+                snapPoints={["fit"]}
+                snapPointsMode="fit"
+                dismissOnSnapToBottom
+            >
+                <Sheet.Overlay />
+                <Sheet.Frame ai="center" jc="center" style={{ backgroundColor: "white" }}>
+                    {/* <Sheet.Handle /> */}
+                    <View style={{ width: "100%", height: "100%", backgroundColor: "white", padding: 20 }}>
+                        <View style={{ display: "flex", flexDirection: "row", padding: 0, paddingBottom: 2, alignItems: "center", gap: 20 }}>
+                            <Button icon={<ArrowLeft size="$2" color={"black"} />} onPress={() => { setOpen(false) }} style={{ backgroundColor: "transparent" }} />
+                            <Pressable onPress={() => setCreateNewActivityOrGoal(0)}>
+                                <Text size="$6" style={{ color: createNewActivityOrGoal == 0 ? "#DD7A34" : "black", textDecorationLine: createNewActivityOrGoal == 0 ? "underline" : "none" }}>ACTIVITY</Text>
+                            </Pressable>
+                            <Pressable onPress={() => setCreateNewActivityOrGoal(1)}>
+                                <Text size="$6" style={{ color: createNewActivityOrGoal == 1 ? "#DD7A34" : "black", textDecorationLine: createNewActivityOrGoal == 1 ? "underline" : "none" }}>GOAL</Text>
+                            </Pressable>
+                        </View>
+                        {createNewActivityOrGoal == 0 ? <AddActivity /> : <AddGoal />}
+                    </View>
+                </Sheet.Frame>
+            </Sheet>
+        </>
+    )
+}

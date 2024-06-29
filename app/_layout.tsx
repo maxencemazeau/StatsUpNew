@@ -5,7 +5,6 @@ import { store } from './reduxState/store';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useEffect } from 'react';
 import { TamaguiProvider } from 'tamagui';
-
 import config from '../tamagui.config';
 
 const queryClient = new QueryClient()
@@ -26,11 +25,11 @@ export default function IndexLayout() {
 
   return (
     <TamaguiProvider config={config}>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <Stack screenOptions={{ headerShown: false }} />
-        </QueryClientProvider>
-      </Provider>
+        <Provider store={store}>
+          <QueryClientProvider client={queryClient}>
+            <Stack screenOptions={{ headerShown: false }} />
+          </QueryClientProvider>
+        </Provider>
     </TamaguiProvider>
   );
 }

@@ -1,22 +1,19 @@
 import React, { useState } from "react"
 import { View, StyleSheet } from "react-native";
-import { Link } from "expo-router"
 import { getActivity } from "../../axiosPath/axiosPath";
 import axios from 'axios'
 import { useSelector } from "react-redux";
 import { useQuery } from "react-query";
 import { ArrowRight } from "@tamagui/lucide-icons";
-// import HomeCardSkeleton from "../skeleton/homeCardSkeleton";
-// import PopUpAxiosError from "../error/popUpAxiosError";
+import HomeCardSkeleton from "../skeleton/homeCardSkeleton";
 import { useLoadMoreActivity } from "../../hooks/apiCall/activity/loadMoreActivity";
-import { Separator, Card, Button, Text, SizableText, Paragraph } from "tamagui";
+import { Separator, Card, Button, SizableText, Paragraph } from "tamagui";
 
 export default function ActivityCard({ activityOffset }) {
 
     const [timer, setTimer] = useState(false)
     const [timerText, setTimerText] = useState("START")
     const isMoreDataLoading = useSelector((state) => state.isActivityLoading.value)
-    const errorState = useSelector((state) => state.loadingError.value);
 
     useLoadMoreActivity(activityOffset)
 
@@ -43,12 +40,13 @@ export default function ActivityCard({ activityOffset }) {
     }
 
     return (
+        <>
         <View style={styles.container}>
             {activityList?.map(activities => (
                 <Card key={activities.ActivityID} style={styles.card}>
                     <Card.Header style={styles.cardHeader}>
                         <View>
-                            <SizableText style={styles.typography} size={"$8"}>{activities.ActivityName}</SizableText>
+                            <SizableText style={styles.typography} size={"$6"} fontWeight="800">{activities.ActivityName}</SizableText>
                             <Paragraph style={styles.typography}>{activities.GoalName} : 0/{activities.Frequence}</Paragraph>
                         </View>
                         <Button icon={<ArrowRight size="$1"/>}style={{ backgroundColor: "#DD7A34", borderRadius: 25, height:50 }} />
@@ -57,15 +55,15 @@ export default function ActivityCard({ activityOffset }) {
                         <View style={{paddingRight:18, paddingLeft:18}}>
                             <Separator />
                             <View style={{...styles.cardHeader, paddingTop:10}}>     
-                                <SizableText size={"$6"} color={timer == true ? 'red' : 'green'} onPress={() => changeTimer()}>{timerText}</SizableText>
+                                <SizableText size={"$6"} color={timer == true ? 'red' : 'green'} fontWeight="800" onPress={() => changeTimer()}>{timerText}</SizableText>
                                 <Paragraph color={"black"}>10:00:00</Paragraph>
                             </View>
                         </View>}
                 </Card>
             ))}
-            {/* {isMoreDataLoading && <HomeCardSkeleton /> } */}
-            {/* {errorState && <PopUpAxiosError/>} */}
+            {isMoreDataLoading && <HomeCardSkeleton /> }      
         </View>
+        </>
     )
 
 }
@@ -76,7 +74,7 @@ const styles = StyleSheet.create({
     },
     card:{
         backgroundColor:"white",
-        marginBottom:10
+        marginBottom:15
     },
     cardHeader: {
         display: "flex",
