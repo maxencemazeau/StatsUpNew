@@ -24,7 +24,7 @@ export default function Home() {
     const loadingError = useSelector((state) => state.loadingError.value)
 
     const loadMoreData = async (event) => {
-        event.persist();
+        //event.persist();
         await new Promise((resolve) => setTimeout(resolve, 300))
         if (isCloseToBottom(event.nativeEvent)) {
             if (active === "ACTIVITY" && !hasNoMoreActivityData && !isActivityLoading && loadingError == false) {

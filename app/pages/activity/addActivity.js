@@ -13,56 +13,35 @@ export default function AddActivity() {
 
   const [activateGoal, setActivateGoal] = useState(false)
   const [showGoalNameInput, setShowGoalNameInput] = useState(false)
-  const [timerOption, setTimerOption] = useState(false)
-  const [newActivity, setNewActivity] = useState({
-    activityName: "",
-    timer: false,
-    goalId: 0,
-    timeFrame: 0,
-    frequency: 0,
-    userId: 0,
-    createNewGoal: false
-  })
+  // const [newActivity, setNewActivity] = useState({
+  //   activityName: "",
+  //   timer: false,
+  //   goalId: 0,
+  //   timeFrame: 0,
+  //   frequency: 0,
+  //   userId: 0,
+  //   createNewGoal: false
+  // })
+
 
   const { control, handleSubmit, formState: { errors } } = useForm()
-  const onSubmit = (data) => console.log(data)
+  const onSubmit = async(data) => {
+    try{
+    console.log(data)
+    const createNewGoal =  data.selectedIdGoal !== 0 ? false : true
+    const response = await axios.post(addActivity, { params: { ActivityName: data.activityName, Timer: data.timer, GoalsId: data.selectedIdGoal, CreateNewGoal: createNewGoal, GoalName:data.newGoalName, TimeFrame: data.timeFrame, Frequence:data.Frequence, UserId : 1}})
+    console.log(response)
+    } catch(err){
+      console.log(err)
+    }
+  }
 
   const changeActive = () => {
     setActivateGoal(prevState => !prevState)
   }
 
-  const clearGoalNameInput = () => {
-    if (goalNameInput.current) {
-    goalNameInput.current.clear()
-    }
-  }
-
-
-  // const changeTimerOption = (e) => {
-  //   setTimerOption(prevState => !prevState)
-  //   setNewActivity(prevState => ({ ...prevState, timer: timerOption }))
-  // }
-  // const [age, setAge] = React.useState('');
-
-  // const handleChange = (e) => {
-  //   setAge(e.target.value);
-  //   if (e.target.value == 0) {
-  //     setGoalName(true)
-  //     setNewActivity(prevState => ({ ...prevState, goalId: 0, createNewGoal: true }))
-  //   } else {
-  //     setGoalName(false)
-  //     setNewActivity(prevState => ({ ...prevState, goalId: e.target.value, createNewGoal: false }))
-  //   }
-  // }
-
-  const addNewActivity = async () => {
-    const response = await axios.post(addActivity, { params: { ActivityName: newActivity.activityName, Timer: newActivity.timer, GoalsId: newActivity.goalId, CreateNewGoal: newActivity.createNewGoal, UserId: 1 } })
-  }
-
-  // const handleTimeFrameChange = () => {
-  //   setNewActivity(prevState => ({ ...prevState, timeFrame: e.target.value }))
-
-  //onChange={(e) => setNewActivity(prevState => ({ ...prevState, activityName: e.target.value }))}
+  // const addNewActivity = async () => {
+  //   const response = await axios.post(addActivity, { params: { ActivityName: newActivity.activityName, Timer: newActivity.timer, GoalsId: newActivity.goalId, CreateNewGoal: newActivity.createNewGoal, UserId: 1 } })
   // }
 
   return (
@@ -118,7 +97,7 @@ export default function AddActivity() {
                   name="selectedIdGoal"
                   control={control}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <LinkedGoalSelect setShowGoalNameInput={setShowGoalNameInput} onChange={onChange} clearGoalNameInput={clearGoalNameInput}/>
+                    <LinkedGoalSelect setShowGoalNameInput={setShowGoalNameInput} onChange={onChange}/>
                   )} />
                 {showGoalNameInput &&
                   <Controller
