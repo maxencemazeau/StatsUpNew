@@ -13,13 +13,15 @@ export const  useLoadMoreActivity = async(activityOffset) =>{
     const queryClient = useQueryClient()
     const hasNoMoreData = useSelector((state) => state.hasMoreActivityData.value)
     const isMoreDataLoading = useSelector((state) => state.isActivityLoading.value)
+    const User = useSelector((state) => state.login.user)
+    const UserId = User.user[0].UserID
     
     useEffect(() => {
         if (activityOffset > 0 && !hasNoMoreData && isMoreDataLoading == false) {
         const fetchMoreData = async() =>{
             try {
                 dispatch(isActivityLoading(true))
-                const response = await axios.get(getActivity, { params: { id: 1, offset: activityOffset } });
+                const response = await axios.get(getActivity, { params: { id: UserId, offset: activityOffset } });
                 dispatch(noMoreActivityData(response.data.noMoreData))
                 queryClient.setQueryData("activityList", oldData => [
                     ...oldData,

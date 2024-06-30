@@ -12,6 +12,8 @@ import { useLoadMoreGoal } from "../../hooks/apiCall/goal/loadMoreGoal";
 export default function GoalCard({goalOffset}) {
 
     const isMoreDataLoading = useSelector((state) => state.isGoalLoading.value)
+    const User = useSelector((state) => state.login.user)
+    const UserId = User.user[0].UserID
     useLoadMoreGoal(goalOffset)
     
     const { data : goalList } = useQuery({
@@ -21,7 +23,7 @@ export default function GoalCard({goalOffset}) {
     })
  
     const LoadUserGoals = async () => {
-        const response = await axios.get(getUserGoals, { params: { id: 1, offset : 0} });
+        const response = await axios.get(getUserGoals, { params: { id: UserId, offset : 0} });
         return response.data.goal
     };
 

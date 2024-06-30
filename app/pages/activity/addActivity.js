@@ -4,6 +4,7 @@ import { Text, Input, Button, Checkbox, Form } from "tamagui"
 import { Check } from '@tamagui/lucide-icons'
 import axios from "axios"
 import { addActivity } from "../../axiosPath/axiosPath"
+import { useSelector } from "react-redux"
 import { useForm, SubmitHandler, FormProvider, Controller } from "react-hook-form"
 import LinkedGoalSelect from "../../components/activity/linkedGoalSelect"
 import TimeFrameSelect from "../../components/activity/timeFrameSelect"
@@ -13,6 +14,9 @@ export default function AddActivity() {
 
   const [activateGoal, setActivateGoal] = useState(false)
   const [showGoalNameInput, setShowGoalNameInput] = useState(false)
+  const User = useSelector((state) => state.login.user)
+  const UserId = User.user[0].UserID
+  //console.log(UserId)
   // const [newActivity, setNewActivity] = useState({
   //   activityName: "",
   //   timer: false,
@@ -27,10 +31,8 @@ export default function AddActivity() {
   const { control, handleSubmit, formState: { errors } } = useForm()
   const onSubmit = async(data) => {
     try{
-    console.log(data)
     const createNewGoal =  data.selectedIdGoal !== 0 ? false : true
-    const response = await axios.post(addActivity, { params: { ActivityName: data.activityName, Timer: data.timer, GoalsId: data.selectedIdGoal, CreateNewGoal: createNewGoal, GoalName:data.newGoalName, TimeFrame: data.timeFrame, Frequence:data.Frequence, UserId : 1}})
-    console.log(response)
+    const response = await axios.post(addActivity, { params: { ActivityName: data.activityName, Timer: data.timer, GoalsId: data.selectedIdGoal, CreateNewGoal: createNewGoal, GoalName:data.newGoalName, TimeFrame: data.timeFrame, Frequence:data.Frequence, UserId : UserId}})
     } catch(err){
       console.log(err)
     }

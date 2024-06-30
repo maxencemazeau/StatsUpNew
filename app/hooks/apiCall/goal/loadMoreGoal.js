@@ -13,13 +13,15 @@ export const  useLoadMoreGoal = async(goalOffset) =>{
     const queryClient = useQueryClient()
     const hasNoMoreData = useSelector((state) => state.hasMoreGoalData.value)
     const isMoreDataLoading = useSelector((state) => state.isGoalLoading.value)
+    const User = useSelector((state) => state.login.user)
+    const UserId = User.user[0].UserID
     
     useEffect(() => {
         if (goalOffset > 0 && !hasNoMoreData && isMoreDataLoading == false) {
         const fetchMoreData = async() =>{
             try {
                 dispatch(isGoalLoading(true))
-                const response = await axios.get(getUserGoals, { params: { id: 1, offset: goalOffset } });
+                const response = await axios.get(getUserGoals, { params: { id: UserId, offset: goalOffset } });
                 dispatch(noMoreGoalData(response.data.noMoreData))
                 queryClient.setQueryData("goalList", oldData => [
                     ...oldData,

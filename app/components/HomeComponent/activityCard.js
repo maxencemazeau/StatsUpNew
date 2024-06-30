@@ -14,6 +14,8 @@ export default function ActivityCard({ activityOffset }) {
     const [timer, setTimer] = useState(false)
     const [timerText, setTimerText] = useState("START")
     const isMoreDataLoading = useSelector((state) => state.isActivityLoading.value)
+    const User = useSelector((state) => state.login.user)
+    const UserId = User.user[0].UserID
 
     useLoadMoreActivity(activityOffset)
 
@@ -24,7 +26,7 @@ export default function ActivityCard({ activityOffset }) {
     })
 
     const LoadUserActivies = async () => {
-        const response = await axios.get(getActivity, { params: { id: 1, offset: 0 } });
+        const response = await axios.get(getActivity, { params: { id: UserId, offset: 0 } });
         return response.data.activity
     };
 

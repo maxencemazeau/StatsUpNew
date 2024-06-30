@@ -24,26 +24,25 @@ export default function Login() {
       };
 
     const handleLogin =  async () => {
-        // if (email === '' || password === '') {
-        //     alert("Please enter your email and password")
-        //     return
-        // }
+        if (email === '' || password === '') {
+            alert("Please enter your email and password")
+             return
+         }
 
-        // try {
+         try {
 
-        //     const response = await axios.post(userLogin, {
-        //         email: email,
-        //         password: password,
-        //     })
-        //     console.log(response.data)
-        //     dispatch(setLogin(response.data));
+             const response = await axios.post(userLogin, {
+                 email: email,
+                password: password,
+             })
+             dispatch(setLogin(response.data));
 
             router.push('/pages/home/home');
-        // } catch (error) {
-        //     console.error(error)
-        //     alert("An error occurred during login. Please try again.")
+         } catch (error) {
+             console.error(error)
+             alert("An error occurred during login. Please try again.")
 
-        // }
+         }
     };
 
     return (
