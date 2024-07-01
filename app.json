@@ -3,7 +3,6 @@
     "name": "StatsUpNew",
     "slug": "StatsUpNew",
     "version": "1.0.0",
-    "scheme": "StatsUpNew",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -29,12 +28,26 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.golami.StatsUpNew"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c5ef1a72-ea66-406d-96fc-e201382cee21"
       }
     }
   }

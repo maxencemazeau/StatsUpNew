@@ -16,16 +16,7 @@ export default function AddActivity() {
   const [showGoalNameInput, setShowGoalNameInput] = useState(false)
   const User = useSelector((state) => state.login.user)
   const UserId = User.user[0].UserID
-  //console.log(UserId)
-  // const [newActivity, setNewActivity] = useState({
-  //   activityName: "",
-  //   timer: false,
-  //   goalId: 0,
-  //   timeFrame: 0,
-  //   frequency: 0,
-  //   userId: 0,
-  //   createNewGoal: false
-  // })
+
 
 
   const { control, handleSubmit, formState: { errors } } = useForm()
@@ -41,10 +32,6 @@ export default function AddActivity() {
   const changeActive = () => {
     setActivateGoal(prevState => !prevState)
   }
-
-  // const addNewActivity = async () => {
-  //   const response = await axios.post(addActivity, { params: { ActivityName: newActivity.activityName, Timer: newActivity.timer, GoalsId: newActivity.goalId, CreateNewGoal: newActivity.createNewGoal, UserId: 1 } })
-  // }
 
   return (
     <>
