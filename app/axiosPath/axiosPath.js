@@ -1,5 +1,6 @@
 
-const baseUrl = `http://localhost:8080/`
+//const baseUrl = `http://localhost:8080/`
+const baseUrl = `https://statsuptest.onrender.com/`
 
 export const getActivity = baseUrl + `userActivity`
 export const getUserGoals = baseUrl + `userGoal`
