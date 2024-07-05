@@ -4,11 +4,21 @@ import AddActivity from "../activity/addActivity"
 import AddGoal from "../goal/addGoal"
 import { Sheet, Text, Button, SizableText } from "tamagui";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-
+import { useSelector, useDispatch } from "react-redux"
+import { Message } from "../../reduxState/message/messageSlice";
+import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 export default function CreateActivityAndGoal({ open, setOpen, position, setPosition }) {
 
     const [createNewActivityOrGoal, setCreateNewActivityOrGoal] = useState(0)
+    const dispatch = useDispatch()
+    const User = useSelector((state) => state.login.user)
+    const UserId = User.user[0].UserID
 
+    const SuccessOrError = (type, message) => {
+        dispatch(Message({messageType : type, messageText: message}))
+        dispatch(loadingError(true))
+        setOpen(false)
+    }
 
     return (
         <>
@@ -35,7 +45,7 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
                                 <SizableText size="$6" style={{ color: createNewActivityOrGoal == 1 ? "#DD7A34" : "black", textDecorationLine: createNewActivityOrGoal == 1 ? "underline" : "none" }}>GOAL</SizableText>
                             </Pressable>
                         </View>
-                        {createNewActivityOrGoal == 0 ? <AddActivity /> : <AddGoal />}
+                        {createNewActivityOrGoal == 0 ? <AddActivity UserId={UserId} SuccessOrError={SuccessOrError}/> : <AddGoal UserId={UserId} SuccessOrError={SuccessOrError}/>}
                     </View>
                 </Sheet.Frame>
             </Sheet>

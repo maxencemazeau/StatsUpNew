@@ -1,9 +1,6 @@
 // import React, { useState } from "react"
 // import { View, ScrollView } from 'react-native';
 // import { Link, useLocalSearchParams } from "expo-router"
-// import { Container, Typography, Box, FormControl, FormGroup, FormControlLabel, InputLabel, Select, MenuItem, Checkbox, TextField, Button } from "@mui/material"
-// import { LineChart } from '@mui/x-charts/LineChart';
-// import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins'
 // import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 // import ActivityHistory from "../../components/activity/activityHistory";
 // import ActivityInformation from "../../components/activity/activityInformation";
@@ -13,36 +10,8 @@
 //     const { lastPage } = useLocalSearchParams();
 //     const [selectedChartPeriod, setSelectedChartPeriod] = useState(1)
 //     const [activityTimer, setActivityTimer] = useState(false)
-//     const [goalPeriod, setGoalPeriod] = useState([{id:1,periodName:"Daily", checked:false},{id:2,periodName:"Weekly",checked:false},{id:3,periodName:"Monthly",checked:false}])
+   
 
-//     const period = [{
-//         id: 1,
-//         value: "This week"
-//     },
-//     {
-//         id: 2,
-//         value: "This month"
-//     },
-//     {
-//         id: 3,
-//         value: "This year"
-//     },
-//     {
-//         id: 4,
-//         value: "Last 3 Month"
-//     },
-//     {
-//         id: 5,
-//         value: "Last 6 Month"
-//     },
-//     {
-//         id: 6,
-//         value: "All time"
-//     },
-//     ]
-//     const [fontsLoad] = useFonts({
-//         Poppins_400Regular, Poppins_700Bold,
-//     })
 
 //     const changeChartPeriod = (event) => {
 //         setSelectedChartPeriod(event.target.value)

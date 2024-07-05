@@ -30,7 +30,6 @@ export default function Login() {
          }
 
          try {
-
              const response = await axios.post(userLogin, {
                  email: email,
                 password: password,
@@ -64,16 +63,15 @@ export default function Login() {
                             placeholder="Email"
                             style={{ width: "100%", backgroundColor: "white", marginTop:20, marginBottom: 20, color: "black" }}
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChangeText={(text) => setEmail(text)}
                         />
                         <Input
                             size="$5"
                             placeholder="Password"
                             margin="normal"
                             style={{ width: "100%", backgroundColor: "white", marginBottom: 20, color: "black" }}
-                            type="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChangeText={(text) => {setPassword(text); console.log(text)}}
                         />
                         <Button size="$5" style={{
                             backgroundColor: "#DD7A34", marginTop: 1, width: "100%", marginBottom: 20,

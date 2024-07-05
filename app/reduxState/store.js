@@ -8,6 +8,7 @@ import loginReducer from './authentication/loginSlice';
 import isActivityLoadingReducer from "./offset/activityLoadingSlice";
 import isGoalLoadingReducer from "./offset/goalLoadingSlice";
 import loadingErrorReducer from "./error/loadingErrorSlice";
+import MessageReducer from "./message/messageSlice"
 
 export const store = configureStore({
     reducer: {
@@ -19,7 +20,8 @@ export const store = configureStore({
         login: loginReducer,
         isActivityLoading : isActivityLoadingReducer,
         isGoalLoading : isGoalLoadingReducer,
-        loadingError : loadingErrorReducer
+        loadingError : loadingErrorReducer,
+        message: MessageReducer
     },
 });
 

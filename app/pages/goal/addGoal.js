@@ -1,99 +1,111 @@
-// import React, { useState } from "react"
-// import { View } from "react-native"
-// import Button from "@mui/material/Button"
-// import Typography from "@mui/material/Typography"
-// import { Divider, Grid } from "@mui/material"
-// import TextField from '@mui/material/TextField';
-// import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins'
-// import Checkbox from "@mui/material/Checkbox"
-// import Select from "@mui/material/Select"; import MenuItem from "@mui/material/MenuItem"
-// import InputLabel from "@mui/material/InputLabel"; import FormControl from "@mui/material/FormControl"
+import React, { useState, useRef } from "react"
+import { View, StyleSheet } from "react-native"
+import { Text, Input, Button, Checkbox, Form, Card } from "tamagui"
+import { AlignHorizontalSpaceAround, Check } from '@tamagui/lucide-icons'
+import axios from "axios"
+import { addGoal } from "../../axiosPath/axiosPath"
+import { useForm, SubmitHandler, FormProvider, Controller } from "react-hook-form"
+import TimeFrameSelect from "../../components/activity/timeFrameSelect"
+import LinkedActivity from "../../components/goal/linkedActivity"
 
-// export default function AddGoal() {
+export default function AddGoal({ UserId, SuccessOrError }) {
 
-//     const goal = [
-//         {
-//             id: 1,
-//             name: "1"
-//         },
-//         {
-//             id: 2,
-//             name: "2"
-//         }
-//     ]
+    const [showActivityList, setShowActivityList] = useState(false)
+    const linkedActivity = []
 
+    const { control, handleSubmit, formState: { errors } } = useForm()
+    const onSubmit = async (data) => {
+        try {
+            const response = await axios.post(addGoal, { params: { GoalName: data.goalName, LinkActivity: linkedActivity, TimeFrame: data.timeFrame, Frequence: data.Frequence, UserId: UserId } })
+            if(response.data == 1) {
+                SuccessOrError("SUCCESS", "Goal successfully created !")
+            } else {
+                SuccessOrError("ERROR", "An unexpected error occurred")
+            }
+        } catch (err) {
+            console.log(err)
+            SuccessOrError("ERROR", "An unexpected error occurred")
+        }
+    }
 
-//     const [activateGoal, setActivateGoal] = useState(false)
-//     const [goalName, setGoalName] = useState(false)
-//     const [timerOption, setTimerOption] = useState(false)
+    const changeLinkActivity = () => {
+        setShowActivityList(prevState => !prevState)
+    }
 
-//     const changeActive = () => {
-//         setActivateGoal(prevState => !prevState)
-//     }
+    return (
+        <>
+            <View>
+                <Text sixe="$4">Create a new activity</Text>
+                <FormProvider {...control}>
+                    <Form>
+                        <Controller
+                            name="goalName"
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <Input
+                                    placeholder="Goal name"
+                                    value={value}
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    style={{ width: "100%", backgroundColor: "white", marginTop: 10, marginBottom: 10, color: "black", height: 50 }}
+                                />
+                            )}
+                        />
+                        <View style={{ ...styles.checkboxContainer, marginTop: 10 }}>
+                            <View style={styles.line}>
+                                <Text color={"black"}>Link this goal to an/mutilple activities ?</Text>
+                                <Controller
+                                    name="LinkActivity"
+                                    control={control}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <Checkbox size="$6" onCheckedChange={(isChecked) => { onChange(isChecked); changeLinkActivity() }}>
+                                            <Checkbox.Indicator>
+                                                <Check />
+                                            </Checkbox.Indicator>
+                                        </Checkbox>
+                                    )} />
+                            </View>
+                        </View>
+                        <>
+                            <View style={styles.line}>
+                                <Controller
+                                    name="timeFrame" control={control} render={({ field: { onChange, onBlur, value } }) => (
+                                        <TimeFrameSelect onChange={onChange} />
+                                    )} />
+                                <Controller
+                                    name="Frequence" control={control} render={({ field: { onChange, onBlur, value } }) => (
+                                        <Input placeholder="Frequency" style={styles.inputField} value={value} onBlur={onBlur} onChangeText={onChange} keyboardType="numeric" />
+                                    )} />
+                            </View>
+                        </>
+                        {showActivityList &&
+                            <LinkedActivity linkedActivity={linkedActivity} UserId={UserId}/>
+                        }
+                        <Button style={{ backgroundColor: "#DD7A34", marginTop: 1, height: 50 }} onPress={handleSubmit(onSubmit)}>Save</Button>
+                    </Form>
+                </FormProvider>
+            </View>
+        </>
+    )
+}
 
-//     const changeTimerOption = () => {
-//         setTimerOption(prevState => !prevState)
-//     }
-//     const [age, setAge] = React.useState('');
-
-//     const handleChange = (event) => {
-//         setAge(event.target.value);
-//         if (event.target.value == 0) {
-//             setGoalName(true)
-//         } else {
-//             setGoalName(false)
-//         }
-//     }
-
-//     const [fontsLoad] = useFonts({
-//         Poppins_400Regular, Poppins_700Bold,
-//     })
-
-//     return (
-//         <>
-//             <View>
-//                 <Typography variant="h6" sx={{ fontFamily: "Poppins_700Bold" }}>Create a new goal</Typography>
-//                 <TextField id="outlined-basic" label="Name" color={"warning"} variant="outlined" margin="normal" />
-//                 <Grid direction={"row"} container sx={{ paddingTop: 1 }}>
-//                     <Grid item xs={6} sx={{ marginBottom: 1 }}>
-//                         <Typography>Link to an existing activity ?</Typography>
-//                     </Grid>
-//                     <Grid item xs={2}>
-//                         <Checkbox sx={{ padding: 0, marginLeft:2 }} onChange={changeTimerOption} />
-//                     </Grid>
-//                 </Grid>
-//                 {activateGoal &&
-//                     <>
-//                         <FormControl fullWidth sx={{ marginTop: 1 }}>
-//                             <InputLabel id="demo-simple-select-label" color={"warning"}>Linked goal</InputLabel>
-//                             <Select
-//                                 labelId="demo-simple-select-label"
-//                                 id="demo-simple-select"
-//                                 value={age}
-//                                 label="Linked goal"
-//                                 color={"warning"}
-//                                 onChange={handleChange}
-//                             >
-//                                 <MenuItem value={0}>New goal</MenuItem>
-//                                 <Divider />
-//                                 {goal.map(goals =>
-//                                     <MenuItem key={goals.id} value={goals.name}>{goals.name}</MenuItem>
-//                                 )}
-//                             </Select>
-//                         </FormControl>
-//                         {goalName && <TextField id="outlined-basic" label="Name" color={"warning"} variant="outlined" margin="normal" />}
-//                         <Grid container spacing={3}>
-//                             <Grid item xs={6}>
-//                                 <TextField id="outlined-basic" label="Time frame" variant="outlined" color={"warning"} margin="normal" />
-//                             </Grid>
-//                             <Grid item xs={6}>
-//                                 <TextField id="outlined-basic" label="Frequency" variant="outlined" color={"warning"} margin="normal" />
-//                             </Grid>
-//                         </Grid>
-//                     </>
-//                 }
-//                 <Button variant={"contained"} sx={{ bgcolor: "#DD7A34", marginTop: 1, height: 50 }} color={"warning"} disableElevation>Save</Button>
-//             </View>
-//         </>
-//     )
-// }
+const styles = StyleSheet.create({
+    checkboxContainer: {
+        display: "flex",
+        flexDirection: "column"
+    },
+    line: {
+        display: "flex",
+        flexDirection: "row",
+        gap: 10,
+        marginBottom: 10,
+        alignItems: "center",
+        width: "100%",
+    },
+    inputField: {
+        backgroundColor: "white",
+        color: "black",
+        flexGrow: 1,
+        height: 50
+    },
+})

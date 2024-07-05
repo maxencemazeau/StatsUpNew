@@ -6,7 +6,7 @@ import Layout from '../components/layout';
 function HomeLayout() {
   return (
     <Layout>
-       <Stack screenOptions={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: false }} />
      </Layout>
   );
 }

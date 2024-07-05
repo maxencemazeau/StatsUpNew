@@ -4,28 +4,34 @@ import { Text, Input, Button, Checkbox, Form } from "tamagui"
 import { Check } from '@tamagui/lucide-icons'
 import axios from "axios"
 import { addActivity } from "../../axiosPath/axiosPath"
-import { useSelector } from "react-redux"
 import { useForm, SubmitHandler, FormProvider, Controller } from "react-hook-form"
 import LinkedGoalSelect from "../../components/activity/linkedGoalSelect"
 import TimeFrameSelect from "../../components/activity/timeFrameSelect"
 
-export default function AddActivity() {
-
+export default function AddActivity({ UserId, SuccessOrError }) {
 
   const [activateGoal, setActivateGoal] = useState(false)
   const [showGoalNameInput, setShowGoalNameInput] = useState(false)
-  const User = useSelector((state) => state.login.user)
-  const UserId = User.user[0].UserID
-
-
+  let createNewGoal = false
 
   const { control, handleSubmit, formState: { errors } } = useForm()
-  const onSubmit = async(data) => {
-    try{
-    const createNewGoal =  data.selectedIdGoal !== 0 ? false : true
-    const response = await axios.post(addActivity, { params: { ActivityName: data.activityName, Timer: data.timer, GoalsId: data.selectedIdGoal, CreateNewGoal: createNewGoal, GoalName:data.newGoalName, TimeFrame: data.timeFrame, Frequence:data.Frequence, UserId : UserId}})
-    } catch(err){
+  const onSubmit = async (data) => {
+    try {
+      if (activateGoal == true) {
+        createNewGoal = data.selectedIdGoal !== 0 ? false : true
+      } else {
+        createNewGoal = false
+        data.GoalsId = 0
+      }
+      const response = await axios.post(addActivity, { params: { ActivityName: data.activityName, Timer: data.timer, GoalsId: data.selectedIdGoal, CreateNewGoal: createNewGoal, GoalName: data.newGoalName, TimeFrame: data.timeFrame, Frequence: data.Frequence, UserId: UserId } })
+      if (response.data == 1) {
+          SuccessOrError("SUCCESS", "Activity successfully created !")
+      } else {
+        SuccessOrError("ERROR", "An unexpected error occurred")
+      }
+    } catch (err) {
       console.log(err)
+      SuccessOrError("ERROR", "An unexpected error occurred")
     }
   }
 
@@ -86,7 +92,7 @@ export default function AddActivity() {
                   name="selectedIdGoal"
                   control={control}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <LinkedGoalSelect setShowGoalNameInput={setShowGoalNameInput} onChange={onChange}/>
+                    <LinkedGoalSelect setShowGoalNameInput={setShowGoalNameInput} onChange={onChange} />
                   )} />
                 {showGoalNameInput &&
                   <Controller
@@ -97,7 +103,7 @@ export default function AddActivity() {
                 <View style={styles.line}>
                   <Controller
                     name="timeFrame" control={control} render={({ field: { onChange, onBlur, value } }) => (
-                      <TimeFrameSelect onChange={onChange}/>
+                      <TimeFrameSelect onChange={onChange} />
                     )} />
                   <Controller
                     name="Frequence" control={control} render={({ field: { onChange, onBlur, value } }) => (
