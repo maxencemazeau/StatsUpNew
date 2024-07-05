@@ -18,6 +18,7 @@ function Layout() {
       {error && <PopUpAxios />}
       <BottomMenu />
     </>
+    
   );
 }
 
