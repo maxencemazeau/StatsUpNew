@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import GoalCard from "../../components/HomeComponent/goalCard";
 import { incrementActivityOffset } from "../../reduxState/offset/activityOffsetSlice";
 import { incrementGoalOffset } from "../../reduxState/offset/goalOffsetSlice";
-import PopUpAxiosError from "../../components/error/popUpAxiosError";
 
 export default function Home() {
 

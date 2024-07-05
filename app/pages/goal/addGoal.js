@@ -1,14 +1,14 @@
 import React, { useState, useRef } from "react"
 import { View, StyleSheet } from "react-native"
 import { Text, Input, Button, Checkbox, Form, Card } from "tamagui"
-import { Check } from '@tamagui/lucide-icons'
+import { AlignHorizontalSpaceAround, Check } from '@tamagui/lucide-icons'
 import axios from "axios"
 import { addGoal } from "../../axiosPath/axiosPath"
 import { useForm, SubmitHandler, FormProvider, Controller } from "react-hook-form"
 import TimeFrameSelect from "../../components/activity/timeFrameSelect"
 import LinkedActivity from "../../components/goal/linkedActivity"
 
-export default function AddGoal({ UserId }) {
+export default function AddGoal({ UserId, SuccessOrError }) {
 
     const [showActivityList, setShowActivityList] = useState(false)
     const linkedActivity = []
@@ -17,8 +17,14 @@ export default function AddGoal({ UserId }) {
     const onSubmit = async (data) => {
         try {
             const response = await axios.post(addGoal, { params: { GoalName: data.goalName, LinkActivity: linkedActivity, TimeFrame: data.timeFrame, Frequence: data.Frequence, UserId: UserId } })
+            if(response.data == 1) {
+                SuccessOrError("SUCCESS", "Goal successfully created !")
+            } else {
+                SuccessOrError("ERROR", "An unexpected error occurred")
+            }
         } catch (err) {
             console.log(err)
+            SuccessOrError("ERROR", "An unexpected error occurred")
         }
     }
 

@@ -4,10 +4,12 @@ import { Text } from "tamagui";
 import { useDispatch, useSelector } from "react-redux"
 import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 
-export default function PopUpAxiosError() {
+export default function PopUpAxios() {
+
+    const typeMessage = useSelector((state) => state.message.messageType)
+    const textMessage = useSelector((state) => state.message.messageText)
 
     const dispatch = useDispatch()
-
     useEffect(()=>{
         const interval = setInterval(() => {
             dispatch(loadingError(false))
@@ -17,8 +19,8 @@ export default function PopUpAxiosError() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.secondContainer}>
-                <Text style={{ fontSize:16, alignSelf:"center"}}>An error occurred please try again.</Text>
+            <View style={{...styles.secondContainer, backgroundColor: typeMessage === "SUCCESS" ? "#CFFDBC" : "#D34146" }}>
+                <Text style={{ fontSize:16, alignSelf:"center", color: typeMessage === "SUCCESS" ? "black" : "white"}}>{textMessage}</Text>
             </View>
         </View>    
     )
