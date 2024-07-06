@@ -9,4 +9,5 @@ export const addActivity = baseUrl + `addActivity`;
 export const addGoal = baseUrl + `addGoal`;
 export const userLogin = baseUrl + `userLogin`;
 export const activityWithNoGoal = baseUrl + `activityWithNoGoal`;
-export const checkActivityNameDuplicate = baseUrl + `CheckDuplicate`;
+export const checkActivityNameDuplicate = baseUrl + `CheckActivityDuplicate`;
+export const checkGoalNameDuplicate = baseUrl + `CheckGoalDuplicate`;

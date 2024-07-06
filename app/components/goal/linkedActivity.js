@@ -8,6 +8,8 @@ import { activityWithNoGoal } from '../../axiosPath/axiosPath';
 export default function LinkedActivity({ linkedActivity, UserId }) {
   const [activityList, setActivityList] = useState([]);
   const [noActivityWithoutGoal, setNoActivityWithoutGoal] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [showActivityList, setShowActivityList] = useState(false);
 
   useEffect(() => {
     const LoadActivitiesWithNoGoal = async () => {
@@ -30,13 +32,24 @@ export default function LinkedActivity({ linkedActivity, UserId }) {
     }
   };
 
+  const changeShowActivity = () => {
+    setShowActivityList(prevState => !prevState)
+  }
   return (
     <>
-      {noActivityWithoutGoal === true ? (
+      <View style={{ ...styles.checkboxContainer, marginTop: 10 }}>
+        <View style={styles.line}>
+          <Text color={'black'}>Show linkable activities</Text>
+          <Button icon={showActivityList && <Check />} style={{ backgroundColor: "black", color: "white", width: 15, height: 30 }} onPress={() => changeShowActivity()}></Button>
+        </View>
+      </View >
+      {noActivityWithoutGoal &&
         <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>
           No activity without goal
         </Text>
-      ) : (
+      }
+      {
+        showActivityList &&
         <View>
           {activityList?.map((activities) => (
             <Card key={activities.ActivityID} style={styles.container}>
@@ -56,7 +69,7 @@ export default function LinkedActivity({ linkedActivity, UserId }) {
             </Card>
           ))}
         </View>
-      )}
+      }
     </>
   );
 }
@@ -71,5 +84,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
+  },
+  checkboxContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  line: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 10,
+    alignItems: 'center',
+    width: '100%',
   },
 });

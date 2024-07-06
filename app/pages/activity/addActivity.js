@@ -39,7 +39,7 @@ export default function AddActivity({ UserId, SuccessOrError }) {
             GoalsId: data.selectedIdGoal,
             CreateNewGoal: createNewGoal,
             GoalName: data.newGoalName,
-            TimeFrame: data.timeFrame,
+            TimeFrame: 0,
             Frequence: data.Frequence,
             UserId: UserId,
           },
@@ -112,7 +112,8 @@ export default function AddActivity({ UserId, SuccessOrError }) {
               </View> */}
               <View style={styles.line}>
                 <Text color={'black'}>Link this activity to a goal ?</Text>
-                <Controller
+                <Button icon={activateGoal && <Check />} style={{ backgroundColor: "black", color: "white", width: 15, height: 30 }} onPress={() => changeActive()} />
+                {/* <Controller
                   name="linkGoal"
                   control={control}
                   render={({ field: { onChange, onBlur, value } }) => (
@@ -128,7 +129,7 @@ export default function AddActivity({ UserId, SuccessOrError }) {
                       </Checkbox.Indicator>
                     </Checkbox>
                   )}
-                />
+                /> */}
               </View>
             </View>
             {activateGoal && (
