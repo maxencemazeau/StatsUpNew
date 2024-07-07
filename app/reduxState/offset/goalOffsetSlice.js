@@ -3,15 +3,18 @@ import { createSlice } from "@reduxjs/toolkit"
 const initialState = { value: 0 }
 
 const goalSlice = createSlice({
-    name:"goalOffset",
+    name: "goalOffset",
     initialState,
-    reducers:{
+    reducers: {
         incrementGoalOffset: (state) => {
-            state.value += 5
+            state.value += 6
+        },
+        resetGoalOffset: (state) => {
+            state.value = initialState.value;
         }
     }
 })
 
-export const { incrementGoalOffset } = goalSlice.actions
+export const { incrementGoalOffset, resetGoalOffset } = goalSlice.actions
 
 export default goalSlice.reducer;

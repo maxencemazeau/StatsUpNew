@@ -7,6 +7,10 @@ import { ArrowLeft } from '@tamagui/lucide-icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { Message } from '../../reduxState/message/messageSlice';
 import { loadingError } from '../../reduxState/error/loadingErrorSlice';
+import { noMoreActivityData } from '../../reduxState/offset/hasMoreDataActivity';
+import { noMoreGoalData } from '../../reduxState/offset/hasMoreDataGoal';
+import { resetActivityOffset } from '../../reduxState/offset/activityOffsetSlice';
+import { resetGoalOffset } from '../../reduxState/offset/goalOffsetSlice';
 import { useQueryClient } from 'react-query';
 
 export default function CreateActivityAndGoal({ open, setOpen, position, setPosition }) {
@@ -14,8 +18,18 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
   const dispatch = useDispatch();
   const User = useSelector((state) => state.login.user);
   const UserId = User.user[0].UserID;
+  const queryClient = useQueryClient();
 
   const SuccessOrError = (type, message) => {
+    if (createNewActivityOrGoal == 0) {
+      queryClient.invalidateQueries('activityList')
+      dispatch(noMoreActivityData(false))
+      dispatch(resetActivityOffset())
+    } else {
+      queryClient.invalidateQueries('goalList')
+      dispatch(noMoreGoalData(false))
+      dispatch(resetGoalOffset())
+    }
     dispatch(Message({ messageType: type, messageText: message }));
     dispatch(loadingError(true));
     setOpen(false);

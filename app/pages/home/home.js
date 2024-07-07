@@ -31,7 +31,6 @@ export default function Home() {
         !isActivityLoading &&
         loadingError == false
       ) {
-        console.log(active + " " + hasNoMoreActivityData + " " + isActivityLoading + " " + loadingError)
         dispatch(incrementActivityOffset());
       }
 

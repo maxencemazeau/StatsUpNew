@@ -13,6 +13,7 @@ export default function AddActivity({ UserId, SuccessOrError }) {
   const [nameDuplicate, setNameDuplicate] = useState(false);
   const [showGoalNameInput, setShowGoalNameInput] = useState(false);
   let createNewGoal = false;
+  //const [newData, setNewData] = useState({})
 
   const {
     control,

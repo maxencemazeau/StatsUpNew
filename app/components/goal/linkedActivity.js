@@ -35,6 +35,7 @@ export default function LinkedActivity({ linkedActivity, UserId }) {
   const changeShowActivity = () => {
     setShowActivityList(prevState => !prevState)
   }
+
   return (
     <>
       <View style={{ ...styles.checkboxContainer, marginTop: 10 }}>
