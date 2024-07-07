@@ -43,28 +43,31 @@ export default function ActivityCard({ activityOffset }) {
 
     return (
         <>
-        <View style={styles.container}>
-            {activityList?.map(activities => (
-                <Card key={activities.ActivityID} style={styles.card}>
-                    <Card.Header style={styles.cardHeader}>
-                        <View>
-                            <SizableText style={styles.typography} size={"$6"} fontWeight="800">{activities.ActivityName}</SizableText>
-                            <Paragraph style={styles.typography}>{activities.GoalName} : 0/{activities.Frequence}</Paragraph>
-                        </View>
-                        <Button icon={<ArrowRight size="$1"/>}style={{ backgroundColor: "#DD7A34", borderRadius: 25, height:50 }} />
-                    </Card.Header>
-                    {activities.Timer &&
+            <View style={styles.container}>
+                {activityList?.map(activities => (
+                    <Card key={activities.ActivityID} style={styles.card}>
+                        <Card.Header style={styles.cardHeader}>
+                            <View>
+                                <SizableText style={styles.typography} size={"$6"} fontWeight="800">{activities.ActivityName}</SizableText>
+                                {activities.GoalName !== null ?
+                                    <Paragraph style={styles.typography}>{activities.GoalName} : 0/{activities.Frequence}</Paragraph>
+                                    :
+                                    <Paragraph style={styles.typography}>No goal linked</Paragraph>}
+                            </View>
+                            <Button icon={<ArrowRight size="$1" />} style={{ backgroundColor: "#DD7A34", borderRadius: 25, height: 50 }} />
+                        </Card.Header>
+                        {/* {activities.Timer &&
                         <View style={{paddingRight:18, paddingLeft:18}}>
                             <Separator />
                             <View style={{...styles.cardHeader, paddingTop:10}}>     
                                 <SizableText size={"$6"} color={timer == true ? 'red' : 'green'} fontWeight="800" onPress={() => changeTimer()}>{timerText}</SizableText>
                                 <Paragraph color={"black"}>10:00:00</Paragraph>
                             </View>
-                        </View>}
-                </Card>
-            ))}
-            {isMoreDataLoading && <HomeCardSkeleton /> }      
-        </View>
+                        </View>} */}
+                    </Card>
+                ))}
+                {isMoreDataLoading && <HomeCardSkeleton />}
+            </View>
         </>
     )
 
@@ -74,17 +77,17 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
     },
-    card:{
-        backgroundColor:"white",
-        marginBottom:15
+    card: {
+        backgroundColor: "white",
+        marginBottom: 15
     },
     cardHeader: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingBottom:10
+        paddingBottom: 10
     },
-    typography:{
-        color:"black"
+    typography: {
+        color: "black"
     }
 })
