@@ -9,19 +9,24 @@ import isActivityLoadingReducer from "./offset/activityLoadingSlice";
 import isGoalLoadingReducer from "./offset/goalLoadingSlice";
 import loadingErrorReducer from "./error/loadingErrorSlice";
 import MessageReducer from "./message/messageSlice"
+import CancelPopUpReducer from "./popUp/cancelPopUpSlice"
+import ShowDeleteReducer from "./popUp/showDelete"
+import showDelete from "./popUp/showDelete";
 
 export const store = configureStore({
     reducer: {
-        navigation : navigationReducer,
+        navigation: navigationReducer,
         activityOffset: activityOffsetReducer,
         goalOffset: goalOffsetReducer,
-        hasMoreActivityData : hasMoreActivityDataReducer,
-        hasMoreGoalData : hasMoreGoalDataReducer,
+        hasMoreActivityData: hasMoreActivityDataReducer,
+        hasMoreGoalData: hasMoreGoalDataReducer,
         login: loginReducer,
-        isActivityLoading : isActivityLoadingReducer,
-        isGoalLoading : isGoalLoadingReducer,
-        loadingError : loadingErrorReducer,
-        message: MessageReducer
+        isActivityLoading: isActivityLoadingReducer,
+        isGoalLoading: isGoalLoadingReducer,
+        loadingError: loadingErrorReducer,
+        message: MessageReducer,
+        cancelPopUp: CancelPopUpReducer,
+        showDelete: ShowDeleteReducer
     },
 });
 

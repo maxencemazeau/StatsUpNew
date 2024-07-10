@@ -10,12 +10,14 @@ import { Message } from '../../reduxState/message/messageSlice';
 import { useLoadMoreActivity } from "../../hooks/apiCall/activity/loadMoreActivity";
 import { Separator, Card, Button, SizableText, Paragraph } from "tamagui";
 import { loadingError } from "../../reduxState/error/loadingErrorSlice";
+import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
+import { showDelete } from "../../reduxState/popUp/showDelete";
 
 export default function ActivityCard({ activityOffset }) {
 
     // const [timer, setTimer] = useState(false)
     // const [timerText, setTimerText] = useState("START")
-    const [trashVisible, setTrashVisible] = useState(false)
+    const showDeleteIcon = useSelector((state) => state.showDelete.value)
     const isMoreDataLoading = useSelector((state) => state.isActivityLoading.value)
     const queryClient = useQueryClient();
     const dispatch = useDispatch()
@@ -47,18 +49,22 @@ export default function ActivityCard({ activityOffset }) {
     // }
 
     const handlePressOut = () => {
-        setTrashVisible(true)
+        dispatch(showDelete(true))
+        dispatch(cancelPopUp(true))
     };
 
     const deleteUserActivity = async (id) => {
         try {
-            setTrashVisible(false)
+            dispatch(showDelete(false))
+            dispatch(cancelPopUp(false))
             const response = await axios.delete(deleteActivity, { params: { id } })
             if (response.data === "SUCCESS") {
                 queryClient.setQueryData('activityList', oldData => oldData.filter(activity => activity.ActivityID !== id))
                 dispatch(Message({ messageType: "SUCCESS", messageText: "Activity deleted" }));
                 dispatch(loadingError(true))
             } else {
+                dispatch(showDelete(false))
+                dispatch(cancelPopUp(false))
                 dispatch(Message({ messageType: "ERROR", messageText: "An error occurred !" }));
                 dispatch(loadingError(true))
             }
@@ -72,7 +78,7 @@ export default function ActivityCard({ activityOffset }) {
             <View style={styles.container}>
                 {activityList?.map(activities => (
                     <Card key={activities.ActivityID} style={styles.card}>
-                        {trashVisible && <Button style={styles.trashContainer} onPress={() => deleteUserActivity(activities.ActivityID)}><Trash2 color={"red"} size="$1" /></Button>}
+                        {showDeleteIcon && <Button style={styles.trashContainer} onPress={() => deleteUserActivity(activities.ActivityID)}><Trash2 color={"red"} size="$2" /></Button>}
                         <TouchableWithoutFeedback onLongPress={() => handlePressOut()}>
                             <Card.Header style={styles.cardHeader}>
                                 <View>
@@ -125,13 +131,11 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        top: -10,
-        left: -10,
-        backgroundColor: "white",
-        borderColor: "black",
-        borderWidth: 1,
+        top: -20,
+        left: -20,
+        backgroundColor: "#00000000",
         borderRadius: 50,
-        height: 35,
-        width: 35
+        height: 50,
+        width: 50
     }
 })
