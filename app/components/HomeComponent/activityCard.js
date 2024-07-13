@@ -1,10 +1,10 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
-import { getActivity, deleteActivity } from "../../axiosPath/axiosPath";
+import { getActivity, deleteActivity, updateCompletedActivity } from "../../axiosPath/axiosPath";
 import axios from 'axios'
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useQueryClient } from "react-query";
-import { ArrowRight, Trash2 } from "@tamagui/lucide-icons";
+import { Check, Trash2 } from "@tamagui/lucide-icons";
 import HomeCardSkeleton from "../skeleton/homeCardSkeleton";
 import { Message } from '../../reduxState/message/messageSlice';
 import { useLoadMoreActivity } from "../../hooks/apiCall/activity/loadMoreActivity";
@@ -13,7 +13,7 @@ import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
 
-export default function ActivityCard({ activityOffset }) {
+export default function ActivityCard({ activityOffset, appState }) {
 
     // const [timer, setTimer] = useState(false)
     // const [timerText, setTimerText] = useState("START")
@@ -23,7 +23,13 @@ export default function ActivityCard({ activityOffset }) {
     const dispatch = useDispatch()
     const User = useSelector((state) => state.login.user)
     const UserId = User.user[0].UserID
-
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0
+    const day = String(today.getDate()).padStart(2, '0');
+    console.log(appState)
+    const formattedDate = `${year}-${month}-${day}`;
+    const [activityListDuplicate, setActivityListDuplicate] = useState([])
     useLoadMoreActivity(activityOffset)
 
     const { data: activityList, isLoading } = useQuery({
@@ -47,6 +53,12 @@ export default function ActivityCard({ activityOffset }) {
     //     }
 
     // }
+
+    useEffect(() => {
+        if (appState === "background") {
+
+        }
+    }, [appState])
 
     const handlePressOut = () => {
         dispatch(showDelete(true))
@@ -73,6 +85,47 @@ export default function ActivityCard({ activityOffset }) {
         }
     }
 
+    const toggleActivityChecked = async (id) => {
+        const foundActivity = activityList.find(activity =>
+            activity.ActivityID === id && activity.TimeStamp === formattedDate
+        );
+        const foundInDuplicate = activityListDuplicate?.find(activityDuplicate => activityDuplicate.ActivityID === id)
+        if (foundActivity !== undefined) {
+            queryClient.setQueryData('activityList', oldData => {
+                if (!oldData) return;
+                return oldData.map(activities =>
+                    activities.ActivityID === id ? { ...activities, TimeStamp: null } : activities
+                );
+            });
+        } else {
+            queryClient.setQueryData('activityList', oldData => {
+                if (!oldData) return;
+                return oldData.map(activities =>
+                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate } : activities
+                );
+            });
+        }
+
+        if (foundInDuplicate !== undefined) {
+            if (foundActivity !== undefined) {
+                setActivityListDuplicate(prevState => prevState.map(activities => (
+                    activities.ActivityID === id ? { ...activities, TimeStamp: null } : activities
+                )))
+            } else {
+                setActivityListDuplicate(prevState => prevState.map(activities => (
+                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate } : activities
+                )))
+            }
+        } else {
+            if (foundActivity !== undefined) {
+                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: null }])
+            } else {
+                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate }])
+            }
+        }
+    }
+
+    console.log(activityListDuplicate)
     return (
         <>
             <View style={styles.container}>
@@ -88,7 +141,8 @@ export default function ActivityCard({ activityOffset }) {
                                         :
                                         <Paragraph style={styles.typography}>No goal linked</Paragraph>}
                                 </View>
-                                <Button icon={<ArrowRight size="$1" />} style={{ backgroundColor: "#DD7A34", borderRadius: 25, height: 50 }} />
+                                <Button icon={<Check size="$1" />} style={{ backgroundColor: activities.TimeStamp === formattedDate ? "#DD7A34" : "grey", borderRadius: 25, height: 50 }}
+                                    onPress={() => toggleActivityChecked(activities.ActivityID)} />
                             </Card.Header>
                             {/* {activities.Timer &&
                         <View style={{paddingRight:18, paddingLeft:18}}>

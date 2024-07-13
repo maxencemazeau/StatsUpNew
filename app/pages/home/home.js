@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
+import { ScrollView, View, AppState } from 'react-native';
 import ActivityCard from '../../components/HomeComponent/activityCard';
 import GraphCard from '../../components/HomeComponent/graphCard';
 import HomeNavigation from '../../navigation/homeNavigation';
@@ -20,6 +20,26 @@ export default function Home() {
   const isActivityLoading = useSelector((state) => state.isActivityLoading.value);
   const isGoalLoading = useSelector((state) => state.isGoalLoading.value);
   const loadingError = useSelector((state) => state.loadingError.value);
+  const [appState, setAppState] = useState(AppState.currentState);
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState) => {
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        console.log('App has come to the foreground!');
+        // Effectuer le traitement lorsque l'application revient au premier plan
+      } else if (nextAppState.match(/inactive|background/)) {
+        console.log('App has gone to the background!');
+        // Effectuer le traitement lorsque l'application passe en arrière-plan
+      }
+      setAppState(nextAppState);
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [appState]);
 
   const loadMoreData = async (event) => {
     event.persist();
@@ -52,7 +72,7 @@ export default function Home() {
         <ProgressBar />
         <HomeNavigation />
         {active === 'ACTIVITY' ? (
-          <ActivityCard activityOffset={activityOffset} />
+          <ActivityCard activityOffset={activityOffset} appState={appState} />
         ) : (
           <GoalCard goalOffset={goalOffset} />
         )}
