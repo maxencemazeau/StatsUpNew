@@ -1,36 +1,29 @@
 import React, { useEffect, useState } from "react"
 import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
-import { getActivity, deleteActivity, updateCompletedActivity } from "../../axiosPath/axiosPath";
+import { getActivity, deleteActivity, deleteActivityHistory, addActivityHistory } from "../../axiosPath/axiosPath";
 import axios from 'axios'
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useQueryClient } from "react-query";
 import { Check, Trash2 } from "@tamagui/lucide-icons";
 import HomeCardSkeleton from "../skeleton/homeCardSkeleton";
 import { Message } from '../../reduxState/message/messageSlice';
-import { useLoadMoreActivity } from "../../hooks/apiCall/activity/loadMoreActivity";
-import { Separator, Card, Button, SizableText, Paragraph } from "tamagui";
+import { Card, Button, SizableText, Paragraph } from "tamagui";
 import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
+import useGetUserId from "../../hooks/useGetUserId";
+import { FormattedDate } from "../../utils/formattedDate";
 
 export default function ActivityCard({ activityOffset, appState }) {
 
-    // const [timer, setTimer] = useState(false)
-    // const [timerText, setTimerText] = useState("START")
     const showDeleteIcon = useSelector((state) => state.showDelete.value)
     const isMoreDataLoading = useSelector((state) => state.isActivityLoading.value)
     const queryClient = useQueryClient();
     const dispatch = useDispatch()
-    const User = useSelector((state) => state.login.user)
-    const UserId = User.user[0].UserID
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0
-    const day = String(today.getDate()).padStart(2, '0');
-    console.log(appState)
-    const formattedDate = `${year}-${month}-${day}`;
+    const UserId = useGetUserId()
+    const formattedDate = FormattedDate('fullDate');
     const [activityListDuplicate, setActivityListDuplicate] = useState([])
-    useLoadMoreActivity(activityOffset)
+
 
     const { data: activityList, isLoading } = useQuery({
         queryFn: async () => LoadUserActivies(),
@@ -42,17 +35,6 @@ export default function ActivityCard({ activityOffset, appState }) {
         const response = await axios.get(getActivity, { params: { id: UserId, offset: 0 } });
         return response.data.activity
     };
-
-    // const changeTimer = () => {
-    //     if (timer == false) {
-    //         setTimer(true);
-    //         setTimerText("STOP")
-    //     } else {
-    //         setTimer(false);
-    //         setTimerText("START")
-    //     }
-
-    // }
 
     useEffect(() => {
         if (appState === "background") {
@@ -85,23 +67,26 @@ export default function ActivityCard({ activityOffset, appState }) {
         }
     }
 
-    const toggleActivityChecked = async (id) => {
+    const updateActivityChecked = async (id, count, historyID) => {
+        const formattedDate = FormattedDate('fullDate')
+
         const foundActivity = activityList.find(activity =>
             activity.ActivityID === id && activity.TimeStamp === formattedDate
         );
         const foundInDuplicate = activityListDuplicate?.find(activityDuplicate => activityDuplicate.ActivityID === id)
+
         if (foundActivity !== undefined) {
             queryClient.setQueryData('activityList', oldData => {
                 if (!oldData) return;
                 return oldData.map(activities =>
-                    activities.ActivityID === id ? { ...activities, TimeStamp: null } : activities
+                    activities.ActivityID === id ? { ...activities, TimeStamp: null, Count: count - 1 } : activities
                 );
             });
         } else {
             queryClient.setQueryData('activityList', oldData => {
                 if (!oldData) return;
                 return oldData.map(activities =>
-                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate } : activities
+                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count + 1 } : activities
                 );
             });
         }
@@ -109,23 +94,50 @@ export default function ActivityCard({ activityOffset, appState }) {
         if (foundInDuplicate !== undefined) {
             if (foundActivity !== undefined) {
                 setActivityListDuplicate(prevState => prevState.map(activities => (
-                    activities.ActivityID === id ? { ...activities, TimeStamp: null } : activities
+                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0 } : activities
                 )))
             } else {
                 setActivityListDuplicate(prevState => prevState.map(activities => (
-                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate } : activities
+                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1 } : activities
                 )))
             }
         } else {
             if (foundActivity !== undefined) {
-                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: null }])
+                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0 }])
             } else {
-                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate }])
+                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1 }])
             }
         }
     }
 
-    console.log(activityListDuplicate)
+    useEffect(() => {
+        const updateActivityHistory = async () => {
+            if (appState == "background") {
+                for (i = 0; i < activityListDuplicate.length; i++) {
+                    if (activityListDuplicate[i].action !== 0) {
+                        console.log("add")
+                        await axios.post(addActivityHistory, {
+                            params: {
+                                ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
+                                ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp, Count: activityListDuplicate[i].Count
+                            }
+                        })
+                    } else {
+                        console.log("delete")
+                        await axios.delete(deleteActivityHistory, {
+                            params: {
+                                ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
+                                ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp, Count: activityListDuplicate[i].Count
+                            }
+                        })
+                    }
+                }
+            }
+        }
+
+        updateActivityHistory()
+    }, [appState])
+
     return (
         <>
             <View style={styles.container}>
@@ -137,21 +149,13 @@ export default function ActivityCard({ activityOffset, appState }) {
                                 <View>
                                     <SizableText style={styles.typography} size={"$6"} fontWeight="800">{activities.ActivityName}</SizableText>
                                     {activities.GoalName !== null ?
-                                        <Paragraph style={styles.typography}>{activities.GoalName} : 0/{activities.Frequence}</Paragraph>
+                                        <Paragraph style={styles.typography}>{activities.GoalName} : {activities.Count === null ? 0 : activities.Count}/{activities.Frequence}</Paragraph>
                                         :
                                         <Paragraph style={styles.typography}>No goal linked</Paragraph>}
                                 </View>
                                 <Button icon={<Check size="$1" />} style={{ backgroundColor: activities.TimeStamp === formattedDate ? "#DD7A34" : "grey", borderRadius: 25, height: 50 }}
-                                    onPress={() => toggleActivityChecked(activities.ActivityID)} />
+                                    onPress={() => updateActivityChecked(activities.ActivityID, activities.Count, activities.ActivityHistoryID)} />
                             </Card.Header>
-                            {/* {activities.Timer &&
-                        <View style={{paddingRight:18, paddingLeft:18}}>
-                            <Separator />
-                            <View style={{...styles.cardHeader, paddingTop:10}}>     
-                                <SizableText size={"$6"} color={timer == true ? 'red' : 'green'} fontWeight="800" onPress={() => changeTimer()}>{timerText}</SizableText>
-                                <Paragraph color={"black"}>10:00:00</Paragraph>
-                            </View>
-                        </View>} */}
                         </TouchableWithoutFeedback>
                     </Card>
 
@@ -175,10 +179,9 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingBottom: 10
     },
     typography: {
-        color: "black"
+        color: "black",
     },
     trashContainer: {
         position: "absolute",

@@ -14,3 +14,6 @@ export const checkGoalNameDuplicate = baseUrl + `CheckGoalDuplicate`;
 export const deleteActivity = baseUrl + `deleteActivity`
 export const deleteGoal = baseUrl + `deleteGoal`
 export const updateCompletedActivity = baseUrl + `updateCompletedActivity`
+export const getAllUserGoal = baseUrl + `getAllUserGoal`
+export const deleteActivityHistory = baseUrl + `deleteActivityHistory`
+export const addActivityHistory = baseUrl + `addActivityHistory`

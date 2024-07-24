@@ -1,19 +1,20 @@
 import React, { useState, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Input, Button, Checkbox, Form } from 'tamagui';
+import { Text, Input, Button, Label, Form } from 'tamagui';
 import { Check } from '@tamagui/lucide-icons';
 import axios from 'axios';
 import { addActivity, checkActivityNameDuplicate } from '../../axiosPath/axiosPath';
 import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-form';
 import LinkedGoalSelect from '../../components/activity/linkedGoalSelect';
 import TimeFrameSelect from '../../components/activity/timeFrameSelect';
+import { CheckDuplicate } from '../../utils/CheckDuplicate';
 
 export default function AddActivity({ UserId, SuccessOrError }) {
-  const [activateGoal, setActivateGoal] = useState(false);
   const [nameDuplicate, setNameDuplicate] = useState(false);
   const [showGoalNameInput, setShowGoalNameInput] = useState(false);
+  let checkActivityDuplicate = 0
+  let checkGoalDuplicate = 0
   let createNewGoal = false;
-  //const [newData, setNewData] = useState({})
 
   const {
     control,
@@ -22,33 +23,35 @@ export default function AddActivity({ UserId, SuccessOrError }) {
   } = useForm();
   const onSubmit = async (data) => {
     try {
-      const checkDuplicate = await axios.get(checkActivityNameDuplicate, {
-        params: { UserID: UserId, ActivityName: data.activityName },
-      });
+      checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId)
 
-      if (checkDuplicate.data == 0) {
-        if (activateGoal == true) {
-          createNewGoal = data.selectedIdGoal !== 0 ? false : true;
+
+      if (checkActivityDuplicate == 0) {
+        if (data.selectedIdGoal !== 0) {
+          createNewGoal = false
         } else {
-          createNewGoal = false;
-          data.GoalsId = 0;
+          createNewGoal = true
+          checkGoalDuplicate = await CheckDuplicate("Goal", data.newGoalName, UserId)
         }
-        const response = await axios.post(addActivity, {
-          params: {
-            ActivityName: data.activityName,
-            Timer: data.timer,
-            GoalsId: data.selectedIdGoal,
-            CreateNewGoal: createNewGoal,
-            GoalName: data.newGoalName,
-            TimeFrame: 0,
-            Frequence: data.Frequence,
-            UserId: UserId,
-          },
-        });
-        if (response.data.success == 1) {
-          SuccessOrError('SUCCESS', 'Activity successfully created !');
-        } else {
-          SuccessOrError('ERROR', 'An unexpected error occurred');
+
+        if (checkGoalDuplicate == 0) {
+
+          const response = await axios.post(addActivity, {
+            params: {
+              ActivityName: data.activityName,
+              GoalsId: data.selectedIdGoal,
+              CreateNewGoal: createNewGoal,
+              GoalName: data.newGoalName,
+              TimeFrame: data.timeFrame,
+              Frequence: data.Frequence,
+              UserId: UserId,
+            },
+          });
+          if (response.data.success == 1) {
+            SuccessOrError('SUCCESS', 'Activity successfully created !', createNewGoal);
+          } else {
+            SuccessOrError('ERROR', 'An unexpected error occurred');
+          }
         }
       } else {
         setNameDuplicate(true);
@@ -57,10 +60,6 @@ export default function AddActivity({ UserId, SuccessOrError }) {
       console.log(err);
       SuccessOrError('ERROR', 'An unexpected error occurred');
     }
-  };
-
-  const changeActive = () => {
-    setActivateGoal((prevState) => !prevState);
   };
 
   return (
@@ -75,8 +74,8 @@ export default function AddActivity({ UserId, SuccessOrError }) {
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <>
+                  <Label style={styles.labelStyle}>Activity Name</Label>
                   <Input
-                    placeholder="Activity name"
                     value={value}
                     onBlur={onBlur}
                     onChangeText={(Text) => {
@@ -86,8 +85,6 @@ export default function AddActivity({ UserId, SuccessOrError }) {
                     style={{
                       width: '100%',
                       backgroundColor: 'white',
-                      marginTop: 10,
-                      marginBottom: 10,
                       color: 'black',
                       height: 50,
                     }}
@@ -97,8 +94,7 @@ export default function AddActivity({ UserId, SuccessOrError }) {
                 </>
               )}
             />
-            <View style={{ ...styles.checkboxContainer, marginTop: 10 }}>
-              {/* <View style={styles.line}>
+            {/* <View style={styles.line}>
                 <Text color={"black"}>Timer options ?</Text>
                 <Controller
                   name="timer"
@@ -111,104 +107,88 @@ export default function AddActivity({ UserId, SuccessOrError }) {
                     </Checkbox>
                   )} />
               </View> */}
-              <View style={styles.line}>
-                <Text color={'black'}>Link this activity to a goal ?</Text>
-                <Button icon={activateGoal && <Check />} style={{ backgroundColor: "black", color: "white", width: 15, height: 30 }} onPress={() => changeActive()} />
-                {/* <Controller
-                  name="linkGoal"
-                  control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <Checkbox
-                      size="$6"
-                      color={'black'}
-                      onCheckedChange={(isChecked) => {
-                        onChange(isChecked);
-                        changeActive();
-                      }}>
-                      <Checkbox.Indicator>
-                        <Check />
-                      </Checkbox.Indicator>
-                    </Checkbox>
+            <Controller
+              name="selectedIdGoal"
+              control={control}
+              rules={{ required: false }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <>
+                  <LinkedGoalSelect
+                    setShowGoalNameInput={setShowGoalNameInput}
+                    onChange={onChange}
+                    UserId={UserId}
+                  />
+                  {errors.selectedIdGoal && (
+                    <Text color="red">Select a goal for the activity</Text>
                   )}
-                /> */}
-              </View>
-            </View>
-            {activateGoal && (
+                </>
+              )}
+            />
+            {showGoalNameInput && (
               <>
                 <Controller
-                  name="selectedIdGoal"
+                  name="newGoalName"
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <>
-                      <LinkedGoalSelect
-                        setShowGoalNameInput={setShowGoalNameInput}
-                        onChange={onChange}
-                      />
-                      {errors.selectedIdGoal && (
-                        <Text color="red">Select a goal for the activity</Text>
-                      )}
-                    </>
-                  )}
-                />
-                {showGoalNameInput && (
-                  <Controller
-                    name="newGoalName"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <>
-                        <Input
-                          placeholder="Goal name"
-                          style={styles.inputField}
-                          value={value}
-                          onBlur={onBlur}
-                          onChangeText={onChange}
-                        />
-                        {errors.newGoalName && <Text color="red">The goal name is required</Text>}
-                      </>
-                    )}
-                  />
-                )}
-                <View style={styles.line}>
-                  <Controller
-                    name="timeFrame"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TimeFrameSelect onChange={onChange} />
-                    )}
-                  />
-                  <Controller
-                    name="Frequence"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { onChange, onBlur, value } }) => (
+                      <Label style={styles.labelStyle}>Goal name</Label>
                       <Input
-                        placeholder="Frequency"
                         style={styles.inputField}
                         value={value}
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        keyboardType="numeric"
                       />
-                    )}
-                  />
+                      {errors.newGoalName && <Text color="red">The goal name is required</Text>}
+                    </>
+                  )}
+                />
+                <View style={styles.line}>
+                  <View style={styles.inputWithLabel}>
+                    <Label style={styles.labelStyle}>Time frame</Label>
+                    <Controller
+                      name="timeFrame"
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <TimeFrameSelect onChange={onChange} />
+                      )}
+                    />
+                  </View>
+                  <View style={styles.inputWithLabel}>
+                    <Label style={styles.labelStyle}>Frequence</Label>
+                    <Controller
+                      name="Frequence"
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <Input
+                          placeholder="Frequency"
+                          style={styles.inputField}
+                          value={value}
+                          onBlur={onBlur}
+                          onChangeText={onChange}
+                          keyboardType="numeric"
+                        />
+                      )}
+                    />
+                  </View>
                 </View>
                 <View style={styles.lineError}>
                   {errors.timeFrame && <Text color="red">Select a time frame</Text>}
                   {errors.Frequence && <Text color="red">Enter a frequence</Text>}
                 </View>
               </>
-            )}
+            )
+            }
             <Button
-              style={{ backgroundColor: '#DD7A34', marginTop: 1, height: 50 }}
+              style={{ backgroundColor: '#DD7A34', marginTop: 15, height: 50 }}
               onPress={handleSubmit(onSubmit)}>
               Save
             </Button>
-          </Form>
-        </FormProvider>
-      </View>
+          </Form >
+        </FormProvider >
+      </View >
     </>
   );
 }
@@ -222,7 +202,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: 10,
-    marginBottom: 10,
     alignItems: 'center',
     width: '100%',
   },
@@ -240,4 +219,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
+  inputWithLabel: {
+    flex: 1
+  },
+  labelStyle: {
+    color: "black",
+  }
 });

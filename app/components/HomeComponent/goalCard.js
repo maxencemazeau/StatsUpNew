@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Message } from '../../reduxState/message/messageSlice';
 import axios from 'axios'
 import HomeCardSkeleton from "../skeleton/homeCardSkeleton";
-import { useLoadMoreGoal } from "../../hooks/apiCall/goal/loadMoreGoal";
 import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
@@ -21,7 +20,6 @@ export default function GoalCard({ goalOffset }) {
     const dispatch = useDispatch()
     const User = useSelector((state) => state.login.user)
     const UserId = User.user[0].UserID
-    useLoadMoreGoal(goalOffset)
 
     const { data: goalList } = useQuery({
         queryFn: async () => LoadUserGoals(),

@@ -9,6 +9,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import GoalCard from '../../components/HomeComponent/goalCard';
 import { incrementActivityOffset } from '../../reduxState/offset/activityOffsetSlice';
 import { incrementGoalOffset } from '../../reduxState/offset/goalOffsetSlice';
+import { LoadMoreActivity } from '../../hooks/apiCall/activity/loadMoreActivity';
+import { useQueryClient } from 'react-query';
+import { LoadMoreGoal } from '../../hooks/apiCall/goal/loadMoreGoal';
 
 export default function Home() {
   const active = useSelector((state) => state.navigation.value);
@@ -21,14 +24,17 @@ export default function Home() {
   const isGoalLoading = useSelector((state) => state.isGoalLoading.value);
   const loadingError = useSelector((state) => state.loadingError.value);
   const [appState, setAppState] = useState(AppState.currentState);
+  const queryClient = useQueryClient()
+  const User = useSelector((state) => state.login.user)
+  const UserId = User.user[0].UserID
+  let newActivityOffset = activityOffset
+  let newGoalOffset = goalOffset
 
   useEffect(() => {
     const handleAppStateChange = (nextAppState) => {
       if (appState.match(/inactive|background/) && nextAppState === 'active') {
-        console.log('App has come to the foreground!');
         // Effectuer le traitement lorsque l'application revient au premier plan
       } else if (nextAppState.match(/inactive|background/)) {
-        console.log('App has gone to the background!');
         // Effectuer le traitement lorsque l'application passe en arrière-plan
       }
       setAppState(nextAppState);
@@ -52,10 +58,14 @@ export default function Home() {
         loadingError == false
       ) {
         dispatch(incrementActivityOffset());
+        newActivityOffset += 6
+        LoadMoreActivity(dispatch, queryClient, newActivityOffset, hasNoMoreActivityData, isActivityLoading, UserId)
       }
 
       if (active !== 'ACTIVITY' && !hasNoMoreGoalData && !isGoalLoading && loadingError == false) {
         dispatch(incrementGoalOffset());
+        newGoalOffset += 6
+        LoadMoreGoal(dispatch, queryClient, newGoalOffset, UserId)
       }
     }
   };

@@ -8,12 +8,11 @@ export default function TimeFrameSelect({ onChange }) {
 
     const [val, setVal] = useState('')
 
-
     return (
         <Select value={val} onValueChange={(value) => { setVal(value); onChange(value) }} disablePreventBodyScroll>
-            <Select.Trigger width={220} iconAfter={<ChevronDown color={"black"} />} style={{ backgroundColor: "white", marginBottom: 10, marginTop: 10, height: 50 }}>
-                <Select.Value placeholder="Time frame" color={"black"} />
-            </Select.Trigger>
+            <Select.Trigger iconAfter={< ChevronDown color={"black"} size={20} />} style={{ backgroundColor: "white", height: 50 }}>
+                <Select.Value color={"black"} />
+            </Select.Trigger >
 
             <Adapt when="sm" platform="touch">
                 <Sheet
