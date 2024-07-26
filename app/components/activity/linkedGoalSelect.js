@@ -5,11 +5,11 @@ import { Separator, Select } from "tamagui"
 import { Adapt, Label, Sheet, YStack, } from 'tamagui'
 import axios from "axios"
 
-export default function LinkedGoalSelect({ setShowGoalNameInput, onChange, UserId }) {
+export default function LinkedGoalSelect({ defaultValue = -1, setShowGoalNameInput, onChange, UserId }) {
 
-    const [val, setVal] = useState(-1)
+    const [val, setVal] = useState(defaultValue)
     const [goalList, setGoalList] = useState([])
-
+    console.log(defaultValue)
     useEffect(() => {
         const fetchGoal = async () => {
             const response = await axios.get(getAllUserGoal, { params: { id: UserId } });

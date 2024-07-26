@@ -25,7 +25,6 @@ export default function AddActivity({ UserId, SuccessOrError }) {
     try {
       checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId)
 
-
       if (checkActivityDuplicate == 0) {
         if (data.selectedIdGoal !== 0) {
           createNewGoal = false

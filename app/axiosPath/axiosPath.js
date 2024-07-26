@@ -17,3 +17,4 @@ export const updateCompletedActivity = baseUrl + `updateCompletedActivity`
 export const getAllUserGoal = baseUrl + `getAllUserGoal`
 export const deleteActivityHistory = baseUrl + `deleteActivityHistory`
 export const addActivityHistory = baseUrl + `addActivityHistory`
+export const getUserActivityByID = baseUrl + `getUserActivityByID`

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { useRouter } from "expo-router"
 import { getActivity, deleteActivity, deleteActivityHistory, addActivityHistory } from "../../axiosPath/axiosPath";
 import axios from 'axios'
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +24,7 @@ export default function ActivityCard({ activityOffset, appState }) {
     const UserId = useGetUserId()
     const formattedDate = FormattedDate('fullDate');
     const [activityListDuplicate, setActivityListDuplicate] = useState([])
-
+    const router = useRouter()
 
     const { data: activityList, isLoading } = useQuery({
         queryFn: async () => LoadUserActivies(),
@@ -115,7 +116,7 @@ export default function ActivityCard({ activityOffset, appState }) {
             if (appState == "background") {
                 for (i = 0; i < activityListDuplicate.length; i++) {
                     if (activityListDuplicate[i].action !== 0) {
-                        console.log("add")
+                        console.log(activityListDuplicate)
                         await axios.post(addActivityHistory, {
                             params: {
                                 ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
@@ -132,11 +133,20 @@ export default function ActivityCard({ activityOffset, appState }) {
                         })
                     }
                 }
+            } else {
+                setActivityListDuplicate([])
             }
         }
 
         updateActivityHistory()
     }, [appState])
+
+    const navigateToDetails = (activityID) => {
+        router.push({
+            pathname: '/pages/activity/activityDetail',
+            params: { activityID: activityID }
+        });
+    }
 
     return (
         <>
@@ -144,7 +154,7 @@ export default function ActivityCard({ activityOffset, appState }) {
                 {activityList?.map(activities => (
                     <Card key={activities.ActivityID} style={styles.card}>
                         {showDeleteIcon && <Button style={styles.trashContainer} onPress={() => deleteUserActivity(activities.ActivityID)}><Trash2 color={"red"} size="$2" /></Button>}
-                        <TouchableWithoutFeedback onLongPress={() => handlePressOut()}>
+                        <TouchableWithoutFeedback onPress={() => navigateToDetails(activities.ActivityID)} onLongPress={() => handlePressOut()}>
                             <Card.Header style={styles.cardHeader}>
                                 <View>
                                     <SizableText style={styles.typography} size={"$6"} fontWeight="800">{activities.ActivityName}</SizableText>
