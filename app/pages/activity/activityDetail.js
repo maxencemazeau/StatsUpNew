@@ -18,15 +18,13 @@ export default function ActivityDetail() {
 
     const { data: userActivity, isLoading } = useQuery({
         queryFn: async () => LoadActivity(),
-        queryKey: ["userActivity"],
+        queryKey: ["userActivity", activityID],
     })
 
     const LoadActivity = async () => {
         const response = await axios.get(getUserActivityByID, { params: { ActivityID: activityID } });
         return response.data[0]
     };
-
-    console.log(userActivity)
 
 
     const navigateBack = () => {
@@ -79,7 +77,7 @@ export default function ActivityDetail() {
                             </View>
                         </View>
                     </View>
-                    {!isLoading && <ActivityInformation />}
+                    {!isLoading && <ActivityInformation activityID={activityID} />}
                     {/* <ActivityHistory /> */}
                 </View>
             </ScrollView >

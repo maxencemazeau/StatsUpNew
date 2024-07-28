@@ -7,12 +7,15 @@ import { CheckDuplicate } from '../../utils/CheckDuplicate';
 import LinkedGoalSelect from './linkedGoalSelect';
 import TimeFrameSelect from './timeFrameSelect';
 import axios from 'axios'
+import { updateActivity, updateGoal } from '../../axiosPath/axiosPath';
 import useGetUserId from '../../hooks/useGetUserId';
 
-export default function ActivityInformation() {
+export default function ActivityInformation({ activityID }) {
 
     const [nameDuplicate, setNameDuplicate] = useState(false);
     const [showGoalNameInput, setShowGoalNameInput] = useState(false);
+    const [hasActivityChanged, setHasActivityChanged] = useState(false);
+    const [hasGoalChanged, setHasGoalChanged] = useState(true);
     const UserId = useGetUserId()
     let checkActivityDuplicate = 0
     let checkGoalDuplicate = 0
@@ -20,22 +23,25 @@ export default function ActivityInformation() {
 
     const queryClient = useQueryClient();
 
+
     // Get the cached data from the query key
-    const userActivity = queryClient.getQueryData(['userActivity']) || {};
-    console.log("userActivity:", userActivity); // Debugging line
+    const userActivity = queryClient.getQueryData(['userActivity', activityID]) || {};
+
+    const defaultValues = {
+        activityName: userActivity?.ActivityName || '',
+        selectedIdGoal: userActivity?.GoalsID || 0,
+        newGoalName: userActivity?.GoalName || '',
+        timeFrame: userActivity?.TimeFrameID || '',
+        Frequence: userActivity?.Frequence || '',
+    }
+
     const {
         control,
         handleSubmit,
         formState: { errors },
         reset
     } = useForm({
-        defaultValues: {
-            activityName: userActivity?.ActivityName || '',
-            selectedIdGoal: userActivity?.selectedIdGoal || 0,
-            newGoalName: userActivity?.GoalName || '',
-            timeFrame: userActivity?.Frame || '',
-            Frequence: userActivity?.Frequence || '',
-        }
+        defaultValues
     });
 
     useEffect(() => {
@@ -49,43 +55,66 @@ export default function ActivityInformation() {
 
     const onSubmit = async (data) => {
         try {
-            checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId)
+            if (hasActivityChanged == true) {
+                if (data.activityName !== defaultValues.activityName) {
+                    checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId)
+                }
+            } else {
+                checkActivityDuplicate = 1
+            }
 
             if (checkActivityDuplicate == 0) {
-                if (data.selectedIdGoal !== 0) {
-                    createNewGoal = false
-                } else {
-                    createNewGoal = true
+
+                const response = await axios.put(updateActivity, {
+                    params: {
+                        ActivityID: activityID,
+                        ActivityName: data.activityName,
+                        GoalsId: data.selectedIdGoal,
+                        UserId: UserId,
+                    },
+                });
+            } else {
+                setNameDuplicate(true);
+            }
+
+            if (hasGoalChanged == true) {
+                if (data.newGoalName !== defaultValues.newGoalName) {
                     checkGoalDuplicate = await CheckDuplicate("Goal", data.newGoalName, UserId)
                 }
 
                 if (checkGoalDuplicate == 0) {
-
-                    const response = await axios.post(addActivity, {
+                    const response = await axios.put(updateGoal, {
                         params: {
-                            ActivityName: data.activityName,
                             GoalsId: data.selectedIdGoal,
-                            CreateNewGoal: createNewGoal,
                             GoalName: data.newGoalName,
-                            TimeFrame: data.timeFrame,
+                            TimeFrameID: data.timeFrame,
                             Frequence: data.Frequence,
                             UserId: UserId,
-                        },
-                    });
-                    if (response.data.success == 1) {
-                        SuccessOrError('SUCCESS', 'Activity successfully created !', createNewGoal);
-                    } else {
-                        SuccessOrError('ERROR', 'An unexpected error occurred');
-                    }
+                        }
+                    })
                 }
             } else {
                 setNameDuplicate(true);
             }
         } catch (err) {
             console.log(err);
-            SuccessOrError('ERROR', 'An unexpected error occurred');
         }
     };
+
+    const checkActivityChanged = (inputName, inputValue) => {
+        switch (inputName) {
+            case "activityName":
+                if (inputValue !== defaultValues.activityName) {
+                    setHasActivityChanged(true)
+                }
+                break;
+            case "linkedGoal":
+                if (inputValue !== defaultValues.selectedIdGoal) {
+                    setHasActivityChanged(true)
+                }
+                break;
+        }
+    }
 
     return (
         <>
@@ -102,7 +131,7 @@ export default function ActivityInformation() {
                                     <Label style={styles.labelStyle}>Activity Name</Label>
                                     <Input
                                         value={value}
-                                        onBlur={onBlur}
+                                        onBlur={() => { onBlur(), checkActivityChanged("activityName", value) }}
                                         onChangeText={(Text) => {
                                             onChange(Text);
                                             setNameDuplicate(false);
@@ -127,8 +156,10 @@ export default function ActivityInformation() {
                                 <>
                                     <LinkedGoalSelect
                                         defaultValue={userActivity.GoalsID}
+                                        forUpdate={true}
                                         setShowGoalNameInput={setShowGoalNameInput}
                                         onChange={onChange}
+                                        checkActivityChanged={checkActivityChanged}
                                         UserId={UserId}
                                     />
                                     {errors.selectedIdGoal && (

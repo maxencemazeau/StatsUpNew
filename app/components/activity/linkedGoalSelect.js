@@ -5,11 +5,11 @@ import { Separator, Select } from "tamagui"
 import { Adapt, Label, Sheet, YStack, } from 'tamagui'
 import axios from "axios"
 
-export default function LinkedGoalSelect({ defaultValue = -1, setShowGoalNameInput, onChange, UserId }) {
+export default function LinkedGoalSelect({ defaultValue = -1, forUpdate = false, setShowGoalNameInput, onChange, checkActivityChanged = null, UserId }) {
 
     const [val, setVal] = useState(defaultValue)
     const [goalList, setGoalList] = useState([])
-    console.log(defaultValue)
+
     useEffect(() => {
         const fetchGoal = async () => {
             const response = await axios.get(getAllUserGoal, { params: { id: UserId } });
@@ -24,14 +24,29 @@ export default function LinkedGoalSelect({ defaultValue = -1, setShowGoalNameInp
         if (val == 0) {
             setShowGoalNameInput(true)
         } else {
-            setShowGoalNameInput(false)
+            if (forUpdate !== false && val === -1) {
+                setShowGoalNameInput(false)
+            } else {
+                if (forUpdate == false && (val > 0 || val == -1)) {
+                    setShowGoalNameInput(false)
+                } else {
+                    setShowGoalNameInput(true)
+                }
+            }
         }
     }, [val])
+
+    const handleValueChange = (value) => {
+        onChange(value)
+        if (checkActivityChanged) {
+            checkActivityChanged("linkedGoal", value)
+        }
+    }
 
     return (
         <>
             <Label width={90} color={"black"}>Link goal</Label>
-            <Select value={val} onValueChange={(value) => { setVal(value); onChange(value) }} disablePreventBodyScroll defaultValue={-1}>
+            <Select value={val} onValueChange={(value) => { setVal(value); handleValueChange(value); }} onBlur={() => handleBlur(val)} disablePreventBodyScroll defaultValue={-1}>
                 <Select.Trigger iconAfter={<ChevronDown color={"black"} size={20} />} style={{ backgroundColor: "white", height: 50 }}>
                     <Select.Value color={"black"} />
                 </Select.Trigger>
@@ -88,15 +103,20 @@ export default function LinkedGoalSelect({ defaultValue = -1, setShowGoalNameInp
                                     <Check size={16} />
                                 </Select.ItemIndicator>
                             </Select.Item>
-                            <Select.Item
-                                value={0}
-                                style={{ backgroundColor: "white" }}
-                            >
-                                <Select.ItemText color={"black"}>New Goal</Select.ItemText>
-                                <Select.ItemIndicator marginLeft="auto">
-                                    <Check size={16} />
-                                </Select.ItemIndicator>
-                            </Select.Item>
+                            {forUpdate == false ?
+                                <Select.Item
+                                    value={0}
+                                    style={{ backgroundColor: "white" }}
+                                >
+                                    <Select.ItemText color={"black"}>New Goal</Select.ItemText>
+                                    <Select.ItemIndicator marginLeft="auto">
+                                        <Check size={16} />
+                                    </Select.ItemIndicator>
+                                </Select.Item>
+                                :
+                                <>
+                                </>
+                            }
                             <Separator />
                             {goalList?.map(goals => (
 
