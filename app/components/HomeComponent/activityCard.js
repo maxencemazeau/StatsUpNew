@@ -75,7 +75,6 @@ export default function ActivityCard({ activityOffset, appState }) {
             activity.ActivityID === id && activity.TimeStamp === formattedDate
         );
         const foundInDuplicate = activityListDuplicate?.find(activityDuplicate => activityDuplicate.ActivityID === id)
-
         if (foundActivity !== undefined) {
             queryClient.setQueryData('activityList', oldData => {
                 if (!oldData) return;
@@ -92,21 +91,23 @@ export default function ActivityCard({ activityOffset, appState }) {
             });
         }
 
+        const getActivityFrequence = activityList.find(activity => activity.ActivityID === id);
+
         if (foundInDuplicate !== undefined) {
             if (foundActivity !== undefined) {
                 setActivityListDuplicate(prevState => prevState.map(activities => (
-                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0 } : activities
+                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0, Frequence: getActivityFrequence.Frequence } : activities
                 )))
             } else {
                 setActivityListDuplicate(prevState => prevState.map(activities => (
-                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1 } : activities
+                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence } : activities
                 )))
             }
         } else {
             if (foundActivity !== undefined) {
-                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0 }])
+                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0, Frequence: getActivityFrequence.Frequence }])
             } else {
-                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1 }])
+                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence }])
             }
         }
     }
@@ -116,11 +117,13 @@ export default function ActivityCard({ activityOffset, appState }) {
             if (appState == "background") {
                 for (i = 0; i < activityListDuplicate.length; i++) {
                     if (activityListDuplicate[i].action !== 0) {
-                        console.log(activityListDuplicate)
+                        console.log(activityListDuplicate[i])
                         await axios.post(addActivityHistory, {
                             params: {
                                 ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
-                                ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp, Count: activityListDuplicate[i].Count
+                                ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp,
+                                Count: activityListDuplicate[i].Count, Frequence: activityListDuplicate[i].Frequence,
+                                UserID: UserId
                             }
                         })
                     } else {

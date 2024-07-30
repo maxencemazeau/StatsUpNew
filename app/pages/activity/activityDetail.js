@@ -13,7 +13,7 @@ export default function ActivityDetail() {
 
     const { activityID } = useLocalSearchParams();
     const [selectedChartPeriod, setSelectedChartPeriod] = useState(1)
-    const [activityTimer, setActivityTimer] = useState(false)
+    const [activityStats, setActivityStats] = useState([])
     const router = useRouter()
 
     const { data: userActivity, isLoading } = useQuery({
@@ -23,7 +23,9 @@ export default function ActivityDetail() {
 
     const LoadActivity = async () => {
         const response = await axios.get(getUserActivityByID, { params: { ActivityID: activityID } });
-        return response.data[0]
+        console.log(response.data.activityStats)
+        setActivityStats(response.data.activityStats)
+        return response.data.activity[0]
     };
 
 
@@ -65,7 +67,7 @@ export default function ActivityDetail() {
                         }}>
                             <View style={styles.statsTextcontainer}>
                                 <Text style={styles.statsTextLabel}>Total</Text>
-                                <Text style={styles.statsTextValue}>46</Text>
+                                <Text style={styles.statsTextValue}>{activityStats.totalActivityCompleted}</Text>
                             </View>
                             <View style={styles.statsTextcontainer}>
                                 <Text style={styles.statsTextLabel}>Best Streak</Text>
@@ -73,7 +75,7 @@ export default function ActivityDetail() {
                             </View>
                             <View style={styles.statsTextcontainer}>
                                 <Text style={styles.statsTextLabel}>Reached</Text>
-                                <Text style={styles.statsTextValue}>5/10</Text>
+                                <Text style={styles.statsTextValue}>{activityStats.activityNbSucceed} / {activityStats.totalGoalNumber}</Text>
                             </View>
                         </View>
                     </View>

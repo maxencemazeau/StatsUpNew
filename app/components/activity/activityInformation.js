@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Text, Input, Button, Label, Form, SizableText } from 'tamagui'
 import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { Message } from '../../reduxState/message/messageSlice';
+import { loadingError } from '../../reduxState/error/loadingErrorSlice';
 import { useQueryClient } from 'react-query';
 import { CheckDuplicate } from '../../utils/CheckDuplicate';
 import LinkedGoalSelect from './linkedGoalSelect';
@@ -15,11 +18,11 @@ export default function ActivityInformation({ activityID }) {
     const [nameDuplicate, setNameDuplicate] = useState(false);
     const [showGoalNameInput, setShowGoalNameInput] = useState(false);
     const [hasActivityChanged, setHasActivityChanged] = useState(false);
-    const [hasGoalChanged, setHasGoalChanged] = useState(true);
+    const [hasGoalChanged, setHasGoalChanged] = useState(false);
     const UserId = useGetUserId()
     let checkActivityDuplicate = 0
     let checkGoalDuplicate = 0
-    let createNewGoal = false;
+    const dispatch = useDispatch()
 
     const queryClient = useQueryClient();
 
@@ -59,22 +62,31 @@ export default function ActivityInformation({ activityID }) {
                 if (data.activityName !== defaultValues.activityName) {
                     checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId)
                 }
-            } else {
-                checkActivityDuplicate = 1
-            }
+                if (checkActivityDuplicate == 0) {
+                    const activityResponse = await axios.put(updateActivity, {
+                        params: {
+                            ActivityID: activityID,
+                            ActivityName: data.activityName,
+                            GoalsId: data.selectedIdGoal,
+                            UserId: UserId,
+                        },
+                    });
 
-            if (checkActivityDuplicate == 0) {
+                    if (activityResponse.data === 1) {
+                        dispatch(Message({ messageType: "SUCCESS", messageText: "Activity update" }));
+                        dispatch(loadingError(true));
+                        queryClient.invalidateQueries('activityList')
+                        setHasActivityChanged(false)
+                    } else {
+                        dispatch(Message({ messageType: "ERROR", messageText: "Error occured while updating" }))
+                        dispatch(loadingError(true));
+                        setHasGoalChanged(false)
+                    }
 
-                const response = await axios.put(updateActivity, {
-                    params: {
-                        ActivityID: activityID,
-                        ActivityName: data.activityName,
-                        GoalsId: data.selectedIdGoal,
-                        UserId: UserId,
-                    },
-                });
-            } else {
-                setNameDuplicate(true);
+
+                } else {
+                    setNameDuplicate(true);
+                }
             }
 
             if (hasGoalChanged == true) {
@@ -83,7 +95,7 @@ export default function ActivityInformation({ activityID }) {
                 }
 
                 if (checkGoalDuplicate == 0) {
-                    const response = await axios.put(updateGoal, {
+                    const goalResponse = await axios.put(updateGoal, {
                         params: {
                             GoalsId: data.selectedIdGoal,
                             GoalName: data.newGoalName,
@@ -92,9 +104,25 @@ export default function ActivityInformation({ activityID }) {
                             UserId: UserId,
                         }
                     })
+
+                    if (goalResponse.data === 1) {
+                        dispatch(Message({ messageType: "SUCCESS", messageText: "Goal update" }));
+                        dispatch(loadingError(true));
+                        queryClient.invalidateQueries('goalList')
+                        if (defaultValues.timeFrame !== data.TimeFrameID) {
+                            queryClient.invalidateQueries('activityList')
+                        }
+                        setHasGoalChanged(false)
+                    } else {
+                        dispatch(Message({ messageType: "ERROR", messageText: "Error occured while updating" }))
+                        dispatch(loadingError(true));
+                        setHasGoalChanged(false)
+                    }
+
+
+                } else {
+                    setNameDuplicate(true);
                 }
-            } else {
-                setNameDuplicate(true);
             }
         } catch (err) {
             console.log(err);
@@ -116,6 +144,26 @@ export default function ActivityInformation({ activityID }) {
         }
     }
 
+    const checkGoalChanged = (inputName, inputValue) => {
+        switch (inputName) {
+            case "newGoalName":
+                if (inputValue !== defaultValues.newGoalName) {
+                    setHasGoalChanged(true)
+                }
+                break;
+            case "timeFrame":
+                if (inputValue !== defaultValues.timeFrame) {
+                    setHasGoalChanged(true)
+                }
+                break;
+            case "frequence":
+                if (inputValue !== defaultValues.Frequence) {
+                    setHasGoalChanged(true)
+                }
+                break;
+        }
+    }
+
     return (
         <>
             <View style={{ marginTop: 20 }}>
@@ -131,7 +179,7 @@ export default function ActivityInformation({ activityID }) {
                                     <Label style={styles.labelStyle}>Activity Name</Label>
                                     <Input
                                         value={value}
-                                        onBlur={() => { onBlur(), checkActivityChanged("activityName", value) }}
+                                        onBlur={() => { onBlur(); checkActivityChanged("activityName", value) }}
                                         onChangeText={(Text) => {
                                             onChange(Text);
                                             setNameDuplicate(false);
@@ -180,7 +228,7 @@ export default function ActivityInformation({ activityID }) {
                                             <Input
                                                 style={styles.inputField}
                                                 value={value}
-                                                onBlur={onBlur}
+                                                onBlur={() => { onBlur(); checkGoalChanged("newGoalName", value) }}
                                                 onChangeText={onChange}
                                             />
                                             {errors.newGoalName && <Text color="red">The goal name is required</Text>}
@@ -195,7 +243,7 @@ export default function ActivityInformation({ activityID }) {
                                             control={control}
                                             rules={{ required: true }}
                                             render={({ field: { onChange, onBlur, value } }) => (
-                                                <TimeFrameSelect onChange={onChange} defaultValue={userActivity.TimeFrameID} />
+                                                <TimeFrameSelect onChange={onChange} defaultValue={userActivity.TimeFrameID} checkGoalChanged={checkGoalChanged} />
                                             )}
                                         />
                                     </View>
@@ -210,7 +258,7 @@ export default function ActivityInformation({ activityID }) {
                                                     placeholder="Frequency"
                                                     style={styles.inputField}
                                                     value={value}
-                                                    onBlur={onBlur}
+                                                    onBlur={() => { onBlur(); checkGoalChanged("frequence", value) }}
                                                     onChangeText={onChange}
                                                     keyboardType="numeric"
                                                 />
