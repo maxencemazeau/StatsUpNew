@@ -12,10 +12,15 @@ import TimeFrameSelect from './timeFrameSelect';
 import axios from 'axios'
 import { updateActivity, updateGoal } from '../../axiosPath/axiosPath';
 import useGetUserId from '../../hooks/useGetUserId';
+import { noMoreActivityData } from '../../reduxState/offset/hasMoreDataActivity';
+import { noMoreGoalData } from '../../reduxState/offset/hasMoreDataGoal';
+import { resetActivityOffset } from '../../reduxState/offset/activityOffsetSlice';
+import { resetGoalOffset } from '../../reduxState/offset/goalOffsetSlice';
 
 export default function ActivityInformation({ activityID }) {
 
-    const [nameDuplicate, setNameDuplicate] = useState(false);
+    const [activityNameDuplicate, setActivityNameDuplicate] = useState(false);
+    const [goalNameDuplicate, setGoalNameDuplicate] = useState(false)
     const [showGoalNameInput, setShowGoalNameInput] = useState(false);
     const [hasActivityChanged, setHasActivityChanged] = useState(false);
     const [hasGoalChanged, setHasGoalChanged] = useState(false);
@@ -76,6 +81,8 @@ export default function ActivityInformation({ activityID }) {
                         dispatch(Message({ messageType: "SUCCESS", messageText: "Activity update" }));
                         dispatch(loadingError(true));
                         queryClient.invalidateQueries('activityList')
+                        dispatch(noMoreActivityData(false))
+                        dispatch(resetActivityOffset())
                         setHasActivityChanged(false)
                     } else {
                         dispatch(Message({ messageType: "ERROR", messageText: "Error occured while updating" }))
@@ -85,7 +92,7 @@ export default function ActivityInformation({ activityID }) {
 
 
                 } else {
-                    setNameDuplicate(true);
+                    setActivityNameDuplicate(true);
                 }
             }
 
@@ -106,11 +113,15 @@ export default function ActivityInformation({ activityID }) {
                     })
 
                     if (goalResponse.data === 1) {
-                        dispatch(Message({ messageType: "SUCCESS", messageText: "Goal update" }));
+                        dispatch(Message({ messageType: "SUCCESS", messageText: "Goal updated" }));
                         dispatch(loadingError(true));
                         queryClient.invalidateQueries('goalList')
+                        dispatch(noMoreGoalData(false))
+                        dispatch(resetGoalOffset())
                         if (defaultValues.timeFrame !== data.TimeFrameID) {
                             queryClient.invalidateQueries('activityList')
+                            dispatch(noMoreActivityData(false))
+                            dispatch(resetActivityOffset())
                         }
                         setHasGoalChanged(false)
                     } else {
@@ -121,7 +132,7 @@ export default function ActivityInformation({ activityID }) {
 
 
                 } else {
-                    setNameDuplicate(true);
+                    setGoalNameDuplicate(true);
                 }
             }
         } catch (err) {
@@ -191,7 +202,7 @@ export default function ActivityInformation({ activityID }) {
                                             height: 50,
                                         }}
                                     />
-                                    {nameDuplicate && <Text color="red">This name already exist</Text>}
+                                    {activityNameDuplicate && <Text color="red">This name already exist</Text>}
                                     {errors.activityName && <Text color="red">The activity name is required</Text>}
                                 </>
                             )}
@@ -231,6 +242,7 @@ export default function ActivityInformation({ activityID }) {
                                                 onBlur={() => { onBlur(); checkGoalChanged("newGoalName", value) }}
                                                 onChangeText={onChange}
                                             />
+                                            {goalNameDuplicate && <Text color="red">The goal name already existe</Text>}
                                             {errors.newGoalName && <Text color="red">The goal name is required</Text>}
                                         </>
                                     )}

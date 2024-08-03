@@ -8,13 +8,15 @@ import axios from "axios"
 import ActivityHistory from "../../components/activity/activityHistory";
 import ActivityInformation from "../../components/activity/activityInformation";
 import { getUserActivityByID } from "../../axiosPath/axiosPath";
+import useGetUserId from "../../hooks/useGetUserId";
 
 export default function ActivityDetail() {
 
     const { activityID } = useLocalSearchParams();
-    const [selectedChartPeriod, setSelectedChartPeriod] = useState(1)
+    const [bestActivityStreak, setBestActivityStreak] = useState(0)
     const [activityStats, setActivityStats] = useState([])
     const router = useRouter()
+    const UserId = useGetUserId()
 
     const { data: userActivity, isLoading } = useQuery({
         queryFn: async () => LoadActivity(),
@@ -22,9 +24,9 @@ export default function ActivityDetail() {
     })
 
     const LoadActivity = async () => {
-        const response = await axios.get(getUserActivityByID, { params: { ActivityID: activityID } });
-        console.log(response.data.activityStats)
+        const response = await axios.get(getUserActivityByID, { params: { ActivityID: activityID, UserID: UserId } });
         setActivityStats(response.data.activityStats)
+        setBestActivityStreak(response.data.bestStreak)
         return response.data.activity[0]
     };
 
@@ -71,7 +73,7 @@ export default function ActivityDetail() {
                             </View>
                             <View style={styles.statsTextcontainer}>
                                 <Text style={styles.statsTextLabel}>Best Streak</Text>
-                                <Text style={styles.statsTextValue}>46</Text>
+                                <Text style={styles.statsTextValue}>{bestActivityStreak}</Text>
                             </View>
                             <View style={styles.statsTextcontainer}>
                                 <Text style={styles.statsTextLabel}>Reached</Text>

@@ -48,7 +48,7 @@ export default function Home() {
   }, [appState]);
 
   const loadMoreData = async (event) => {
-    event.persist();
+    //event.persist();
     await new Promise((resolve) => setTimeout(resolve, 300));
     if (isCloseToBottom(event.nativeEvent)) {
       if (
