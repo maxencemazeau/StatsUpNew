@@ -9,6 +9,10 @@ import ActivityHistory from "../../components/activity/activityHistory";
 import ActivityInformation from "../../components/activity/activityInformation";
 import { getUserActivityByID } from "../../axiosPath/axiosPath";
 import useGetUserId from "../../hooks/useGetUserId";
+import { LineChart } from "react-native-chart-kit";
+import { Dimensions } from "react-native";
+import ChartFrameSelect from "../../components/charts/chartFrameSelect";
+import ActivityChart from "../../components/charts/ActivityChart";
 
 export default function ActivityDetail() {
 
@@ -17,6 +21,7 @@ export default function ActivityDetail() {
     const [activityStats, setActivityStats] = useState([])
     const router = useRouter()
     const UserId = useGetUserId()
+    const [chartTimeFrame, setChartTimeFrame] = useState(1)
 
     const { data: userActivity, isLoading } = useQuery({
         queryFn: async () => LoadActivity(),
@@ -34,6 +39,7 @@ export default function ActivityDetail() {
     const navigateBack = () => {
         router.push('/pages/home/home');
     }
+
 
     return (
         <View style={{ height: '95%' }}>
@@ -54,10 +60,11 @@ export default function ActivityDetail() {
                             }}>{userActivity.ActivityName}</Text>
                         }
                     </View>
-                    <View style={{ height: 400, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 20, paddingLeft: 20 }}>
-
+                    <View style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 20, width: '50%' }}>
+                        <ChartFrameSelect setChartTimeFrame={setChartTimeFrame} />
                     </View>
                     <View style={{ backgroundColor: "#191919" }}>
+                        <ActivityChart UserId={UserId} ChartTimeFrame={chartTimeFrame} ActivityId={activityID} />
                     </View>
                 </View>
                 <View style={{ padding: 20 }}>
@@ -82,7 +89,7 @@ export default function ActivityDetail() {
                         </View>
                     </View>
                     {!isLoading && <ActivityInformation activityID={activityID} />}
-                    {/* <ActivityHistory /> */}
+                    <ActivityHistory activityID={activityID} />
                 </View>
             </ScrollView >
         </View>

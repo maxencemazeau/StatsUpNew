@@ -37,12 +37,6 @@ export default function ActivityCard({ activityOffset, appState }) {
         return response.data.activity
     };
 
-    useEffect(() => {
-        if (appState === "background") {
-
-        }
-    }, [appState])
-
     const handlePressOut = () => {
         dispatch(showDelete(true))
         dispatch(cancelPopUp(true))
@@ -112,39 +106,43 @@ export default function ActivityCard({ activityOffset, appState }) {
         }
     }
 
-    useEffect(() => {
-        const updateActivityHistory = async () => {
-            if (appState == "background") {
-                for (i = 0; i < activityListDuplicate.length; i++) {
-                    if (activityListDuplicate[i].action !== 0) {
-                        console.log(activityListDuplicate[i])
-                        await axios.post(addActivityHistory, {
-                            params: {
-                                ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
-                                ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp,
-                                Count: activityListDuplicate[i].Count, Frequence: activityListDuplicate[i].Frequence,
-                                UserID: UserId
-                            }
-                        })
-                    } else {
-                        console.log("delete")
-                        await axios.delete(deleteActivityHistory, {
-                            params: {
-                                ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
-                                ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp, Count: activityListDuplicate[i].Count
-                            }
-                        })
+    const updateActivityHistory = async () => {
+        for (i = 0; i < activityListDuplicate.length; i++) {
+            if (activityListDuplicate[i].action !== 0) {
+                await axios.post(addActivityHistory, {
+                    params: {
+                        ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
+                        ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp,
+                        Count: activityListDuplicate[i].Count, Frequence: activityListDuplicate[i].Frequence,
+                        UserID: UserId
                     }
-                }
+                })
             } else {
-                setActivityListDuplicate([])
+                await axios.delete(deleteActivityHistory, {
+                    params: {
+                        ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
+                        ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp, Count: activityListDuplicate[i].Count
+                    }
+                })
             }
         }
+    }
 
-        updateActivityHistory()
+
+
+    useEffect(() => {
+        if (appState == "background") {
+            updateActivityHistory()
+        } else {
+            setActivityListDuplicate([])
+        }
     }, [appState])
 
-    const navigateToDetails = (activityID) => {
+
+
+    const navigateToDetails = async (activityID) => {
+        await updateActivityHistory()
+        setActivityListDuplicate([])
         router.push({
             pathname: '/pages/activity/activityDetail',
             params: { activityID: activityID }
