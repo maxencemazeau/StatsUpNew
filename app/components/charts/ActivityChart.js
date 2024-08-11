@@ -3,18 +3,20 @@ import axios from 'axios'
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { getActivityChartData } from '../../axiosPath/axiosPath';
+import { months } from '../../data/months';
+import { weekDay } from '../../data/weekDay';
 
 export default function ActivityChart({ UserId, ChartTimeFrame, ActivityId }) {
 
     const [chartData, setChartData] = useState([])
     const screenWidth = Dimensions.get("window").width;
-    const chartLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    const [chartsData, setChartsData] = useState([])
+    const [chartLabel, setChartLabel] = useState([])
+    const [xDataArray, setXDataArray] = useState([])
 
     useEffect(() => {
         const getActivityData = async () => {
             const response = await axios.get(getActivityChartData, { params: { UserId: UserId, ChartFrame: ChartTimeFrame, ActivityId: ActivityId } })
-            console.log("the data" + response.data)
+            console.log(response.data)
             setChartData(response.data)
         }
 
@@ -24,26 +26,58 @@ export default function ActivityChart({ UserId, ChartTimeFrame, ActivityId }) {
 
     useEffect(() => {
         const createData = () => {
+            setXDataArray([])
+            setChartLabel(weekDay)
+            let matching = false
             switch (ChartTimeFrame) {
                 case 1:
-                    const datas = Array(chartLabel.length).fill(0);
-                    if (chartData.length > 0) {
-                        chartData.forEach(item => {
-                            const index = chartLabel.indexOf(item.days);
-                            if (index !== -1) {
-                                datas[index] = item.activityCount;
+                    setChartLabel(weekDay)
+                    for (i = 0; i < weekDay.length; i++) {
+                        matching = false
+                        for (j = 0; j < chartData.length; j++) {
+                            let chartDate = chartData[j].TimeStamp
+                            let newDate = new Date(chartDate)
+                            let theDay = newDate.getUTCDay() - 1
+                            if (parseInt(theDay) === i) {
+                                let NbActivity = chartData[j].NbActivity
+                                setXDataArray(prevState => [...prevState, NbActivity])
+                                matching = true
                             }
-                        });
-                        setChartsData([0, 0, 0, 0, 0, 0, 0]);
-                    } else {
-                        setChartsData([0, 0, 0, 0, 0, 0, 0])
+                        }
+
+                        if (!matching) {
+                            setXDataArray(prevState => [...prevState, 0])
+                        }
                     }
                     break;
                 case 2:
                     break;
+                case 3:
+                    setChartLabel(months)
+                    for (i = 0; i < months.length; i++) {
+                        matching = false
+                        for (j = 0; j < chartData.length; j++) {
+                            let theMonth = chartData[j].TimeStamp.substring(6, 7)
+                            if (parseInt(theMonth) === i) {
+                                let NbActivity = chartData[j].NbActivity
+                                setXDataArray(prevState => [...prevState, NbActivity])
+                                matching = true
+                            }
+                        }
+
+                        if (!matching) {
+                            setXDataArray(prevState => [...prevState, 0])
+                        }
+                    }
+                    break;
+                case 4:
+
+                    break;
 
             }
         }
+
+        console.log(xDataArray)
 
         createData()
     }, [chartData])
@@ -53,7 +87,7 @@ export default function ActivityChart({ UserId, ChartTimeFrame, ActivityId }) {
         labels: chartLabel,
         datasets: [
             {
-                data: [0, 0, 0, 0, 0, 0, 0],
+                data: xDataArray,
                 color: (opacity = 1) => `rgba(221, 122, 52, ${opacity})`, // optional
                 strokeWidth: 3 // optional
             }

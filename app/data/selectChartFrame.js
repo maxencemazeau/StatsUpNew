@@ -17,10 +17,6 @@ export const selectChartFrame = [
     },
     {
         id: 5,
-        name: 'Last 6 month'
-    },
-    {
-        id: 6,
         name: 'All time'
     }
 ]

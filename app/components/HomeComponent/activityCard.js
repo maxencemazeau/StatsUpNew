@@ -13,7 +13,7 @@ import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
 import useGetUserId from "../../hooks/useGetUserId";
-import { FormattedDate } from "../../utils/formattedDate";
+import { todayFormattedDate } from "../../utils/todayFormattedDate";
 
 export default function ActivityCard({ activityOffset, appState }) {
 
@@ -22,7 +22,7 @@ export default function ActivityCard({ activityOffset, appState }) {
     const queryClient = useQueryClient();
     const dispatch = useDispatch()
     const UserId = useGetUserId()
-    const formattedDate = FormattedDate('fullDate');
+    const FormattedDate = todayFormattedDate('fullDate');
     const [activityListDuplicate, setActivityListDuplicate] = useState([])
     const router = useRouter()
 
@@ -63,10 +63,10 @@ export default function ActivityCard({ activityOffset, appState }) {
     }
 
     const updateActivityChecked = async (id, count, historyID) => {
-        const formattedDate = FormattedDate('fullDate')
+        const FormattedDate = todayFormattedDate('fullDate')
 
         const foundActivity = activityList.find(activity =>
-            activity.ActivityID === id && activity.TimeStamp === formattedDate
+            activity.ActivityID === id && activity.TimeStamp === FormattedDate
         );
         const foundInDuplicate = activityListDuplicate?.find(activityDuplicate => activityDuplicate.ActivityID === id)
         if (foundActivity !== undefined) {
@@ -80,7 +80,7 @@ export default function ActivityCard({ activityOffset, appState }) {
             queryClient.setQueryData('activityList', oldData => {
                 if (!oldData) return;
                 return oldData.map(activities =>
-                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count + 1 } : activities
+                    activities.ActivityID === id ? { ...activities, TimeStamp: FormattedDate, Count: count + 1 } : activities
                 );
             });
         }
@@ -90,18 +90,18 @@ export default function ActivityCard({ activityOffset, appState }) {
         if (foundInDuplicate !== undefined) {
             if (foundActivity !== undefined) {
                 setActivityListDuplicate(prevState => prevState.map(activities => (
-                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0, Frequence: getActivityFrequence.Frequence } : activities
+                    activities.ActivityID === id ? { ...activities, TimeStamp: FormattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0, Frequence: getActivityFrequence.Frequence } : activities
                 )))
             } else {
                 setActivityListDuplicate(prevState => prevState.map(activities => (
-                    activities.ActivityID === id ? { ...activities, TimeStamp: formattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence } : activities
+                    activities.ActivityID === id ? { ...activities, TimeStamp: FormattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence } : activities
                 )))
             }
         } else {
             if (foundActivity !== undefined) {
-                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0, Frequence: getActivityFrequence.Frequence }])
+                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: FormattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0, Frequence: getActivityFrequence.Frequence }])
             } else {
-                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: formattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence }])
+                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: FormattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence }])
             }
         }
     }
@@ -164,7 +164,7 @@ export default function ActivityCard({ activityOffset, appState }) {
                                         :
                                         <Paragraph style={styles.typography}>No goal linked</Paragraph>}
                                 </View>
-                                <Button icon={<Check size="$1" />} style={{ backgroundColor: activities.TimeStamp === formattedDate ? "#DD7A34" : "grey", borderRadius: 25, height: 50 }}
+                                <Button icon={<Check size="$1" />} style={{ backgroundColor: activities.TimeStamp === FormattedDate ? "#DD7A34" : "grey", borderRadius: 25, height: 50 }}
                                     onPress={() => updateActivityChecked(activities.ActivityID, activities.Count, activities.ActivityHistoryID)} />
                             </Card.Header>
                         </TouchableWithoutFeedback>

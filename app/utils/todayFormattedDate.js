@@ -1,5 +1,5 @@
 
-export const FormattedDate = (datePart) => {
+export const todayFormattedDate = (datePart) => {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0
