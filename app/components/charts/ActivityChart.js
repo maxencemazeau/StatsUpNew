@@ -12,6 +12,8 @@ export default function ActivityChart({ UserId, ChartTimeFrame, ActivityId }) {
     const screenWidth = Dimensions.get("window").width;
     const [chartLabel, setChartLabel] = useState([])
     const [xDataArray, setXDataArray] = useState([])
+    const thisMonthLabel = []
+    let i = 1
 
     useEffect(() => {
         const getActivityData = async () => {
@@ -51,6 +53,37 @@ export default function ActivityChart({ UserId, ChartTimeFrame, ActivityId }) {
                     }
                     break;
                 case 2:
+                    setChartLabel("")
+                    matching = false
+                    let newArrayTest = []
+                    let todayDate = new Date()
+                    let dayMax = todayDate.getDate()
+                    let halfMonthDate = Math.ceil(dayMax / 2)
+                    while (i <= dayMax) {
+                        matching = false
+                        for (j = 0; j < chartData.length; j++) {
+                            let chartDate = chartData[j].TimeStamp
+                            let NbActivity = chartData[j].NbActivity
+                            chartDate = new Date(chartDate).getDate()
+                            if (chartDate === i) {
+                                setXDataArray(prevState => [...prevState, NbActivity])
+                                matching = true
+                            }
+                        }
+                        if (!matching) {
+                            setXDataArray(prevState => [...prevState, 0])
+                        }
+
+                        if (dayMax < 25) {
+                            if (i === halfMonthDate || i === 1 || i === dayMax) {
+                                newArrayTest.push(i)
+                            } else {
+                                newArrayTest.push("")
+                            }
+                        }
+                        i++
+                    }
+                    setChartLabel(newArrayTest)
                     break;
                 case 3:
                     setChartLabel(months)

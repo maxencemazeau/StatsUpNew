@@ -6,6 +6,7 @@ import { getUserGoals, deleteGoal } from "../../axiosPath/axiosPath"
 import { useQuery, useQueryClient } from "react-query";
 import { useSelector, useDispatch } from "react-redux";
 import { Message } from '../../reduxState/message/messageSlice';
+import { useRouter } from "expo-router"
 import axios from 'axios'
 import HomeCardSkeleton from "../skeleton/homeCardSkeleton";
 import { loadingError } from "../../reduxState/error/loadingErrorSlice";
@@ -20,6 +21,7 @@ export default function GoalCard({ goalOffset }) {
     const dispatch = useDispatch()
     const User = useSelector((state) => state.login.user)
     const UserId = User.user[0].UserID
+    const router = useRouter()
 
     const { data: goalList } = useQuery({
         queryFn: async () => LoadUserGoals(),
@@ -57,13 +59,19 @@ export default function GoalCard({ goalOffset }) {
         }
     }
 
+    const navigateToDetail = () => {
+        router.push({
+            pathname: '/pages/goal/goalDetail'
+        });
+    }
+
 
     return (
         <View style={styles.container}>
             {goalList?.map(goals => (
                 <Card key={goals.GoalsID} style={styles.card}>
                     {showDeleteIcon && <Button style={styles.trashContainer} onPress={() => deleteUserGoal(goals.GoalsID)}><Trash2 color={"red"} size="$2" /></Button>}
-                    <TouchableWithoutFeedback onLongPress={() => handlePressOut()}>
+                    <TouchableWithoutFeedback onPress={() => navigateToDetail()} onLongPress={() => handlePressOut()}>
                         <Card.Header style={styles.cardHeader}>
                             <View>
                                 <SizableText style={styles.typography} size={"$6"} fontWeight="800">{goals.GoalName}</SizableText>

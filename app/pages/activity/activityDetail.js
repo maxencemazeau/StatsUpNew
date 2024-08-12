@@ -50,7 +50,7 @@ export default function ActivityDetail() {
                             icon={<ArrowLeft size="$2" color={'white'} />}
                             onPress={() => navigateBack()}
                             style={{ backgroundColor: 'transparent' }}
-                        />
+                        /> 
                         {!isLoading &&
                             <Text style={{
                                 padding: 0,
