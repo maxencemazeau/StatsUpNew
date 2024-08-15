@@ -20,13 +20,20 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
   const UserId = User.user[0].UserID;
   const queryClient = useQueryClient();
 
-  const SuccessOrError = (type, message) => {
+  const SuccessOrError = (type, message, refresh) => {
     if (createNewActivityOrGoal == 0) {
       queryClient.invalidateQueries('activityList')
+      console.log(refresh)
+      if (refresh == true) {
+        queryClient.invalidateQueries('goalList')
+      }
       dispatch(noMoreActivityData(false))
       dispatch(resetActivityOffset())
     } else {
       queryClient.invalidateQueries('goalList')
+      if (refresh == true) {
+        queryClient.invalidateQueries('activityList')
+      }
       dispatch(noMoreGoalData(false))
       dispatch(resetGoalOffset())
     }
@@ -55,7 +62,6 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
                 display: 'flex',
                 flexDirection: 'row',
                 padding: 0,
-                paddingBottom: 2,
                 alignItems: 'center',
                 gap: 20,
               }}>
@@ -68,9 +74,10 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
               />
               <Pressable onPress={() => setCreateNewActivityOrGoal(0)}>
                 <SizableText
-                  size="$6"
                   style={{
+                    fontSize: 18,
                     color: createNewActivityOrGoal == 0 ? '#DD7A34' : 'black',
+                    fontWeight: createNewActivityOrGoal == 0 ? '700' : 'normal',
                     textDecorationLine: createNewActivityOrGoal == 0 ? 'underline' : 'none',
                   }}>
                   ACTIVITY
@@ -78,9 +85,10 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
               </Pressable>
               <Pressable onPress={() => setCreateNewActivityOrGoal(1)}>
                 <SizableText
-                  size="$6"
                   style={{
+                    fontSize: 18,
                     color: createNewActivityOrGoal == 1 ? '#DD7A34' : 'black',
+                    fontWeight: createNewActivityOrGoal == 1 ? '700' : 'normal',
                     textDecorationLine: createNewActivityOrGoal == 1 ? 'underline' : 'none',
                   }}>
                   GOAL

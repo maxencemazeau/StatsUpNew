@@ -8,13 +8,11 @@ import { activityWithNoGoal } from '../../axiosPath/axiosPath';
 export default function LinkedActivity({ linkedActivity, UserId }) {
   const [activityList, setActivityList] = useState([]);
   const [noActivityWithoutGoal, setNoActivityWithoutGoal] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
-  const [showActivityList, setShowActivityList] = useState(false);
 
   useEffect(() => {
     const LoadActivitiesWithNoGoal = async () => {
       const response = await axios.get(activityWithNoGoal, { params: { id: UserId } });
-      if (response.data.length > 1) {
+      if (response.data.length > 0) {
         setActivityList(response.data);
       } else {
         setNoActivityWithoutGoal(true);
@@ -32,32 +30,26 @@ export default function LinkedActivity({ linkedActivity, UserId }) {
     }
   };
 
-  const changeShowActivity = () => {
-    setShowActivityList(prevState => !prevState)
-  }
 
   return (
     <>
       <View style={{ ...styles.checkboxContainer, marginTop: 10 }}>
         <View style={styles.line}>
-          <Text color={'black'}>Show linkable activities</Text>
-          <Button icon={showActivityList && <Check />} style={{ backgroundColor: "black", color: "white", width: 15, height: 30 }} onPress={() => changeShowActivity()}></Button>
+          <Text color={'black'}>Linkable activities</Text>
         </View>
       </View >
-      {noActivityWithoutGoal &&
-        <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>
+      {noActivityWithoutGoal == true ?
+        <Text Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>
           No activity without goal
         </Text>
-      }
-      {
-        showActivityList &&
+        :
         <View>
           {activityList?.map((activities) => (
             <Card key={activities.ActivityID} style={styles.container}>
               <Card.Header style={styles.activityCardHeader}>
                 <Text>{activities.ActivityName}</Text>
                 <Checkbox
-                  size="$6"
+                  size="$8"
                   style={{ backgroundColor: 'white' }}
                   onCheckedChange={(isChecked) =>
                     AddOrRemoveLinkedActivity(activities.ActivityID, isChecked)
@@ -84,7 +76,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    padding: 10
   },
   checkboxContainer: {
     display: 'flex',

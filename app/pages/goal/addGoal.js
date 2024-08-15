@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Input, Button, Checkbox, Form, Card } from 'tamagui';
+import { Text, Input, Button, Checkbox, Form, Card, Label } from 'tamagui';
 import { Check } from '@tamagui/lucide-icons';
+import { CheckDuplicate } from '../../utils/CheckDuplicate';
 import axios from 'axios';
 import { addGoal, checkGoalNameDuplicate } from '../../axiosPath/axiosPath';
 import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-form';
@@ -19,11 +20,12 @@ export default function AddGoal({ UserId, SuccessOrError }) {
   } = useForm();
   const onSubmit = async (data) => {
     try {
-      const checkDuplicate = await axios.get(checkGoalNameDuplicate, {
-        params: { UserID: UserId, GoalName: data.goalName },
-      });
-      console.log(checkDuplicate.data)
-      if (checkDuplicate.data == 0) {
+      // const checkDuplicate = await axios.get(checkGoalNameDuplicate, {
+      //   params: { UserID: UserId, GoalName: data.goalName },
+      // });
+      const checkDuplicate = await CheckDuplicate("Goal", data.goalName, UserId)
+
+      if (checkDuplicate == 0) {
         const response = await axios.post(addGoal, {
           params: {
             GoalName: data.goalName,
@@ -47,12 +49,14 @@ export default function AddGoal({ UserId, SuccessOrError }) {
     }
   };
 
+
   return (
     <>
       <View>
         <Text sixe="$4">Create a new activity</Text>
         <FormProvider {...control}>
           <Form>
+            <Label style={styles.labelStyle}>Goal name</Label>
             <Controller
               name="goalName"
               control={control}
@@ -60,7 +64,6 @@ export default function AddGoal({ UserId, SuccessOrError }) {
               render={({ field: { onChange, onBlur, value } }) => (
                 <>
                   <Input
-                    placeholder="Goal name"
                     value={value}
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -79,29 +82,34 @@ export default function AddGoal({ UserId, SuccessOrError }) {
             />
             <>
               <View style={styles.line}>
-                <Controller
-                  name="timeFrame"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TimeFrameSelect onChange={onChange} />
-                  )}
-                />
-                <Controller
-                  name="Frequence"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <Input
-                      placeholder="Frequency"
-                      style={styles.inputField}
-                      value={value}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      keyboardType="numeric"
-                    />
-                  )}
-                />
+                <View style={styles.inputWithLabel}>
+                  <Label style={styles.labelStyle}>Time frame</Label>
+                  <Controller
+                    name="timeFrame"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TimeFrameSelect onChange={onChange} />
+                    )}
+                  />
+                </View>
+                <View style={styles.inputWithLabel}>
+                  <Label style={styles.labelStyle}>Frequence</Label>
+                  <Controller
+                    name="Frequence"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <Input
+                        style={styles.inputField}
+                        value={value}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        keyboardType="numeric"
+                      />
+                    )}
+                  />
+                </View>
               </View>
               <View style={styles.lineError}>
                 {errors.timeFrame && <Text color="red">Select a time frame</Text>}
@@ -130,7 +138,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: 10,
-    marginTop: 10,
     alignItems: 'center',
     width: '100%',
   },
@@ -147,5 +154,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
+  },
+  labelStyle: {
+    color: "black"
+  },
+  inputWithLabel: {
+    flex: 1
   },
 });

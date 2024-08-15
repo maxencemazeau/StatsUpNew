@@ -4,16 +4,15 @@ import { Text, Input, Button, Checkbox, Separator, Form, Select } from "tamagui"
 import { Adapt, Label, Sheet, XStack, YStack, getFontSize } from 'tamagui'
 import { timeFrame } from "../../data/timeFrame"
 
-export default function TimeFrameSelect({ onChange }) {
+export default function TimeFrameSelect({ defaultValue = 0, onChange, checkGoalChanged = null }) {
 
-    const [val, setVal] = useState('')
-
+    const [val, setVal] = useState(defaultValue)
 
     return (
-        <Select value={val} onValueChange={(value) => { setVal(value); onChange(value) }} disablePreventBodyScroll>
-            <Select.Trigger width={220} iconAfter={<ChevronDown color={"black"} />} style={{ backgroundColor: "white", marginBottom: 10, marginTop: 10, height: 50 }}>
-                <Select.Value placeholder="Time frame" color={"black"} />
-            </Select.Trigger>
+        <Select value={val} onValueChange={(value) => { setVal(value); onChange(value); checkGoalChanged("timeFrame", value) }} disablePreventBodyScroll>
+            <Select.Trigger iconAfter={< ChevronDown color={"black"} size={20} />} style={{ backgroundColor: "white", height: 50 }}>
+                <Select.Value color={"black"} />
+            </Select.Trigger >
 
             <Adapt when="sm" platform="touch">
                 <Sheet

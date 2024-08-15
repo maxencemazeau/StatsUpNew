@@ -1,11 +1,12 @@
 import { useFonts } from 'expo-font';
-import { SplashScreen, Stack } from 'expo-router';
+import { SplashScreen, Stack, Slot } from 'expo-router';
 import { Provider } from 'react-redux';
 import { store } from './reduxState/store';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useEffect } from 'react';
 import { TamaguiProvider } from 'tamagui';
 import config from '../tamagui.config';
+import { Screen } from 'expo-router/build/views/Screen';
 
 const queryClient = new QueryClient()
 
@@ -25,11 +26,11 @@ export default function IndexLayout() {
 
   return (
     <TamaguiProvider config={config}>
-        <Provider store={store}>
-          <QueryClientProvider client={queryClient}>
-            <Stack screenOptions={{ headerShown: false }} />
-          </QueryClientProvider>
-        </Provider>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <Stack screenOptions={{ headerShown: false }} />
+        </QueryClientProvider>
+      </Provider>
     </TamaguiProvider>
   );
 }
