@@ -9,10 +9,9 @@ import ActivityHistory from "../../components/activity/activityHistory";
 import ActivityInformation from "../../components/activity/activityInformation";
 import { getUserActivityByID } from "../../axiosPath/axiosPath";
 import useGetUserId from "../../hooks/useGetUserId";
-import { LineChart } from "react-native-chart-kit";
-import { Dimensions } from "react-native";
 import ChartFrameSelect from "../../components/charts/chartFrameSelect";
 import ActivityChart from "../../components/charts/ActivityChart";
+import PageHeader from "../../components/pageHeader";
 
 export default function ActivityDetail() {
 
@@ -35,7 +34,6 @@ export default function ActivityDetail() {
         return response.data.activity[0]
     };
 
-
     const navigateBack = () => {
         router.push('/pages/home/home');
     }
@@ -45,7 +43,7 @@ export default function ActivityDetail() {
         <View style={{ height: '95%' }}>
             <ScrollView >
                 <View style={{ backgroundColor: "#191919", padding: 0 }}>
-                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingBottom: 20, paddingTop: 40, gap: 10 }}>
+                    {/* <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingBottom: 20, paddingTop: 40, gap: 10 }}>
                         <Button
                             icon={<ArrowLeft size="$2" color={'white'} />}
                             onPress={() => navigateBack()}
@@ -59,7 +57,8 @@ export default function ActivityDetail() {
                                 fontSize: 20
                             }}>{userActivity.ActivityName}</Text>
                         }
-                    </View>
+                    </View> */}
+                    <PageHeader Title={userActivity?.ActivityName} />
                     <View style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 20, width: '50%' }}>
                         <ChartFrameSelect setChartTimeFrame={setChartTimeFrame} />
                     </View>

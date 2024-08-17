@@ -1,6 +1,6 @@
-//const baseUrl = `http://localhost:8080/`
+const baseUrl = `http://localhost:8080/`
 //const baseUrl = `https://statsuptest.onrender.com/`
-const baseUrl = `http://192.168.0.13:8080/`;
+//const baseUrl = `http://192.168.0.13:8080/`;
 
 export const getActivity = baseUrl + `userActivity`;
 export const getUserGoals = baseUrl + `userGoal`;
@@ -22,3 +22,6 @@ export const getUserActivityByID = baseUrl + `getUserActivityByID`
 export const getTotalActivityCompleted = baseUrl + `getTotalActivityCompleted`
 export const getActivityChartData = baseUrl + `getActivityChartData`
 export const getActiviHistory = baseUrl + `getActivityHistory`
+export const getUserGoalByID = baseUrl + `getUserGoalByID`
+export const linkedActivityToGoal = baseUrl + `getLinkedActivityToGoal`
+export const getAllActivityGoalStats = baseUrl + `getAllActivityGoalStats`

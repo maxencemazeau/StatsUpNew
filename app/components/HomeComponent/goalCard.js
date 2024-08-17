@@ -59,9 +59,10 @@ export default function GoalCard({ goalOffset }) {
         }
     }
 
-    const navigateToDetail = () => {
+    const navigateToDetail = (goalId) => {
         router.push({
-            pathname: '/pages/goal/goalDetail'
+            pathname: '/pages/goal/goalDetail',
+            params: { goalID: goalId }
         });
     }
 
@@ -71,7 +72,7 @@ export default function GoalCard({ goalOffset }) {
             {goalList?.map(goals => (
                 <Card key={goals.GoalsID} style={styles.card}>
                     {showDeleteIcon && <Button style={styles.trashContainer} onPress={() => deleteUserGoal(goals.GoalsID)}><Trash2 color={"red"} size="$2" /></Button>}
-                    <TouchableWithoutFeedback onPress={() => navigateToDetail()} onLongPress={() => handlePressOut()}>
+                    <TouchableWithoutFeedback onPress={() => navigateToDetail(goals.GoalsID)} onLongPress={() => handlePressOut()}>
                         <Card.Header style={styles.cardHeader}>
                             <View>
                                 <SizableText style={styles.typography} size={"$6"} fontWeight="800">{goals.GoalName}</SizableText>

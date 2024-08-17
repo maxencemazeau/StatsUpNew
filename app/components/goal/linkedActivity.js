@@ -3,15 +3,22 @@ import { View, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { Button, Card, Text, Checkbox } from 'tamagui';
 import { Check } from '@tamagui/lucide-icons';
-import { activityWithNoGoal } from '../../axiosPath/axiosPath';
+import { activityWithNoGoal, linkedActivityToGoal } from '../../axiosPath/axiosPath';
 
-export default function LinkedActivity({ linkedActivity, UserId }) {
+export default function LinkedActivity({ linkedActivity, UserId, GoalID = 0 }) {
   const [activityList, setActivityList] = useState([]);
   const [noActivityWithoutGoal, setNoActivityWithoutGoal] = useState(false);
+  const titleLinkedActivity = (GoalID > 0 ? "Linked Activity" : "Linkable activities")
+  const noActivityText = (GoalID > 0 ? "No Activity linked to this goal yet" : "No activity without goal")
 
   useEffect(() => {
     const LoadActivitiesWithNoGoal = async () => {
-      const response = await axios.get(activityWithNoGoal, { params: { id: UserId } });
+      let response = []
+      if (GoalID === 0) {
+        response = await axios.get(activityWithNoGoal, { params: { id: UserId } });
+      } else {
+        response = await axios.get(linkedActivityToGoal, { params: { GoalsID: GoalID } })
+      }
       if (response.data.length > 0) {
         setActivityList(response.data);
       } else {
@@ -20,7 +27,7 @@ export default function LinkedActivity({ linkedActivity, UserId }) {
     };
 
     LoadActivitiesWithNoGoal();
-  }, []);
+  }, [GoalID]);
 
   const AddOrRemoveLinkedActivity = (id, isChecked) => {
     if (isChecked == true) {
@@ -28,19 +35,26 @@ export default function LinkedActivity({ linkedActivity, UserId }) {
     } else {
       linkedActivity = linkedActivity.filter((item) => item !== id);
     }
+    setActivityList(prevList =>
+      prevList.map(activity =>
+        activity.ActivityID === id
+          ? { ...activity, checked: isChecked }
+          : activity
+      )
+    );
   };
 
-
+  console.log(activityList)
   return (
     <>
       <View style={{ ...styles.checkboxContainer, marginTop: 10 }}>
         <View style={styles.line}>
-          <Text color={'black'}>Linkable activities</Text>
+          <Text color={'black'}>{titleLinkedActivity}</Text>
         </View>
       </View >
       {noActivityWithoutGoal == true ?
         <Text Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>
-          No activity without goal
+          {noActivityText}
         </Text>
         :
         <View>
@@ -51,6 +65,7 @@ export default function LinkedActivity({ linkedActivity, UserId }) {
                 <Checkbox
                   size="$8"
                   style={{ backgroundColor: 'white' }}
+                  checked={activities.checked}
                   onCheckedChange={(isChecked) =>
                     AddOrRemoveLinkedActivity(activities.ActivityID, isChecked)
                   }>
