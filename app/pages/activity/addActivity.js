@@ -93,19 +93,6 @@ export default function AddActivity({ UserId, SuccessOrError }) {
                 </>
               )}
             />
-            {/* <View style={styles.line}>
-                <Text color={"black"}>Timer options ?</Text>
-                <Controller
-                  name="timer"
-                  control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <Checkbox size="$6" onCheckedChange={onChange}>
-                      <Checkbox.Indicator>
-                        <Check />
-                      </Checkbox.Indicator>
-                    </Checkbox>
-                  )} />
-              </View> */}
             <Controller
               name="selectedIdGoal"
               control={control}

@@ -84,6 +84,9 @@ export default function ActivityInformation({ activityID }) {
                         dispatch(noMoreActivityData(false))
                         dispatch(resetActivityOffset())
                         setHasActivityChanged(false)
+                        queryClient.setQueryData(['userActivity', activityID], oldData => {
+                            return { ...oldData, ActivityName: data.activityName };
+                        });
                     } else {
                         dispatch(Message({ messageType: "ERROR", messageText: "Error occured while updating" }))
                         dispatch(loadingError(true));
@@ -193,7 +196,7 @@ export default function ActivityInformation({ activityID }) {
                                         onBlur={() => { onBlur(); checkActivityChanged("activityName", value) }}
                                         onChangeText={(Text) => {
                                             onChange(Text);
-                                            setNameDuplicate(false);
+                                            setActivityNameDuplicate(false);
                                         }}
                                         style={{
                                             width: '100%',

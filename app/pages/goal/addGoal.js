@@ -53,7 +53,7 @@ export default function AddGoal({ UserId, SuccessOrError }) {
   return (
     <>
       <View>
-        <Text sixe="$4">Create a new activity</Text>
+        <Text sixe="$4">Create a new goal</Text>
         <FormProvider {...control}>
           <Form>
             <Label style={styles.labelStyle}>Goal name</Label>

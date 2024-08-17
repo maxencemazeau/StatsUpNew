@@ -12,6 +12,7 @@ import { noMoreGoalData } from '../../reduxState/offset/hasMoreDataGoal';
 import { resetActivityOffset } from '../../reduxState/offset/activityOffsetSlice';
 import { resetGoalOffset } from '../../reduxState/offset/goalOffsetSlice';
 import { useQueryClient } from 'react-query';
+import GoalForm from '../../components/goalComponent/goalForm';
 
 export default function CreateActivityAndGoal({ open, setOpen, position, setPosition }) {
   const [createNewActivityOrGoal, setCreateNewActivityOrGoal] = useState(0);
@@ -23,7 +24,6 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
   const SuccessOrError = (type, message, refresh) => {
     if (createNewActivityOrGoal == 0) {
       queryClient.invalidateQueries('activityList')
-      console.log(refresh)
       if (refresh == true) {
         queryClient.invalidateQueries('goalList')
       }
@@ -98,7 +98,8 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
             {createNewActivityOrGoal == 0 ? (
               <AddActivity UserId={UserId} SuccessOrError={SuccessOrError} />
             ) : (
-              <AddGoal UserId={UserId} SuccessOrError={SuccessOrError} />
+              <GoalForm UserId={UserId} SuccessOrError={SuccessOrError} />
+              // <AddGoal UserId={UserId} SuccessOrError={SuccessOrError} />
             )}
           </View>
         </Sheet.Frame>
