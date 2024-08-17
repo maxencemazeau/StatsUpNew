@@ -5,7 +5,7 @@ import { Check } from '@tamagui/lucide-icons';
 import { CheckDuplicate } from '../../utils/CheckDuplicate';
 import { useQueryClient } from 'react-query';
 import axios from 'axios';
-import { addGoal, checkGoalNameDuplicate } from '../../axiosPath/axiosPath';
+import { addGoal, checkGoalNameDuplicate, updateGoal } from '../../axiosPath/axiosPath';
 import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-form';
 import TimeFrameSelect from '../../components/activity/timeFrameSelect';
 import LinkedActivity from '../../components/goal/linkedActivity';
@@ -38,20 +38,37 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
     } = useForm({ defaultValues });
     const onSubmit = async (data) => {
         try {
+            let response = []
             const checkDuplicate = await CheckDuplicate("Goal", data.goalName, UserId)
 
             if (checkDuplicate == 0) {
-                const response = await axios.post(addGoal, {
-                    params: {
-                        GoalName: data.goalName,
-                        LinkActivity: linkedActivity,
-                        TimeFrame: data.timeFrame,
-                        Frequence: data.Frequence,
-                        UserId: UserId,
-                    },
-                });
+                if (goalID === 0) {
+                    response = await axios.post(addGoal, {
+                        params: {
+                            GoalName: data.goalName,
+                            LinkActivity: linkedActivity,
+                            TimeFrame: data.timeFrame,
+                            Frequence: data.Frequence,
+                            UserId: UserId,
+                        },
+                    });
+                } else {
+                    response = await axios.put(updateGoal, {
+                        params: {
+                            GoalsId: goalID,
+                            GoalName: data.goalName,
+                            TimeFrameID: data.timeFrame,
+                            Frequence: data.Frequence,
+                        },
+                    });
+                }
                 if (response.data == 1) {
-                    SuccessOrError('SUCCESS', 'Goal successfully created !');
+                    if (goalID === 0) {
+                        SuccessOrError('SUCCESS', `Goal successfully created !`);
+                    } else {
+                        SuccessOrError('SUCCESS', `Goal successfully updated !`, data.goalName);
+                    }
+
                 } else {
                     SuccessOrError('ERROR', 'An unexpected error occurred');
                 }
@@ -89,7 +106,7 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
         <>
             <View>
                 {goalID === 0 &&
-                    <Text sixe="$4">Create a new activity</Text>
+                    <Text sixe="$4">Create a new goal</Text>
                 }
                 <FormProvider {...control}>
                     <Form>

@@ -71,7 +71,7 @@ export default function Login() {
                             margin="normal"
                             style={{ width: "100%", backgroundColor: "white", marginBottom: 20, color: "black" }}
                             value={password}
-                            onChangeText={(text) => {setPassword(text); console.log(text)}}
+                            onChangeText={(text) => {setPassword(text)}}
                         />
                         <Button size="$5" style={{
                             backgroundColor: "#DD7A34", marginTop: 1, width: "100%", marginBottom: 20,

@@ -44,7 +44,6 @@ export default function LinkedActivity({ linkedActivity, UserId, GoalID = 0 }) {
     );
   };
 
-  console.log(activityList)
   return (
     <>
       <View style={{ ...styles.checkboxContainer, marginTop: 10 }}>

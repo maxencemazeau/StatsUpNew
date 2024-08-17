@@ -24,7 +24,6 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
   const SuccessOrError = (type, message, refresh) => {
     if (createNewActivityOrGoal == 0) {
       queryClient.invalidateQueries('activityList')
-      console.log(refresh)
       if (refresh == true) {
         queryClient.invalidateQueries('goalList')
       }

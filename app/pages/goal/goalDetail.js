@@ -1,7 +1,12 @@
 import React, { useState } from "react"
 import { View, ScrollView } from 'react-native';
 import { useRouter, useLocalSearchParams } from "expo-router"
-import LinkedActivity from '../../components/goal/linkedActivity';
+import { Message } from "../../reduxState/message/messageSlice";
+import { loadingError } from "../../reduxState/error/loadingErrorSlice";
+import { noMoreActivityData } from '../../reduxState/offset/hasMoreDataActivity';
+import { noMoreGoalData } from '../../reduxState/offset/hasMoreDataGoal';
+import { resetActivityOffset } from '../../reduxState/offset/activityOffsetSlice';
+import { resetGoalOffset } from '../../reduxState/offset/goalOffsetSlice';
 import GoalForm from "../../components/goalComponent/goalForm";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "axios"
@@ -9,6 +14,7 @@ import useGetUserId from "../../hooks/useGetUserId";
 import PageHeader from "../../components/pageHeader";
 import { getUserGoalByID } from "../../axiosPath/axiosPath";
 import LinkedActivityStats from "../../components/goalComponent/linkedActivityStats";
+import { useDispatch } from "react-redux";
 
 export default function GoalDetail() {
 
@@ -17,6 +23,7 @@ export default function GoalDetail() {
     const UserId = useGetUserId()
     const linkedActivity = [];
     const queryClient = useQueryClient();
+    const dispatch = useDispatch()
 
     const { data: goalInfo, isLoading } = useQuery({
         queryFn: async () => LoadGoalInfo(),
@@ -28,26 +35,19 @@ export default function GoalDetail() {
         return response.data[0]
     };
 
-    const SuccessOrError = (type, message, refresh) => {
-        if (createNewActivityOrGoal == 0) {
-            queryClient.invalidateQueries('activityList')
-            console.log(refresh)
-            if (refresh == true) {
-                queryClient.invalidateQueries('goalList')
-            }
-            dispatch(noMoreActivityData(false))
-            dispatch(resetActivityOffset())
-        } else {
-            queryClient.invalidateQueries('goalList')
-            if (refresh == true) {
-                queryClient.invalidateQueries('activityList')
-            }
-            dispatch(noMoreGoalData(false))
-            dispatch(resetGoalOffset())
-        }
+    const SuccessOrError = (type, message, goalName) => {
+        queryClient.invalidateQueries('goalList')
+        queryClient.invalidateQueries('activityList')
+        dispatch(resetActivityOffset())
+        dispatch(noMoreActivityData(false))
+        dispatch(noMoreGoalData(false))
+        dispatch(resetGoalOffset())
         dispatch(Message({ messageType: type, messageText: message }));
         dispatch(loadingError(true));
-        setOpen(false);
+        console.log(goalInfo)
+        queryClient.setQueryData(["userGoal", goalID], oldData => {
+            return { ...oldData, GoalName: goalName };
+        });
     };
 
     return (
