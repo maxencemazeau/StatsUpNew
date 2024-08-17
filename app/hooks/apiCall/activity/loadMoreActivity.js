@@ -7,17 +7,7 @@ import { getActivity } from "../../../axiosPath/axiosPath";
 import { useQuery, useQueryClient } from 'react-query';
 
 export const LoadMoreActivity = async (dispatch, queryClient, activityOffset, hasNoMoreData, isMoreDataLoading, UserId) => {
-    console.log("ici")
-    // const dispatch = useDispatch()
-    // const queryClient = useQueryClient()
-    // const hasNoMoreData = useSelector((state) => state.hasMoreActivityData.value)
-    // const isMoreDataLoading = useSelector((state) => state.isActivityLoading.value)
-    // const User = useSelector((state) => state.login.user)
-    // const UserId = User.user[0].UserID
 
-    //useEffect(() => {
-    //if (activityOffset > 0 && !hasNoMoreData && isMoreDataLoading == false) {
-    //const fetchMoreData = async () => {
     try {
         dispatch(isActivityLoading(true))
         const response = await axios.get(getActivity, { params: { id: UserId, offset: activityOffset } });
@@ -32,11 +22,5 @@ export const LoadMoreActivity = async (dispatch, queryClient, activityOffset, ha
         dispatch(isActivityLoading(false))
         dispatch(loadingError(true))
     }
-    //}
 
-    //fetchMoreData()
-    //}
-    //}, [activityOffset])
-
-    //return response.data.activity
 }

@@ -54,10 +54,12 @@ export default function GoalDetail() {
         <>
             <View style={{ height: "95%" }}>
                 <ScrollView>
-                    <View style={{ height: "100%", backgroundColor: "#222121", padding: 0 }}>
+                    <View style={{ backgroundColor: "#222121", padding: 0 }}>
                         <PageHeader Title={goalInfo?.GoalName} />
                         <View style={{ padding: 20 }}>
-                            <LinkedActivityStats goalID={goalID} TimeFrameID={goalInfo?.TimeFrameID} />
+                            {goalInfo?.TimeFrameID &&
+                                <LinkedActivityStats goalID={goalID} TimeFrameID={goalInfo.TimeFrameID} />
+                            }
                         </View>
                     </View>
                     <View style={{ padding: 20 }}>

@@ -24,7 +24,7 @@ export default function SignUp() {
             alert("Passwords do not match");
             return;
         }
-    
+
         try {
             const response = await axios.post(userSignUp, {
                 email,
@@ -33,7 +33,7 @@ export default function SignUp() {
             });
 
             const data = response.data;
-            
+
             if (data.error) {
                 alert(data.error);
                 return;
@@ -41,7 +41,7 @@ export default function SignUp() {
 
             // Dispatch action to update authentication status
             dispatch(setLogin(response.data));
-            
+
             // Navigate to the home page
             router.push('/pages/home/home'); // Adjust the path if needed
 
@@ -53,7 +53,7 @@ export default function SignUp() {
 
     const navigateToLogin = () => {
         router.push('loginAndSignUp/login'); // Navigate to the SignUp screen
-      };
+    };
 
     return (
         <>
@@ -74,13 +74,13 @@ export default function SignUp() {
                             display: 'flex', flexDirection: 'row', alignItems: 'center', alignContent: "center",
                             justifyContent: "space-around"
                         }}>
-                            <Text style={{ fontSize: 16}}>Get Started</Text>
+                            <Text style={{ fontSize: 16 }}>Get Started</Text>
                         </View>
                         <Input
                             label="Email"
                             placeholder='Email'
                             size="$5"
-                            style={{...styles.inputs, marginTop:20}}
+                            style={{ ...styles.inputs, marginTop: 20 }}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
@@ -113,23 +113,23 @@ export default function SignUp() {
                         <Button
                             size="$5"
                             style={{
-                                backgroundColor: "#DD7A34", width: "100%", marginBottom: 20,                              
-                            }}                            
-                            onPress={handleSignUp}                            
+                                backgroundColor: "#DD7A34", width: "100%", marginBottom: 20,
+                            }}
+                            onPress={handleSignUp}
                         >
                             SIGN UP
                         </Button>
                         <Separator />
-                            <Button
-                                size="$5"
-                                style={{
-                                    marginTop: 20, width: "100%",
-                                    marginTop: 20, border: 1, borderColor: "lightgrey"
-                                }}
-                                onPress={navigateToLogin}
-                            >
-                                LOGIN
-                            </Button>
+                        <Button
+                            size="$5"
+                            style={{
+                                marginTop: 20, width: "100%",
+                                marginTop: 20, border: 1, borderColor: "lightgrey"
+                            }}
+                            onPress={navigateToLogin}
+                        >
+                            LOGIN
+                        </Button>
                     </View>
                 </ScrollView >
             </View>
@@ -138,10 +138,10 @@ export default function SignUp() {
 }
 
 const styles = StyleSheet.create({
-    inputs:{
-        width: "100%", 
-        backgroundColor: "white", 
-        marginBottom: 20, 
+    inputs: {
+        width: "100%",
+        backgroundColor: "white",
+        marginBottom: 20,
         color: "black"
     }
 })
