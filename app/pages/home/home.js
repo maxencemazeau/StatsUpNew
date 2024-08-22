@@ -12,6 +12,7 @@ import { incrementGoalOffset } from '../../reduxState/offset/goalOffsetSlice';
 import { LoadMoreActivity } from '../../hooks/apiCall/activity/loadMoreActivity';
 import { useQueryClient } from 'react-query';
 import { LoadMoreGoal } from '../../hooks/apiCall/goal/loadMoreGoal';
+import useGetUserId from '../../hooks/useGetUserId';
 
 export default function Home() {
   const active = useSelector((state) => state.navigation.value);
@@ -26,7 +27,9 @@ export default function Home() {
   const [appState, setAppState] = useState(AppState.currentState);
   const queryClient = useQueryClient()
   const User = useSelector((state) => state.login.user)
-  const UserId = User.user[0].UserID
+  console.log(User.UserID)
+  //const UserId = User.user[0].UserID
+  const UserId = useGetUserId()
   let newActivityOffset = activityOffset
   let newGoalOffset = goalOffset
 

@@ -1,34 +1,43 @@
-// import React from 'react'
-// import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins'
-// import { Container, Typography, Box, Divider } from "@mui/material"
+import React from 'react'
+import { View, StyleSheet } from "react-native"
+import { Text } from "tamagui"
 
-// export default function Highlight() {
+export default function Highlight() {
 
-//     const [fontsLoad] = useFonts({
-//         Poppins_400Regular, Poppins_700Bold,
-//     })
 
-//     return (
-//         <Container sx={{marginTop:4, padding:0}}>
-//             <Typography sx={{fontFamily:'Poppins_700Bold', fontSize:18}}>Highlight</Typography>
-//             <Box sx={{ display: 'flex', flexDirection: 'Column', justifyContent: 'center', marginTop: 1, border : 1, borderRadius: 4, borderColor: 'lightgrey',padding:2 }}>
-//                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent:'space-between'}}>
-//                     <Typography sx={{fontFamily:'Poppins_400Regular', fontSize:14}}>Best Streak</Typography>
-//                     <Typography sx={{fontFamily:'Poppins_700Bold', fontSize:14, color:'#DD7A34'}}>4</Typography>
-//                 </Box>
-//                 <Box sx={{ display: 'flex', flexDirection: 'row', marginTop : 1, justifyContent:'space-between' }}>
-//                     <Typography sx={{fontFamily:'Poppins_400Regular', fontSize:14}}>Most completed activity</Typography>
-//                     <Typography sx={{fontFamily:'Poppins_700Bold', fontSize:14}}>Guitar</Typography>
-//                 </Box>
-//                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent:'space-between', marginTop : 1}}>
-//                     <Typography sx={{fontFamily:'Poppins_400Regular', fontSize:14}}>Most completed goal</Typography>
-//                     <Typography sx={{fontFamily:'Poppins_700Bold', fontSize:14}}>Guitar goal</Typography>
-//                 </Box>
-//                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent:'space-between', marginTop : 1}}>
-//                     <Typography sx={{fontFamily:'Poppins_400Regular', fontSize:14}}>Most time on an activity</Typography>
-//                     <Typography sx={{fontFamily:'Poppins_700Bold', fontSize:14}}>TIME</Typography>
-//                 </Box>
-//             </Box>
-//         </Container>
-//     )
-// }
+    return (
+        <View style={{padding:20 }}>
+            <Text style={{ fontSize:18, color:"black"}}>Highlight</Text>
+            <View style={{ display: 'flex', flexDirection: 'Column', justifyContent: 'center', marginTop: 5, border : 1, borderRadius: 4, borderColor: 'lightgrey',padding:2 }}>
+                <View style={styles.section}>
+                    <Text style={styles.title}>Best Streak</Text>
+                    <Text style={styles.stats}>4</Text>
+                </View>
+                <View style={styles.section}>
+                    <Text style={styles.title}>Most completed activity</Text>
+                    <Text style={styles.stats}>Guitar</Text>
+                </View>
+                <View style={styles.section}>
+                    <Text style={styles.title}>Most completed goal</Text>
+                    <Text style={styles.stats}>Guitar goal</Text>
+                </View>
+                <View style={styles.section}>
+                    <Text style={styles.title}>Most time on an activity</Text>
+                    <Text style={styles.stats}>TIME</Text>
+                </View>
+            </View>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    stats:{
+        color:"#DD7A34"
+    },
+    title : {
+        color:"black"
+    },
+    section:{
+        display: 'flex', flexDirection: 'row', justifyContent:'space-between', marginTop : 10
+    }
+})

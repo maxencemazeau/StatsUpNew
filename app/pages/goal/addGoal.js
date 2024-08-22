@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Input, Button, Checkbox, Form, Card, Label } from 'tamagui';
+import { Text, Input, Button, Checkbox, Form, Card } from 'tamagui';
 import { Check } from '@tamagui/lucide-icons';
 import { CheckDuplicate } from '../../utils/CheckDuplicate';
 import axios from 'axios';
@@ -56,7 +56,7 @@ export default function AddGoal({ UserId, SuccessOrError }) {
         <Text sixe="$4">Create a new goal</Text>
         <FormProvider {...control}>
           <Form>
-            <Label style={styles.labelStyle}>Goal name</Label>
+            <Text style={styles.TextStyle}>Goal name</Text>
             <Controller
               name="goalName"
               control={control}
@@ -82,8 +82,8 @@ export default function AddGoal({ UserId, SuccessOrError }) {
             />
             <>
               <View style={styles.line}>
-                <View style={styles.inputWithLabel}>
-                  <Label style={styles.labelStyle}>Time frame</Label>
+                <View style={styles.inputWithText}>
+                  <Text style={styles.TextStyle}>Time frame</Text>
                   <Controller
                     name="timeFrame"
                     control={control}
@@ -93,8 +93,8 @@ export default function AddGoal({ UserId, SuccessOrError }) {
                     )}
                   />
                 </View>
-                <View style={styles.inputWithLabel}>
-                  <Label style={styles.labelStyle}>Frequence</Label>
+                <View style={styles.inputWithText}>
+                  <Text style={styles.TextStyle}>Frequence</Text>
                   <Controller
                     name="Frequence"
                     control={control}
@@ -155,10 +155,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  labelStyle: {
-    color: "black"
+  TextStyle: {
+    color: "black",
+    marginBottom:5,
+    marginTop:15
   },
-  inputWithLabel: {
+  inputWithText: {
     flex: 1
   },
 });

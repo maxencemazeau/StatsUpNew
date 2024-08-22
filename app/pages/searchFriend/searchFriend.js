@@ -1,21 +1,21 @@
-// import React from "react"
-// import SearchBar from "../../components/searchFriend/searchBar"
-// import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-// import { Link } from 'expo-router'
-// import { Container } from "@mui/material"
-// import SearchResults from "../../components/searchFriend/searchResults"
+import React from "react"
+import SearchBar from "../../components/searchFriend/searchBar"
+import { ArrowLeft } from "@tamagui/lucide-icons"
+import { Link } from 'expo-router'
+import { View } from "react-native"
+import SearchResults from "../../components/searchFriend/searchResults"
 
 
-// export default function SearchFriend(){
+export default function SearchFriend(){
 
 
-//     return(
-//         <Container sx={{padding:2}}>
-//             <Link href='/pages/home/reduxHomeProvider'>
-//                 <ArrowBackIcon />
-//             </Link>
-//             <SearchBar />
-//             <SearchResults/>
-//         </Container>
-//     )
-// }
+    return(
+        <View style={{padding:20}}>
+            <Link href='/pages/home/home'>
+                <ArrowLeft size="$2" color={"black"}/>
+            </Link>
+            <SearchBar />
+            <SearchResults/>
+        </View>
+    )
+}

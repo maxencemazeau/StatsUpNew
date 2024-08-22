@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { View, StyleSheet, Image } from "react-native"
 import { Home, Plus, Search } from "@tamagui/lucide-icons"
 import { Button, Group, Avatar } from "tamagui"
+import { useRouter } from "expo-router"
 import AddActivity from "../pages/activity/addActivity";
 import CreateActivityAndGoal from "../pages/swipeableDrawer/createActivityAndGoal";
 import { Sheet, Text } from "tamagui";
@@ -10,11 +11,18 @@ function BottomMenu() {
 
     const [open, setOpen] = useState(false);
     const [position, setPosition] = useState(0);
-
+    const router = useRouter()
     const [value, setValue] = useState(0)
 
     const toggle = () => {
         setModal(prevState => !prevState)
+    }
+
+    const navigateTo = (page) => {
+        router.push({
+            // pathname: '/pages/searchFriend/searchFriend'
+            pathname: `/pages${page}`
+        });
     }
 
     return (
@@ -28,15 +36,21 @@ function BottomMenu() {
                         <Button style={styles.groupButton} icon={<Plus size="$2" color={"black"}/>}  onPress={() => setOpen((x) => !x)}/>
                     </Group.Item>
                     <Group.Item>
-                        <Button style={styles.groupButton} icon={<Search size="$2" color={"black"}/>}/>
+                        <Button style={styles.groupButton} icon={<Search size="$2" color={"black"}/>} onPress={()=>navigateTo("/searchFriend/searchFriend")}/>
                     </Group.Item>
                     <Group.Item>
-                        <Avatar circular size="$3">
+                        <Button  style={styles.groupButton} icon={<Avatar circular size="$3">
                             <Avatar.Image
                                 source={require("../assets/maxence.jpg")}
                             />
                             <Avatar.Fallback bc="lightgrey" />
-                        </Avatar>
+                        </Avatar>} onPress={()=>navigateTo("/profil/profil")}></Button>
+                        {/* <Avatar circular size="$3">
+                            <Avatar.Image
+                                source={require("../assets/maxence.jpg")}
+                            />
+                            <Avatar.Fallback bc="lightgrey" />
+                        </Avatar> */}
                     </Group.Item>
                 </Group>
             </View>

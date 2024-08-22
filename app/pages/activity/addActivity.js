@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Input, Button, Label, Form } from 'tamagui';
+import { Text, Input, Button, Form } from 'tamagui';
 import { Check } from '@tamagui/lucide-icons';
 import axios from 'axios';
 import { addActivity, checkActivityNameDuplicate } from '../../axiosPath/axiosPath';
@@ -73,7 +73,7 @@ export default function AddActivity({ UserId, SuccessOrError }) {
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <>
-                  <Label style={styles.labelStyle}>Activity Name</Label>
+                  <Text style={styles.TextStyle}>Activity Name</Text>
                   <Input
                     value={value}
                     onBlur={onBlur}
@@ -118,7 +118,7 @@ export default function AddActivity({ UserId, SuccessOrError }) {
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <>
-                      <Label style={styles.labelStyle}>Goal name</Label>
+                      <Text style={styles.TextStyle}>Goal name</Text>
                       <Input
                         style={styles.inputField}
                         value={value}
@@ -130,8 +130,8 @@ export default function AddActivity({ UserId, SuccessOrError }) {
                   )}
                 />
                 <View style={styles.line}>
-                  <View style={styles.inputWithLabel}>
-                    <Label style={styles.labelStyle}>Time frame</Label>
+                  <View style={styles.inputWithText}>
+                    <Text style={styles.TextStyle}>Time frame</Text>
                     <Controller
                       name="timeFrame"
                       control={control}
@@ -141,8 +141,8 @@ export default function AddActivity({ UserId, SuccessOrError }) {
                       )}
                     />
                   </View>
-                  <View style={styles.inputWithLabel}>
-                    <Label style={styles.labelStyle}>Frequence</Label>
+                  <View style={styles.inputWithText}>
+                    <Text style={styles.TextStyle}>Frequence</Text>
                     <Controller
                       name="Frequence"
                       control={control}
@@ -205,10 +205,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  inputWithLabel: {
+  inputWithText: {
     flex: 1
   },
-  labelStyle: {
+  TextStyle: {
     color: "black",
+    marginBottom:5,
+    marginTop:15
   }
 });

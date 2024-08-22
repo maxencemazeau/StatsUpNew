@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Text, Input, Button, Label, Form, SizableText } from 'tamagui'
+import { Text, Input, Button, Form, SizableText } from 'tamagui'
 import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Message } from '../../reduxState/message/messageSlice';
@@ -190,7 +190,7 @@ export default function ActivityInformation({ activityID }) {
                             rules={{ required: true }}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Label style={styles.labelStyle}>Activity Name</Label>
+                                    <Text style={styles.TextStyle}>Activity Name</Text>
                                     <Input
                                         value={value}
                                         onBlur={() => { onBlur(); checkActivityChanged("activityName", value) }}
@@ -238,7 +238,7 @@ export default function ActivityInformation({ activityID }) {
                                     rules={{ required: true }}
                                     render={({ field: { onChange, onBlur, value } }) => (
                                         <>
-                                            <Label style={styles.labelStyle}>Goal name</Label>
+                                            <Text style={styles.TextStyle}>Goal name</Text>
                                             <Input
                                                 style={styles.inputField}
                                                 value={value}
@@ -251,8 +251,8 @@ export default function ActivityInformation({ activityID }) {
                                     )}
                                 />
                                 <View style={styles.line}>
-                                    <View style={styles.inputWithLabel}>
-                                        <Label style={styles.labelStyle}>Time frame</Label>
+                                    <View style={styles.inputWithText}>
+                                        <Text style={styles.TextStyle}>Time frame</Text>
                                         <Controller
                                             name="timeFrame"
                                             control={control}
@@ -262,8 +262,8 @@ export default function ActivityInformation({ activityID }) {
                                             )}
                                         />
                                     </View>
-                                    <View style={styles.inputWithLabel}>
-                                        <Label style={styles.labelStyle}>Frequence</Label>
+                                    <View style={styles.inputWithText}>
+                                        <Text style={styles.TextStyle}>Frequence</Text>
                                         <Controller
                                             name="Frequence"
                                             control={control}
@@ -326,10 +326,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
     },
-    inputWithLabel: {
+    inputWithText: {
         flex: 1
     },
-    labelStyle: {
+    TextStyle: {
         color: "black",
+        marginBottom:5,
+        marginTop:15
     }
 });

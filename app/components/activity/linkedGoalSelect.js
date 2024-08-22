@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { ChevronDown, ChevronUp, Check } from '@tamagui/lucide-icons'
 import { getAllUserGoal } from "../../axiosPath/axiosPath"
 import { Separator, Select } from "tamagui"
-import { Adapt, Label, Sheet, YStack, } from 'tamagui'
+import { Adapt, Text, Sheet, YStack, } from 'tamagui'
 import axios from "axios"
 
 export default function LinkedGoalSelect({ defaultValue = -1, forUpdate = false, setShowGoalNameInput, onChange, checkActivityChanged = null, UserId }) {
@@ -45,7 +45,7 @@ export default function LinkedGoalSelect({ defaultValue = -1, forUpdate = false,
 
     return (
         <>
-            <Label width={90} color={"black"}>Link goal</Label>
+            <Text width={90} color={"black"} style={{marginBottom:5, marginTop:15}}>Link goal</Text>
             <Select value={val} onValueChange={(value) => { setVal(value); handleValueChange(value); }} onBlur={() => handleBlur(val)} disablePreventBodyScroll defaultValue={-1}>
                 <Select.Trigger iconAfter={<ChevronDown color={"black"} size={20} />} style={{ backgroundColor: "white", height: 50 }}>
                     <Select.Value color={"black"} />

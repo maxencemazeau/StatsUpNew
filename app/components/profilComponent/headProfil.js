@@ -1,34 +1,30 @@
-// import React from 'react'
-// import { Image, StyleSheet } from 'react-native';
-// import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-// import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins'
-// import { Link } from 'expo-router'
-// import { Container, Typography, Box, Button } from "@mui/material"
+import React from 'react'
+import { Image, StyleSheet, View } from 'react-native';
+import { ArrowLeft } from '@tamagui/lucide-icons';
+import { Text, Button } from "tamagui"
+import { Link } from 'expo-router'
 
-// export default function HeadProfil(){
+export default function HeadProfil(){
 
-//     const [fontsLoad] = useFonts({
-//         Poppins_400Regular, Poppins_700Bold,
-//     })
 
-//     return(
-//             <Container sx={{padding:0}}>
-//                     <Link href='/pages/home/reduxHomeProvider'>
-//                         <ArrowBackIcon />
-//                     </Link>
-//                 <Box sx={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', marginTop:5}}>
-//                     <Image source={require("../../assets/maxence.jpg")} style={style.image}/>
-//                     <Typography sx={{fontFamily:'Poppins_700Bold', fontSize:20, marginTop:2}}>Maxence Mazeau</Typography>
-//                     <Button variant={"contained"} sx={{ bgcolor: "#DD7A34", marginTop: 1 }} color={"warning"} disableElevation>Follow</Button>
-//                 </Box>
-//             </Container>
-//     )
-// }
+    return(
+            <View style={{padding:20}}>
+                    <Link href='/pages/home/home'>
+                        <ArrowLeft color={"black"}/>
+                    </Link>
+                <View style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', marginTop:5}}>
+                    <Image source={require("../../assets/maxence.jpg")} style={style.image}/>
+                    <Text style={{fontSize:20, marginTop:10, color:"black"}}>Maxence Mazeau</Text>
+                    <Button style={{ bgcolor: "#DD7A34", marginTop: 10 }}>Follow</Button>
+                </View>
+            </View>
+    )
+}
 
-// const style = StyleSheet.create({
-//     image:{
-//         width:200,
-//         height:200,
-//         borderRadius : 100
-//     }
-// })
+const style = StyleSheet.create({
+    image:{
+        width:200,
+        height:200,
+        borderRadius : 100
+    }
+})

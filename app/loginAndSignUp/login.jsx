@@ -24,21 +24,22 @@ export default function Login() {
       };
 
     const handleLogin =  async () => {
-        if (email === '' || password === '') {
-            alert("Please enter your email and password")
-             return
+       if (email === '' || password === '') {
+           alert("Please enter your email and password")
+            return
          }
 
          try {
-             const response = await axios.post(userLogin, {
-                 email: email,
-                password: password,
-             })
+            const response = await axios.post(userLogin, {
+                email: email,
+               password: password,
+            })
              dispatch(setLogin(response.data));
-
+             const User = { UserID : 67}
+            dispatch(setLogin(User))
             router.push('/pages/home/home');
          } catch (error) {
-             console.error(error)
+            console.error(error)
              alert("An error occurred during login. Please try again.")
 
          }

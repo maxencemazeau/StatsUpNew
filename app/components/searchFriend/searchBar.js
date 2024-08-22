@@ -1,27 +1,24 @@
-// import React, { useState } from "react"
-// import { TextField, Button, Container } from "@mui/material"
-// import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins'
+import React, { useState } from "react"
+import { View } from "react-native"
+import { Input } from "tamagui"
 
-// export default function SearchBar(){
+export default function SearchBar(){
 
-//     const [searchFocus, setSearchFocus] = useState(false)
+    const [searchFocus, setSearchFocus] = useState(false)
 
-//     const OnFocusSearchFocusState = () => {
-//         setSearchFocus(true)
-//     }
+    const OnFocusSearchFocusState = () => {
+        setSearchFocus(true)
+    }
 
-//     const OnBlurSearchFocusState = () => {
-//         setSearchFocus(false)
-//     }
+    const OnBlurSearchFocusState = () => {
+        setSearchFocus(false)
+    }
 
-//     const [fontsLoad] = useFonts({
-//         Poppins_400Regular, Poppins_700Bold,
-//     })
 
-//     return (
-//         <Container sx={{display:'flex', direction: "row", gap : 2, marginTop:2, alignItems:'center', padding:0}}>
-//             <TextField hiddenLabel placeholder="Search username" fullWidth color={'warning'} sx={{borderRadius:25, fontFamily:'Poppins_400Regular'}} onFocus={OnFocusSearchFocusState} onBlur={OnBlurSearchFocusState}></TextField>
-//             {searchFocus && <Button sx={{fontFamily: 'Poppins_400Regular', color:'black'}}>Cancel</Button>}
-//         </Container>
-//     )
-// }
+    return (
+        <View style={{display:'flex', direction: "row", gap : 20, marginTop:20, alignItems:'center', padding:0}}>
+            <Input placeholder="Search username" style={{ width: "100%", backgroundColor: "white", color: "black" }}></Input>
+            {searchFocus && <Button>Cancel</Button>}
+        </View>
+    )
+}
