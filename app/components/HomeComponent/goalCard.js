@@ -12,6 +12,7 @@ import HomeCardSkeleton from "../skeleton/homeCardSkeleton";
 import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
+import useGetUserId from "../../hooks/useGetUserId";
 
 export default function GoalCard({ goalOffset }) {
 
@@ -19,8 +20,7 @@ export default function GoalCard({ goalOffset }) {
     const showDeleteIcon = useSelector((state) => state.showDelete.value)
     const queryClient = useQueryClient();
     const dispatch = useDispatch()
-    const User = useSelector((state) => state.login.user)
-    const UserId = User.user[0].UserID
+    const UserId = useGetUserId()
     const router = useRouter()
 
     const { data: goalList } = useQuery({

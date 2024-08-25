@@ -25,3 +25,9 @@ export const getActiviHistory = baseUrl + `getActivityHistory`
 export const getUserGoalByID = baseUrl + `getUserGoalByID`
 export const linkedActivityToGoal = baseUrl + `getLinkedActivityToGoal`
 export const getAllActivityGoalStats = baseUrl + `getAllActivityGoalStats`
+
+//SearchFriend
+export const getSearchUser = baseUrl + `getSearchUser`
+export const followUser = baseUrl + `followUser`
+export const unFollowUser = baseUrl + `unFollowUser`
+export const getProfilInfoAndStats = baseUrl + `getProfilInfoAndStats`

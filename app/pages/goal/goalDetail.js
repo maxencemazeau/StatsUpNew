@@ -44,7 +44,6 @@ export default function GoalDetail() {
         dispatch(resetGoalOffset())
         dispatch(Message({ messageType: type, messageText: message }));
         dispatch(loadingError(true));
-        console.log(goalInfo)
         queryClient.setQueryData(["userGoal", goalID], oldData => {
             return { ...oldData, GoalName: goalName };
         });

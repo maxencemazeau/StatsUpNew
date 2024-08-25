@@ -26,9 +26,6 @@ export default function Home() {
   const loadingError = useSelector((state) => state.loadingError.value);
   const [appState, setAppState] = useState(AppState.currentState);
   const queryClient = useQueryClient()
-  const User = useSelector((state) => state.login.user)
-  console.log(User.UserID)
-  //const UserId = User.user[0].UserID
   const UserId = useGetUserId()
   let newActivityOffset = activityOffset
   let newGoalOffset = goalOffset

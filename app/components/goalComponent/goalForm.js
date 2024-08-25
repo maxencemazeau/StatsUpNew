@@ -38,6 +38,10 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
     } = useForm({ defaultValues });
     const onSubmit = async (data) => {
         try {
+
+            if (hasGoalChanged !== true && linkedActivity.length === 0) {
+                return
+            }
             let response = []
             const checkDuplicate = await CheckDuplicate("Goal", data.goalName, UserId)
 
@@ -59,10 +63,12 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
                             GoalName: data.goalName,
                             TimeFrameID: data.timeFrame,
                             Frequence: data.Frequence,
+                            LinkActivity: linkedActivity
                         },
                     });
                 }
                 if (response.data == 1) {
+                    setHasGoalChanged(false)
                     if (goalID === 0) {
                         SuccessOrError('SUCCESS', `Goal successfully created !`);
                     } else {
@@ -120,7 +126,7 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
                                     <Input
                                         value={value}
                                         onBlur={onBlur}
-                                        onChangeText={onChange}
+                                        onChangeText={(text) => { onChange(text); checkGoalChanged("goalName", text) }}
                                         style={{
                                             width: '100%',
                                             backgroundColor: 'white',
@@ -157,7 +163,7 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
                                                 style={styles.inputField}
                                                 value={value}
                                                 onBlur={onBlur}
-                                                onChangeText={onChange}
+                                                onChangeText={(text) => { onChange(text); checkGoalChanged("frequence", text) }}
                                                 keyboardType="numeric"
                                             />
                                         )}
@@ -211,7 +217,7 @@ const styles = StyleSheet.create({
     TextStyle: {
         color: "black",
         marginBottom: 5,
-        marginTop:15
+        marginTop: 15
     },
     inputWithText: {
         flex: 1

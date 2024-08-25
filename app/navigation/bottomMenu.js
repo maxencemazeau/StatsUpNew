@@ -6,12 +6,14 @@ import { useRouter } from "expo-router"
 import AddActivity from "../pages/activity/addActivity";
 import CreateActivityAndGoal from "../pages/swipeableDrawer/createActivityAndGoal";
 import { Sheet, Text } from "tamagui";
+import useGetUserId from "../hooks/useGetUserId"
 
 function BottomMenu() {
 
     const [open, setOpen] = useState(false);
     const [position, setPosition] = useState(0);
     const router = useRouter()
+    const UserId = useGetUserId()
     const [value, setValue] = useState(0)
 
     const toggle = () => {
@@ -21,7 +23,8 @@ function BottomMenu() {
     const navigateTo = (page) => {
         router.push({
             // pathname: '/pages/searchFriend/searchFriend'
-            pathname: `/pages${page}`
+            pathname: `/pages${page}`,
+            ...(page === '/profil/profil' && { params: { UserID: UserId } })
         });
     }
 
@@ -30,21 +33,21 @@ function BottomMenu() {
             <View style={styles.container}>
                 <Group orientation="horizontal" style={styles.group}>
                     <Group.Item>
-                        <Button style={styles.groupButton} icon={<Home size="$2" color={"black"}/>}/>
+                        <Button style={styles.groupButton} icon={<Home size="$2" color={"black"} />} />
                     </Group.Item>
                     <Group.Item>
-                        <Button style={styles.groupButton} icon={<Plus size="$2" color={"black"}/>}  onPress={() => setOpen((x) => !x)}/>
+                        <Button style={styles.groupButton} icon={<Plus size="$2" color={"black"} />} onPress={() => setOpen((x) => !x)} />
                     </Group.Item>
                     <Group.Item>
-                        <Button style={styles.groupButton} icon={<Search size="$2" color={"black"}/>} onPress={()=>navigateTo("/searchFriend/searchFriend")}/>
+                        <Button style={styles.groupButton} icon={<Search size="$2" color={"black"} />} onPress={() => navigateTo("/searchFriend/searchFriend")} />
                     </Group.Item>
                     <Group.Item>
-                        <Button  style={styles.groupButton} icon={<Avatar circular size="$3">
+                        <Button style={styles.groupButton} icon={<Avatar circular size="$3">
                             <Avatar.Image
                                 source={require("../assets/maxence.jpg")}
                             />
                             <Avatar.Fallback bc="lightgrey" />
-                        </Avatar>} onPress={()=>navigateTo("/profil/profil")}></Button>
+                        </Avatar>} onPress={() => navigateTo("/profil/profil")}></Button>
                         {/* <Avatar circular size="$3">
                             <Avatar.Image
                                 source={require("../assets/maxence.jpg")}
@@ -54,8 +57,8 @@ function BottomMenu() {
                     </Group.Item>
                 </Group>
             </View>
-            
-            {open && <CreateActivityAndGoal open={open} setOpen={setOpen} position={position} setPosition={setPosition}/>}
+
+            {open && <CreateActivityAndGoal open={open} setOpen={setOpen} position={position} setPosition={setPosition} />}
 
         </>
     )
@@ -73,18 +76,18 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 5,
-        height:50
+        height: 50
     },
-    group:{
-        display:"flex", 
-        justifyContent: "space-evenly", 
-        alignItems:"center", 
-        width:"100%", 
-        backgroundColor: "white", 
-        borderRadius:0
+    group: {
+        display: "flex",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        width: "100%",
+        backgroundColor: "white",
+        borderRadius: 0
     },
-    groupButton:{
-        backgroundColor:"white",
+    groupButton: {
+        backgroundColor: "white",
     }
 })
 
