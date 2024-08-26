@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, StyleSheet } from "react-native"
 import { Text } from "tamagui"
+import { theUserProfil } from '../../pages/profil/profil'
 
 export default function Highlight() {
 
+    const { userProfil, UserID } = useContext(theUserProfil)
 
     return (
         <View style={{padding:20 }}>
@@ -15,11 +17,11 @@ export default function Highlight() {
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.title}>Most completed activity</Text>
-                    <Text style={styles.stats}>Guitar</Text>
+                    <Text style={styles.stats}>{userProfil?.MostDoneActivity}</Text>
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.title}>Most completed goal</Text>
-                    <Text style={styles.stats}>Guitar goal</Text>
+                    <Text style={styles.stats}>{userProfil?.MostDoneGoal}</Text>
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.title}>Most time on an activity</Text>

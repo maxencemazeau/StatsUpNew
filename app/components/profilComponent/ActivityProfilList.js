@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, StyleSheet } from "react-native"
 import { Text, Separator } from "tamagui"
+import { theUserProfil } from '../../pages/profil/profil'
+import { useQuery, useQueryClient } from "react-query";
+import axios from 'axios'
+import { getActivityProfilList } from '../../axiosPath/axiosPath';
 
 export default function ActivityProfilList() {
 
+    const { UserID } = useContext(theUserProfil)
+
+    const LoadUserProfilActivity = async() => {
+        const response = await axios.get(getActivityProfilList, { params : { UserId: UserID}})
+        return response.data[0]
+    }
+
+    const { data: userProfilActivity, isLoading } = useQuery({
+        queryFn: async () => LoadUserProfilAnbStats(),
+        queryKey: ["userProfilActivity"],
+    })
 
     return (
         <View style={{ paddingRight: 20, paddingLeft:20 }}>

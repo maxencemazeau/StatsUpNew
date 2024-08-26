@@ -1,24 +1,29 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, StyleSheet } from "react-native"
 import { Text, Separator } from "tamagui"
+import { theUserProfil } from '../../pages/profil/profil'
 
 export default function MainStatsProfil() {
+
+    const { userProfil, UserID } = useContext(theUserProfil)
+
+    let roundedSuccessRate = Math.floor(userProfil?.SuccessRate);
 
     return (
         <View style={{paddingRight:20, paddingLeft:20}}>
         <View style={styles.container}>
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{...styles.StatsNumber, color: '#DD7A34' }}>40</Text>
+                <Text style={{...styles.StatsNumber, color: '#DD7A34' }}>{userProfil?.TotalActivity}</Text>
                 <Text style={styles.titleStats}>Total activity</Text>
             </View>
             <Separator alignSelf="stretch" vertical />
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={styles.StatsNumber}>20/30</Text>
+                <Text style={styles.StatsNumber}>{userProfil?.TotalAchievedGoals}/{userProfil?.TotalGoals}</Text>
                 <Text style={styles.titleStats}>Total goal</Text>
             </View>
             <Separator alignSelf="stretch" vertical/>
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={styles.StatsNumber}>40 %</Text>
+                <Text style={styles.StatsNumber}>{roundedSuccessRate} %</Text>
                 <Text style={styles.titleStats}>Success rate</Text>
             </View>
         

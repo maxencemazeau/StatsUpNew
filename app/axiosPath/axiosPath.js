@@ -30,4 +30,7 @@ export const getAllActivityGoalStats = baseUrl + `getAllActivityGoalStats`
 export const getSearchUser = baseUrl + `getSearchUser`
 export const followUser = baseUrl + `followUser`
 export const unFollowUser = baseUrl + `unFollowUser`
+
+//Profil
 export const getProfilInfoAndStats = baseUrl + `getProfilInfoAndStats`
+export const getActivityProfilList = baseUrl + `getActivityProfilList`
