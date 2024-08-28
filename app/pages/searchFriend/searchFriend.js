@@ -15,7 +15,7 @@ export default function SearchFriend() {
 
     return (
         <searchListContext.Provider value={{ searchResults, setSearchResults }}>
-            <View style={{ padding: 20 }}>
+            <View style={{ padding: 20, marginTop: 20 }}>
                 <Link href='/pages/home/home'>
                     <ArrowLeft size="$2" color={"black"} />
                 </Link>

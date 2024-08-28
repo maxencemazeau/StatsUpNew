@@ -1,62 +1,67 @@
 import React, { useContext } from 'react'
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, TouchableWithoutFeedback } from "react-native"
 import { Text, Separator } from "tamagui"
 import { theUserProfil } from '../../pages/profil/profil'
 import { useQuery, useQueryClient } from "react-query";
+import { useRouter } from 'expo-router';
 import axios from 'axios'
 import { getActivityProfilList } from '../../axiosPath/axiosPath';
 
 export default function ActivityProfilList() {
 
     const { UserID } = useContext(theUserProfil)
+    const router = useRouter()
 
-    const LoadUserProfilActivity = async() => {
-        const response = await axios.get(getActivityProfilList, { params : { UserId: UserID}})
-        return response.data[0]
+    const LoadUserProfilActivity = async () => {
+        const response = await axios.get(getActivityProfilList, { params: { UserId: UserID } })
+        return response.data
     }
 
     const { data: userProfilActivity, isLoading } = useQuery({
-        queryFn: async () => LoadUserProfilAnbStats(),
+        queryFn: async () => LoadUserProfilActivity(),
         queryKey: ["userProfilActivity"],
     })
 
+    const navigateToDetail = (activityID) => {
+        router.push({
+            pathname: '/pages/activity/activityDetail',
+            params: { activityID: activityID }
+        });
+    }
+
     return (
-        <View style={{ paddingRight: 20, paddingLeft:20 }}>
-            <Text style={{fontSize: 18, color:"black" }}>Activity List</Text>
-            <View style={{ display: 'flex', flexDirection: 'Column', justifyContent: 'center' }}>
-                <View style={styles.container}>
-                    <View style={styles.subContainer}>
-                        <Text style={{  color:"black" }}>Gym</Text>
-                        <Text style={{  color: 'grey' }}>Goal name, x per week</Text>
-                    </View>
-                    <View style={styles.subContainer}>
-                        <Text style={{   color: '#DD7A34', alignSelf:'flex-end' }}>12</Text>
-                        <Text style={{  color: 'grey' }}>6/10</Text>
-                    </View>
-                </View>
-                <Separator/>
-                <View style={styles.container}>
-                    <View style={styles.subContainer}>
-                        <Text style={{  color:"black" }}>Guitar</Text>
-                        <Text style={{  color: 'grey' }}>Guitar goal, x per week</Text>
-                    </View>
-                    <View style={styles.subContainer}>
-                        <Text style={{ color: '#DD7A34', alignSelf:'flex-end' }}>15</Text>
-                        <Text style={{ color: 'grey' }}>4/4</Text>
-                    </View>
-                </View>
+        <View style={{ paddingRight: 20, paddingLeft: 20, paddingBottom: 20 }}>
+            {userProfilActivity?.length > 0 && <Text style={{ fontSize: 18, color: "black", fontWeight: "bold" }}>Activity List</Text>}
+            <View style={{ display: 'flex', flexDirection: 'Column', justifyContent: 'center', borderRadius: 14, backgroundColor: "white", padding: 10, marginTop: 5 }}>
+                {userProfilActivity?.map((activities, index) => (
+                    <>
+                        {index !== 0 && <Separator height={1} borderColor={"#eeeeee"} />}
+                        <TouchableWithoutFeedback key={activities.ActivityID} onPress={() => navigateToDetail(activities.ActivityID)}>
+                            <View style={styles.container}>
+                                <View style={styles.subContainer}>
+                                    <Text style={{ color: "black", fontSize: 16 }}>{activities.ActivityName}</Text>
+                                    <Text style={{ color: 'grey', fontSize: 14 }}>{activities.GoalName}, {activities.Frequence} per {activities.Frame}</Text>
+                                </View>
+                                <View style={styles.subContainer}>
+                                    <Text style={{ color: '#DD7A34', alignSelf: 'flex-end', fontWeight: "bold", fontSize: 16 }}>{activities.TotalActivity}</Text>
+                                    <Text style={{ color: 'grey', fontSize: 14 }}>{activities.TotalAchievedGoals}/{activities.TotalGoals}</Text>
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </>
+                ))}
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
-        marginTop:10,
-        marginBottom:10
+        marginTop: 10,
+        marginBottom: 10
     },
-    subContainer:{
+    subContainer: {
         display: 'flex', flexDirection: 'column',
     }
 })

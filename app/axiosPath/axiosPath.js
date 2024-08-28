@@ -34,3 +34,6 @@ export const unFollowUser = baseUrl + `unFollowUser`
 //Profil
 export const getProfilInfoAndStats = baseUrl + `getProfilInfoAndStats`
 export const getActivityProfilList = baseUrl + `getActivityProfilList`
+
+//Friend
+export const getFriendList = baseUrl + `getFriendList`

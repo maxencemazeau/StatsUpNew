@@ -33,13 +33,13 @@ function BottomMenu() {
             <View style={styles.container}>
                 <Group orientation="horizontal" style={styles.group}>
                     <Group.Item>
-                        <Button style={styles.groupButton} icon={<Home size="$2" color={"black"} />} />
+                        <Button style={styles.groupButton} icon={<Home size="$2" color={"black"} />} onPress={() => navigateTo("/home/home")} />
                     </Group.Item>
                     <Group.Item>
                         <Button style={styles.groupButton} icon={<Plus size="$2" color={"black"} />} onPress={() => setOpen((x) => !x)} />
                     </Group.Item>
                     <Group.Item>
-                        <Button style={styles.groupButton} icon={<Search size="$2" color={"black"} />} onPress={() => navigateTo("/searchFriend/searchFriend")} />
+                        <Button style={styles.groupButton} icon={<Search size="$2" color={"black"} />} onPress={() => navigateTo("/feed/feed")} />
                     </Group.Item>
                     <Group.Item>
                         <Button style={styles.groupButton} icon={<Avatar circular size="$3">

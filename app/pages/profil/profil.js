@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native';
 import HeadProfil from '../../components/profilComponent/headProfil';
 import MainStatsProfil from '../../components/profilComponent/mainStatsProfil';
@@ -8,6 +8,7 @@ import { useLocalSearchParams } from "expo-router"
 import { getProfilInfoAndStats } from '../../axiosPath/axiosPath';
 import { useQuery, useQueryClient } from "react-query";
 import axios from 'axios'
+import useGetUserId from '../../hooks/useGetUserId';
 
 const theUserProfil = createContext()
 
@@ -16,11 +17,13 @@ export { theUserProfil }
 export default function Profil() {
 
     const { UserID } = useLocalSearchParams(); //Peut etre le User connecter ou un sur lequel on a cliquer
+    const [userInfo, setUserInfo] = useState([])
+    const myUserID = useGetUserId()
 
     const LoadUserProfilAnbStats = async () => {
-        const response = await axios.get(getProfilInfoAndStats, { params: { UserId: UserID } })
-        console.log(response.data)
-        return response.data[0]
+        const response = await axios.get(getProfilInfoAndStats, { params: { UserId: UserID, myUserId: myUserID } })
+        setUserInfo(response.data.userInfo[0])
+        return response.data.userProfil[0]
     }
 
     const { data: userProfil, isLoading } = useQuery({
@@ -29,7 +32,7 @@ export default function Profil() {
     })
 
     return (
-        <theUserProfil.Provider value={{ userProfil, UserID }}>
+        <theUserProfil.Provider value={{ userProfil, UserID, userInfo, setUserInfo }}>
             <View style={{ height: '95%' }}>
                 <ScrollView>
                     <View>
