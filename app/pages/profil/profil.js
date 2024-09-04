@@ -19,6 +19,7 @@ export default function Profil() {
     const { UserID } = useLocalSearchParams(); //Peut etre le User connecter ou un sur lequel on a cliquer
     const [userInfo, setUserInfo] = useState([])
     const myUserID = useGetUserId()
+    const userIdFromSearch = UserID
 
     const LoadUserProfilAnbStats = async () => {
         const response = await axios.get(getProfilInfoAndStats, { params: { UserId: UserID, myUserId: myUserID } })
@@ -28,11 +29,11 @@ export default function Profil() {
 
     const { data: userProfil, isLoading } = useQuery({
         queryFn: async () => LoadUserProfilAnbStats(),
-        queryKey: ["userProfil"],
+        queryKey: ["userProfil", UserID],
     })
 
     return (
-        <theUserProfil.Provider value={{ userProfil, UserID, userInfo, setUserInfo }}>
+        <theUserProfil.Provider value={{ userProfil, userIdFromSearch, userInfo, setUserInfo, userIdFromSearch }}>
             <View style={{ height: '95%' }}>
                 <ScrollView>
                     <View>

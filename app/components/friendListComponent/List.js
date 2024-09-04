@@ -6,7 +6,6 @@ import useGetUserId from "../../hooks/useGetUserId";
 import { getFriendList } from "../../axiosPath/axiosPath";
 import axios from 'axios'
 import { useRouter } from "expo-router";
-import { followOrUnFollow } from "../../utils/followOrUnfollow";
 
 export default function List() {
 

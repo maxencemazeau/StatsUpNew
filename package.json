@@ -52,7 +52,8 @@
     "react-query": "^3.39.3",
     "react-redux": "^9.1.2",
     "redux": "^5.0.1",
-    "tamagui": "^1.101.3"
+    "tamagui": "^1.101.3",
+    "expo-image-picker": "~15.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

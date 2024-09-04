@@ -15,7 +15,7 @@ import PageHeader from "../../components/pageHeader";
 
 export default function ActivityDetail() {
 
-    const { activityID } = useLocalSearchParams();
+    const { activityID, userIdFromSearch } = useLocalSearchParams();
     const [bestActivityStreak, setBestActivityStreak] = useState(0)
     const [activityStats, setActivityStats] = useState([])
     const router = useRouter()
@@ -72,7 +72,7 @@ export default function ActivityDetail() {
                             </View>
                         </View>
                     </View>
-                    {!isLoading && <ActivityInformation activityID={activityID} />}
+                    {(!isLoading && parseInt(userIdFromSearch) === UserId) && <ActivityInformation activityID={activityID} />}
                     <ActivityHistory activityID={activityID} />
                 </View>
             </ScrollView >

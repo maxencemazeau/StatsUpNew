@@ -8,8 +8,16 @@ export default function TimeFrameSelect({ defaultValue = 0, onChange, checkGoalC
 
     const [val, setVal] = useState(defaultValue)
 
+    const handleValueChange = (value) => {
+        setVal(value);
+        onChange(value);
+        if (typeof checkGoalChanged === 'function') {
+            checkGoalChanged("timeFrame", value)
+        }
+    }
+
     return (
-        <Select value={val} onValueChange={(value) => { setVal(value); onChange(value); checkGoalChanged("timeFrame", value) }} disablePreventBodyScroll>
+        <Select value={val} onValueChange={(value) => handleValueChange(value)} disablePreventBodyScroll>
             <Select.Trigger iconAfter={< ChevronDown color={"black"} size={20} />} style={{ backgroundColor: "white", height: 50 }}>
                 <Select.Value color={"black"} />
             </Select.Trigger >

@@ -21,28 +21,27 @@ export default function Login() {
 
     const navigateToSignUp = () => {
         router.push('loginAndSignUp/signUp'); // Navigate to the SignUp screen
-      };
+    };
 
-    const handleLogin =  async () => {
-       if (email === '' || password === '') {
-           alert("Please enter your email and password")
+    const handleLogin = async () => {
+        if (email === '' || password === '') {
+            alert("Please enter your email and password")
             return
-         }
+        }
 
-         try {
+        try {
             const response = await axios.post(userLogin, {
                 email: email,
-               password: password,
+                password: password,
             })
-             dispatch(setLogin(response.data));
-             const User = { UserID : 67}
-            dispatch(setLogin(User))
-            router.push('/pages/home/home');
-         } catch (error) {
-            console.error(error)
-             alert("An error occurred during login. Please try again.")
 
-         }
+            dispatch(setLogin(response.data));
+            router.push('/pages/home/home');
+        } catch (error) {
+            console.error(error)
+            alert("An error occurred during login. Please try again.")
+
+        }
     };
 
     return (
@@ -62,7 +61,7 @@ export default function Login() {
                     }}>
                         <Input size="$5"
                             placeholder="Email"
-                            style={{ width: "100%", backgroundColor: "white", marginTop:20, marginBottom: 20, color: "black" }}
+                            style={{ width: "100%", backgroundColor: "white", marginTop: 20, marginBottom: 20, color: "black" }}
                             value={email}
                             onChangeText={(text) => setEmail(text)}
                         />
@@ -72,20 +71,20 @@ export default function Login() {
                             margin="normal"
                             style={{ width: "100%", backgroundColor: "white", marginBottom: 20, color: "black" }}
                             value={password}
-                            onChangeText={(text) => {setPassword(text)}}
+                            onChangeText={(text) => { setPassword(text) }}
                         />
                         <Button size="$5" style={{
                             backgroundColor: "#DD7A34", marginTop: 1, width: "100%", marginBottom: 20,
                         }}
-                        onPress={handleLogin}
+                            onPress={handleLogin}
                         >LOGIN
                         </Button>
                         <Separator />
-                            <Button
+                        <Button
                             size="$5"
-                                style={{
-                                    marginTop: 20, width: "100%", border: 1, borderColor: "lightgrey"
-                                }} onPress={navigateToSignUp}>SIGN UP</Button>
+                            style={{
+                                marginTop: 20, width: "100%", border: 1, borderColor: "lightgrey"
+                            }} onPress={navigateToSignUp}>SIGN UP</Button>
                     </View>
                 </ScrollView >
             </View>

@@ -1,11 +1,23 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet } from "react-native"
 import { Text } from "tamagui"
 import { theUserProfil } from '../../pages/profil/profil'
+import axios from "axios"
+import { getBestGoalStreak } from '../../axiosPath/axiosPath'
 
 export default function Highlight() {
 
-    const { userProfil, UserID } = useContext(theUserProfil)
+    const { userProfil, userIdFromSearch } = useContext(theUserProfil)
+    const [bestStreak, setBeastStreak] = useState(0)
+
+    useEffect(() => {
+        const getActivityStats = async () => {
+            const response = await axios.get(getBestGoalStreak, { params: { UserId: userIdFromSearch } })
+            setBeastStreak(response.data)
+        }
+
+        getActivityStats()
+    }, [])
 
     return (
         <View style={{ padding: 20 }}>
@@ -16,7 +28,7 @@ export default function Highlight() {
             }}>
                 <View style={styles.section}>
                     <Text style={styles.title}>Best Streak</Text>
-                    <Text style={styles.stats}>4</Text>
+                    <Text style={styles.stats}>{bestStreak}</Text>
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.title}>Most completed activity</Text>

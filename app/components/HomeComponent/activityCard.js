@@ -145,7 +145,7 @@ export default function ActivityCard({ activityOffset, appState }) {
         setActivityListDuplicate([])
         router.push({
             pathname: '/pages/activity/activityDetail',
-            params: { activityID: activityID }
+            params: { activityID: activityID, userIdFromSearch: UserId }
         });
     }
 

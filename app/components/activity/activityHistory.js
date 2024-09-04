@@ -62,42 +62,46 @@ export default function ActivityHistory({ activityID }) {
 
     return (
         <View>
-            <Text style={{ fontSize: 18, color: "black", paddingTop: 15, paddingBottom: 5 }}>History</Text>
-            {activityHistory?.map(history => (
-                <View key={history.ActivityHistoryID} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: "center", padding: 10, backgroundColor: "white", borderRadius: 10, marginBottom: 10 }}>
-                    {history.Succeed === 1 ? (
-                        <>
-                            <CheckCircle2 color={"green"} />
-                            <Text style={{ fontSize: 14, color: 'green' }}>
-                                {history.Count}/{history.Frequence}
-                            </Text>
-                        </>
-                    ) : history.Succeed === -1 ? (
-                        <>
-                            <XCircle color={"#D34146"} />
-                            <Text style={{ fontSize: 14, color: '#D34146' }}>
-                                {history.Count}/{history.Frequence}
-                            </Text>
-                        </>
-                    ) : (
-                        <>
-                            <Circle color={"grey"} />
-                            <Text style={{ fontSize: 14, color: 'grey' }}>
-                                {history.Count}/{history.Frequence}
-                            </Text>
-                        </>
-                    )}
-                    <Text style={{ fontSize: 14, color: "black" }}>{history.TimeStamp}</Text>
-                </View>
-            ))}
-            <View style={{ display: "flex", flexDirection: "row", alignItems: 'center', gap: 10 }}>
-                <Button icon={<ChevronLeft size={"$1"} />} onPress={() => previousHistoryData()} disabled={isLeftButtonDisabled} />
-                <View style={{ ...styles.flexContainer, backgroundColor: "#191919", height: 44, width: 60, borderRadius: 10 }}>
-                    <Text style={{ fontSize: 16, color: "white" }}>{actualPageNumber}/{numberOfPage}</Text>
-                </View>
-                <Button icon={<ChevronRight size={"$1"} />} onPress={() => nextHistoryData()} disabled={isRightButtonDisabled} />
-            </View>
-        </View >
+            {activityHistory?.length > 0 &&
+                <>
+                    <Text style={{ fontSize: 18, color: "black", paddingTop: 15, paddingBottom: 5 }}>History</Text>
+                    {activityHistory?.map(history => (
+                        <View key={history.ActivityHistoryID} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: "center", padding: 10, backgroundColor: "white", borderRadius: 10, marginBottom: 10 }}>
+                            {history.Succeed === 1 ? (
+                                <>
+                                    <CheckCircle2 color={"green"} />
+                                    <Text style={{ fontSize: 14, color: 'green' }}>
+                                        {history.Count}/{history.Frequence}
+                                    </Text>
+                                </>
+                            ) : history.Succeed === -1 ? (
+                                <>
+                                    <XCircle color={"#D34146"} />
+                                    <Text style={{ fontSize: 14, color: '#D34146' }}>
+                                        {history.Count}/{history.Frequence}
+                                    </Text>
+                                </>
+                            ) : (
+                                <>
+                                    <Circle color={"grey"} />
+                                    <Text style={{ fontSize: 14, color: 'grey' }}>
+                                        {history.Count}/{history.Frequence}
+                                    </Text>
+                                </>
+                            )}
+                            <Text style={{ fontSize: 14, color: "black" }}>{history.TimeStamp}</Text>
+                        </View>
+                    ))}
+                    <View style={{ display: "flex", flexDirection: "row", alignItems: 'center', gap: 10 }}>
+                        <Button icon={<ChevronLeft size={"$1"} />} onPress={() => previousHistoryData()} disabled={isLeftButtonDisabled} />
+                        <View style={{ ...styles.flexContainer, backgroundColor: "#191919", height: 44, width: 60, borderRadius: 10 }}>
+                            <Text style={{ fontSize: 16, color: "white" }}>{actualPageNumber}/{numberOfPage}</Text>
+                        </View>
+                        <Button icon={<ChevronRight size={"$1"} />} onPress={() => nextHistoryData()} disabled={isRightButtonDisabled} />
+                    </View>
+                </>
+            }
+        </View>
     )
 }
 

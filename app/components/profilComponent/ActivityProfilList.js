@@ -9,11 +9,11 @@ import { getActivityProfilList } from '../../axiosPath/axiosPath';
 
 export default function ActivityProfilList() {
 
-    const { UserID } = useContext(theUserProfil)
+    const { userIdFromSearch } = useContext(theUserProfil)
     const router = useRouter()
 
     const LoadUserProfilActivity = async () => {
-        const response = await axios.get(getActivityProfilList, { params: { UserId: UserID } })
+        const response = await axios.get(getActivityProfilList, { params: { UserId: userIdFromSearch } })
         return response.data
     }
 
@@ -25,32 +25,37 @@ export default function ActivityProfilList() {
     const navigateToDetail = (activityID) => {
         router.push({
             pathname: '/pages/activity/activityDetail',
-            params: { activityID: activityID }
+            params: { activityID: activityID, userIdFromSearch: userIdFromSearch }
         });
     }
 
     return (
         <View style={{ paddingRight: 20, paddingLeft: 20, paddingBottom: 20 }}>
-            {userProfilActivity?.length > 0 && <Text style={{ fontSize: 18, color: "black", fontWeight: "bold" }}>Activity List</Text>}
-            <View style={{ display: 'flex', flexDirection: 'Column', justifyContent: 'center', borderRadius: 14, backgroundColor: "white", padding: 10, marginTop: 5 }}>
-                {userProfilActivity?.map((activities, index) => (
-                    <>
-                        {index !== 0 && <Separator height={1} borderColor={"#eeeeee"} />}
-                        <TouchableWithoutFeedback key={activities.ActivityID} onPress={() => navigateToDetail(activities.ActivityID)}>
-                            <View style={styles.container}>
-                                <View style={styles.subContainer}>
-                                    <Text style={{ color: "black", fontSize: 16 }}>{activities.ActivityName}</Text>
-                                    <Text style={{ color: 'grey', fontSize: 14 }}>{activities.GoalName}, {activities.Frequence} per {activities.Frame}</Text>
-                                </View>
-                                <View style={styles.subContainer}>
-                                    <Text style={{ color: '#DD7A34', alignSelf: 'flex-end', fontWeight: "bold", fontSize: 16 }}>{activities.TotalActivity}</Text>
-                                    <Text style={{ color: 'grey', fontSize: 14 }}>{activities.TotalAchievedGoals}/{activities.TotalGoals}</Text>
-                                </View>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </>
-                ))}
-            </View>
+            {userProfilActivity?.length > 0 &&
+                <>
+                    <Text style={{ fontSize: 18, color: "black", fontWeight: "bold" }}>Activity List</Text>
+                    <View style={{ display: 'flex', flexDirection: 'Column', justifyContent: 'center', borderRadius: 14, backgroundColor: "white", padding: 10, marginTop: 5 }}>
+
+                        {userProfilActivity?.map((activities, index) => (
+                            <>
+                                {index !== 0 && <Separator height={1} borderColor={"#eeeeee"} />}
+                                <TouchableWithoutFeedback key={activities.ActivityID} onPress={() => navigateToDetail(activities.ActivityID)}>
+                                    <View style={styles.container}>
+                                        <View style={styles.subContainer}>
+                                            <Text style={{ color: "black", fontSize: 16 }}>{activities.ActivityName}</Text>
+                                            <Text style={{ color: 'grey', fontSize: 14 }}>{activities.GoalName}, {activities.Frequence} per {activities.Frame}</Text>
+                                        </View>
+                                        <View style={styles.subContainer}>
+                                            <Text style={{ color: '#DD7A34', alignSelf: 'flex-end', fontWeight: "bold", fontSize: 16 }}>{activities.TotalActivity}</Text>
+                                            <Text style={{ color: 'grey', fontSize: 14 }}>{activities.TotalAchievedGoals}/{activities.TotalGoals}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </>
+                        ))}
+                    </View>
+                </>
+            }
         </View>
     )
 }

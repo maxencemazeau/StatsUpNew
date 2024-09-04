@@ -13,7 +13,8 @@ export default function SignUp() {
 
     const [containerHeight, setContainerHeight] = useState(Dimensions.get('window').height);
     const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const dispatch = useDispatch();
@@ -28,7 +29,8 @@ export default function SignUp() {
         try {
             const response = await axios.post(userSignUp, {
                 email,
-                username,
+                firstName,
+                lastName,
                 password
             });
 
@@ -41,7 +43,6 @@ export default function SignUp() {
 
             // Dispatch action to update authentication status
             dispatch(setLogin(response.data));
-
             // Navigate to the home page
             router.push('/pages/home/home'); // Adjust the path if needed
 
@@ -60,7 +61,7 @@ export default function SignUp() {
             <View style={{ height: "100%", padding: 0 }}>
                 <ScrollView>
                     <View style={{ display: "flex", alignItems: 'center', height: containerHeight / 2.5, backgroundColor: "white", padding: 20 }}>
-                        <Image source={require("../assets/H.png")} style={{ height: "50%", width: "50%", top: "30%" }}></Image>
+                        <Image source={require("../assets/H.png")} style={{ height: "40%", width: "50%", top: "30%" }}></Image>
                     </View>
                     <View style={{
                         height: containerHeight / 1.5, backgroundColor: "white", padding: 20, borderTopWidth: 1, borderColor: 'transparent',  // Hide the border color if not needed
@@ -80,17 +81,25 @@ export default function SignUp() {
                             label="Email"
                             placeholder='Email'
                             size="$5"
-                            style={{ ...styles.inputs, marginTop: 20 }}
+                            style={{ ...styles.inputs }}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <Input
-                            label="Username"
-                            placeholder='Username'
+                            label="First name"
+                            placeholder='First name'
                             size="$5"
                             style={styles.inputs}
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                        />
+                        <Input
+                            label="Last name"
+                            placeholder='Last name'
+                            size="$5"
+                            style={styles.inputs}
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
                         />
                         <Input
                             label="Password"
@@ -141,7 +150,7 @@ const styles = StyleSheet.create({
     inputs: {
         width: "100%",
         backgroundColor: "white",
-        marginBottom: 20,
+        marginBottom: 15,
         color: "black"
     }
 })

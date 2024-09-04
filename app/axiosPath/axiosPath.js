@@ -1,6 +1,6 @@
-const baseUrl = `http://localhost:8080/`
+//const baseUrl = `http://localhost:8080/`
 //const baseUrl = `https://statsuptest.onrender.com/`
-//const baseUrl = `http://192.168.0.13:8080/`;
+const baseUrl = `http://192.168.0.13:8080/`;
 
 export const getActivity = baseUrl + `userActivity`;
 export const getUserGoals = baseUrl + `userGoal`;
@@ -34,6 +34,8 @@ export const unFollowUser = baseUrl + `unFollowUser`
 //Profil
 export const getProfilInfoAndStats = baseUrl + `getProfilInfoAndStats`
 export const getActivityProfilList = baseUrl + `getActivityProfilList`
+export const getBestGoalStreak = baseUrl + `getBestGoalStreak`
+export const changeProfilPhoto = baseUrl + `changeProfilPhoto`
 
 //Friend
 export const getFriendList = baseUrl + `getFriendList`
