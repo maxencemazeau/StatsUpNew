@@ -23,9 +23,7 @@ export default function HeadProfil() {
     const ToggleFollowOrUnfollow = (UserID) => {
         let isUnfollow
         userInfo?.isFollowing === 1 ? isUnfollow = 0 : isUnfollow = 1
-        console.log(isUnfollow)
         setUserInfo(prevState => ({ ...prevState, isFollowing: isUnfollow }))
-        console.log(userInfo)
         followOrUnFollow(isUnfollow, UserID, myUserID)
     }
 
@@ -40,11 +38,6 @@ export default function HeadProfil() {
 
         if (!result.canceled) {
             setImage(result.assets[0].uri);
-            const theImage = result.assets[0].uri;
-
-            // // Fetch the image from the URI and convert it to a Blob
-            // const response = await fetch(theImage);
-            // const blob = await response.blob();
 
             // Now you can send the Blob to your backend
             const formData = new FormData();
@@ -82,7 +75,7 @@ export default function HeadProfil() {
                 }
             </View>
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
-                <Image source={{ uri: image }} style={style.image} />
+                <Image source={userInfo?.Photo !== null ? { uri: image } : require("../../assets/baseProfilPhoto.png")} style={style.image} />
                 {myUserID === userInfo?.UserID &&
                     <Pressable style={{ padding: 5, borderRadius: 5, borderWidth: 1, borderColor: "#2580E1", position: 'absolute', bottom: 30 }} onPress={() => changePhoto()}>
                         <Camera color={"#2580E1"} />

@@ -47,7 +47,7 @@ export default function SearchResults() {
                             <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
                                 <Avatar circular size="$3">
                                     <Avatar.Image
-                                    // source={require("../assets/maxence.jpg")}
+                                        source={results.Photo !== null ? { uri: results.Photo } : require("../../assets/baseProfilPhoto.png")}
                                     />
                                     <Avatar.Fallback bc="lightgrey" />
                                 </Avatar>

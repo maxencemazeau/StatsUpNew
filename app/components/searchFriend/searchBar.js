@@ -13,8 +13,10 @@ export default function SearchBar() {
     const { searchResults, setSearchResults } = useContext(searchListContext)
 
     const debouncedSearch = debounce(async (value) => {
-        const response = await axios.get(getSearchUser, { params: { UserID: UserId, search: value } })
-        setSearchResults(response.data)
+        if (value.length > 0) {
+            const response = await axios.get(getSearchUser, { params: { UserID: UserId, search: value } })
+            setSearchResults(response.data)
+        }
     }, 1000);
 
     return (

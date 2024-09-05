@@ -28,7 +28,7 @@ export default function Highlight() {
             }}>
                 <View style={styles.section}>
                     <Text style={styles.title}>Best Streak</Text>
-                    <Text style={styles.stats}>{bestStreak}</Text>
+                    <Text style={styles.stats}>{bestStreak > 0 ? bestStreak : 0}</Text>
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.title}>Most completed activity</Text>

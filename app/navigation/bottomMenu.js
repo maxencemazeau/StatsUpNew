@@ -7,6 +7,7 @@ import AddActivity from "../pages/activity/addActivity";
 import CreateActivityAndGoal from "../pages/swipeableDrawer/createActivityAndGoal";
 import { Sheet, Text } from "tamagui";
 import useGetUserId from "../hooks/useGetUserId"
+import { useSelector } from "react-redux"
 
 function BottomMenu() {
 
@@ -14,7 +15,7 @@ function BottomMenu() {
     const [position, setPosition] = useState(0);
     const router = useRouter()
     const UserId = useGetUserId()
-    const [value, setValue] = useState(0)
+    const User = useSelector((state) => state.login.user)
 
     const toggle = () => {
         setModal(prevState => !prevState)
@@ -44,16 +45,10 @@ function BottomMenu() {
                     <Group.Item>
                         <Button style={styles.groupButton} icon={<Avatar circular size="$3">
                             <Avatar.Image
-                                source={require("../assets/maxence.jpg")}
+                                source={User.user.Photo !== null ? { uri: User.user.Photo } : require("../assets/baseProfilPhoto.png")}
                             />
                             <Avatar.Fallback bc="lightgrey" />
                         </Avatar>} onPress={() => navigateTo("/profil/profil")}></Button>
-                        {/* <Avatar circular size="$3">
-                            <Avatar.Image
-                                source={require("../assets/maxence.jpg")}
-                            />
-                            <Avatar.Fallback bc="lightgrey" />
-                        </Avatar> */}
                     </Group.Item>
                 </Group>
             </View>
