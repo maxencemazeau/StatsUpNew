@@ -7,12 +7,15 @@ import { followUser, unFollowUser } from "../../axiosPath/axiosPath";
 import axios from 'axios'
 import { useRouter } from "expo-router";
 import { followOrUnFollow } from "../../utils/followOrUnfollow";
+import { useDispatch } from "react-redux";
+import { AddRoute } from "../../reduxState/navigation/routingSlice";
 
 export default function SearchResults() {
 
     const { searchResults, setSearchResults } = useContext(searchListContext)
     const currentUserId = useGetUserId()
     const router = useRouter()
+    const dispatch = useDispatch()
 
     const ToggleFollowOrUnfollow = (UserID) => {
         let isUnfollow
@@ -31,6 +34,7 @@ export default function SearchResults() {
     }
 
     const navigateTo = (page, resultsUserId) => {
+        dispatch(AddRoute(`/pages/searchFriend/searchFriend`))
         router.push({
             pathname: `/pages${page}`,
             ...(page === '/profil/profil' && { params: { UserID: resultsUserId } })

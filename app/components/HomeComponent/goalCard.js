@@ -13,6 +13,7 @@ import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
 import useGetUserId from "../../hooks/useGetUserId";
+import { AddRoute } from "../../reduxState/navigation/routingSlice";
 
 export default function GoalCard({ goalOffset }) {
 
@@ -60,6 +61,7 @@ export default function GoalCard({ goalOffset }) {
     }
 
     const navigateToDetail = (goalId) => {
+        dispatch(AddRoute('/pages/home/home'))
         router.push({
             pathname: '/pages/goal/goalDetail',
             params: { goalID: goalId }

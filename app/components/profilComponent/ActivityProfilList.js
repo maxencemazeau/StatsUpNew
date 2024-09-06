@@ -6,11 +6,14 @@ import { useQuery, useQueryClient } from "react-query";
 import { useRouter } from 'expo-router';
 import axios from 'axios'
 import { getActivityProfilList } from '../../axiosPath/axiosPath';
+import { useDispatch } from 'react-redux';
+import { AddRoute } from '../../reduxState/navigation/routingSlice';
 
 export default function ActivityProfilList() {
 
     const { userIdFromSearch } = useContext(theUserProfil)
     const router = useRouter()
+    const dispatch = useDispatch()
 
     const LoadUserProfilActivity = async () => {
         const response = await axios.get(getActivityProfilList, { params: { UserId: userIdFromSearch } })
@@ -23,6 +26,7 @@ export default function ActivityProfilList() {
     })
 
     const navigateToDetail = (activityID) => {
+        dispatch(AddRoute('pages/profil/profil'))
         router.push({
             pathname: '/pages/activity/activityDetail',
             params: { activityID: activityID, userIdFromSearch: userIdFromSearch }

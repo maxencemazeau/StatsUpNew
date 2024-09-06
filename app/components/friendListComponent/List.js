@@ -6,6 +6,8 @@ import useGetUserId from "../../hooks/useGetUserId";
 import { getFriendList } from "../../axiosPath/axiosPath";
 import axios from 'axios'
 import { useRouter } from "expo-router";
+import { useDispatch, useSelector } from 'react-redux';
+import PageHeader from "../pageHeader";
 
 export default function List() {
 
@@ -30,9 +32,10 @@ export default function List() {
     }
 
     return (
-        <>
-            <View style={{ marginTop: 20, padding: 0 }}>
-                <Text color={"black"}>Friends</Text>
+
+        <View>
+            <PageHeader Title={"Friend"} Color={"black"} />
+            <View style={{ paddingRight: 20, paddingLeft: 20 }}>
                 {friendList?.map(friends => (
                     <View key={friends.UserID} style={{ marginTop: 10, backgroundColor: "white", padding: 10, borderRadius: 10, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <TouchableWithoutFeedback onPress={() => navigateTo("/profil/profil", friends.UserID)}>
@@ -50,6 +53,7 @@ export default function List() {
                     </View>
                 ))}
             </View>
-        </>
+        </View>
+
     )
 }

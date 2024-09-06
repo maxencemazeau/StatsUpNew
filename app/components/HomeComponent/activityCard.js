@@ -14,6 +14,7 @@ import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
 import useGetUserId from "../../hooks/useGetUserId";
 import { todayFormattedDate } from "../../utils/todayFormattedDate";
+import { AddRoute } from "../../reduxState/navigation/routingSlice";
 
 export default function ActivityCard({ activityOffset, appState }) {
 
@@ -143,6 +144,7 @@ export default function ActivityCard({ activityOffset, appState }) {
     const navigateToDetails = async (activityID) => {
         await updateActivityHistory()
         setActivityListDuplicate([])
+        dispatch(AddRoute('/pages/home/home'))
         router.push({
             pathname: '/pages/activity/activityDetail',
             params: { activityID: activityID, userIdFromSearch: UserId }

@@ -2,19 +2,24 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Image, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { ArrowLeft, User, Camera } from '@tamagui/lucide-icons';
 import { Text, Button } from "tamagui"
-import { Link } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { theUserProfil } from '../../pages/profil/profil';
 import useGetUserId from '../../hooks/useGetUserId';
 import { followOrUnFollow } from '../../utils/followOrUnfollow';
 import * as ImagePicker from 'expo-image-picker';
 import { changeProfilPhoto } from '../../axiosPath/axiosPath';
 import axios from "axios"
+import { AddRoute, DeleteRoute } from '../../reduxState/navigation/routingSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function HeadProfil() {
 
     const [image, setImage] = useState("");
     const { userInfo, setUserInfo } = useContext(theUserProfil)
     const myUserID = useGetUserId()
+    const dispatch = useDispatch()
+    const router = useRouter()
+    const routes = useSelector((state) => state.globalNavigation.value)
 
     useEffect(() => {
         setImage(userInfo?.Photo)
@@ -58,19 +63,33 @@ export default function HeadProfil() {
         }
     }
 
+    const navigateBack = () => {
+        const index = routes.length - 1
+        const path = routes[index]
+        dispatch(DeleteRoute())
+        router.push(path);
+    }
+
+    const navigateTo = (path) => {
+        dispatch(AddRoute(path))
+        router.push(path);
+    }
+
     return (
         <View style={{ padding: 20, marginTop: 20 }}>
-            <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                <Link href='/pages/home/home'>
-                    <ArrowLeft color={"black"} />
-                </Link>
+            <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <Button
+                    icon={<ArrowLeft size="$2" color={`black`} />}
+                    onPress={() => navigateBack()}
+                    style={{ backgroundColor: 'transparent' }}
+                />
                 {myUserID === userInfo?.UserID &&
                     <TouchableWithoutFeedback>
-                        <View style={{ height: 40, width: 50 }}>
-                            <Link href='/pages/friendList/friendList'>
-                                <User color={"black"} style={{ alignSelf: "center" }} />
-                            </Link>
-                        </View>
+                        <Button
+                            icon={<User size="$2" color={"black"} style={{ alignSelf: "center" }} />}
+                            onPress={() => navigateTo(`/pages/friendList/friendList`)}
+                            style={{ backgroundColor: 'transparent' }}
+                        />
                     </TouchableWithoutFeedback>
                 }
             </View>

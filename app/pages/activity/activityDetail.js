@@ -12,6 +12,7 @@ import useGetUserId from "../../hooks/useGetUserId";
 import ChartFrameSelect from "../../components/charts/chartFrameSelect";
 import ActivityChart from "../../components/charts/ActivityChart";
 import PageHeader from "../../components/pageHeader";
+import { useSelector } from "react-redux";
 
 export default function ActivityDetail() {
 
@@ -21,6 +22,7 @@ export default function ActivityDetail() {
     const router = useRouter()
     const UserId = useGetUserId()
     const [chartTimeFrame, setChartTimeFrame] = useState(1)
+    const route = useSelector((state) => state.globalNavigation.value)
 
     const { data: userActivity, isLoading } = useQuery({
         queryFn: async () => LoadActivity(),

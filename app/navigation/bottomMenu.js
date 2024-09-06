@@ -7,7 +7,8 @@ import AddActivity from "../pages/activity/addActivity";
 import CreateActivityAndGoal from "../pages/swipeableDrawer/createActivityAndGoal";
 import { Sheet, Text } from "tamagui";
 import useGetUserId from "../hooks/useGetUserId"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
+import { AddRoute } from "../reduxState/navigation/routingSlice"
 
 function BottomMenu() {
 
@@ -16,12 +17,14 @@ function BottomMenu() {
     const router = useRouter()
     const UserId = useGetUserId()
     const User = useSelector((state) => state.login.user)
+    const dispatch = useDispatch()
 
     const toggle = () => {
         setModal(prevState => !prevState)
     }
 
     const navigateTo = (page) => {
+        dispatch(AddRoute(`/pages/home/home`))
         router.push({
             // pathname: '/pages/searchFriend/searchFriend'
             pathname: `/pages${page}`,

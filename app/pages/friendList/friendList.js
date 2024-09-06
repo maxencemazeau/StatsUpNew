@@ -6,7 +6,7 @@ export default function FriendList() {
 
 
     return (
-        <View style={{ padding: 20 }}>
+        <View>
             <List />
         </View>
     )
