@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function HeadProfil() {
 
     const [image, setImage] = useState("");
-    const { userInfo, setUserInfo } = useContext(theUserProfil)
+    const { userInfo, setUserInfo, UserID } = useContext(theUserProfil)
     const myUserID = useGetUserId()
     const dispatch = useDispatch()
     const router = useRouter()
@@ -67,12 +67,22 @@ export default function HeadProfil() {
         const index = routes.length - 1
         const path = routes[index]
         dispatch(DeleteRoute())
-        router.push(path);
+        if (path === '/pages/friendList/friendList') {
+            router.push({
+                pathname: path,
+                params: { UserIdParams: myUserID }
+            });
+        } else {
+            router.push(path);
+        }
     }
 
     const navigateTo = (path) => {
-        dispatch(AddRoute(path))
-        router.push(path);
+        dispatch(AddRoute("/pages/profil/profil"))
+        router.push({
+            pathname: path,
+            params: { UserIdParams: myUserID !== UserID ? UserID : myUserID }
+        });
     }
 
     return (

@@ -39,3 +39,6 @@ export const changeProfilPhoto = baseUrl + `changeProfilPhoto`
 
 //Friend
 export const getFriendList = baseUrl + `getFriendList`
+
+//Feed
+export const getFeed = baseUrl + `getFeed`

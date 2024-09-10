@@ -26,7 +26,7 @@ export default function ActivityProfilList() {
     })
 
     const navigateToDetail = (activityID) => {
-        dispatch(AddRoute('pages/profil/profil'))
+        dispatch(AddRoute('/pages/profil/profil'))
         router.push({
             pathname: '/pages/activity/activityDetail',
             params: { activityID: activityID, userIdFromSearch: userIdFromSearch }
@@ -41,9 +41,9 @@ export default function ActivityProfilList() {
                     <View style={{ display: 'flex', flexDirection: 'Column', justifyContent: 'center', borderRadius: 14, backgroundColor: "white", padding: 10, marginTop: 5 }}>
 
                         {userProfilActivity?.map((activities, index) => (
-                            <>
-                                {index !== 0 && <Separator height={1} borderColor={"#eeeeee"} />}
-                                <TouchableWithoutFeedback key={activities.ActivityID} onPress={() => navigateToDetail(activities.ActivityID)}>
+                            <TouchableWithoutFeedback key={activities.ActivityID} onPress={() => navigateToDetail(activities.ActivityID)}>
+                                <>
+                                    {index !== 0 && <Separator height={1} borderColor={"#eeeeee"} />}
                                     <View style={styles.container}>
                                         <View style={styles.subContainer}>
                                             <Text style={{ color: "black", fontSize: 16 }}>{activities.ActivityName}</Text>
@@ -54,8 +54,8 @@ export default function ActivityProfilList() {
                                             <Text style={{ color: 'grey', fontSize: 14 }}>{activities.TotalAchievedGoals}/{activities.TotalGoals}</Text>
                                         </View>
                                     </View>
-                                </TouchableWithoutFeedback>
-                            </>
+                                </>
+                            </TouchableWithoutFeedback>
                         ))}
                     </View>
                 </>

@@ -33,7 +33,7 @@ export default function Profil() {
     })
 
     return (
-        <theUserProfil.Provider value={{ userProfil, userIdFromSearch, userInfo, setUserInfo, userIdFromSearch }}>
+        <theUserProfil.Provider value={{ userProfil, userIdFromSearch, userInfo, setUserInfo, userIdFromSearch, UserID, myUserID }}>
             <View style={{ height: '95%' }}>
                 <ScrollView>
                     <View>

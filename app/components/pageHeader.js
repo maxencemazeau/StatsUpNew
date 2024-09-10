@@ -6,7 +6,7 @@ import { ArrowLeft } from "@tamagui/lucide-icons"
 import { useDispatch, useSelector } from "react-redux"
 import { DeleteRoute } from "../reduxState/navigation/routingSlice"
 
-export default function PageHeader({ Title, Color = "white" }) {
+export default function PageHeader({ Title, Color = "white", UserID = 0 }) {
 
     const router = useRouter()
     const routes = useSelector((state) => state.globalNavigation.value)
@@ -15,8 +15,16 @@ export default function PageHeader({ Title, Color = "white" }) {
     const navigateBack = () => {
         const index = routes.length - 1
         const path = routes[index]
+        console.log(path)
+        if (path === '/pages/profil/profil') {
+            router.push({
+                pathname: path,
+                ...(UserID !== 0 && { params: { UserID: UserID } })
+            });
+        } else {
+            router.push(path);
+        }
         dispatch(DeleteRoute())
-        router.push(path);
     }
 
     return (

@@ -45,7 +45,7 @@ export default function ActivityDetail() {
         <View style={{ height: '95%' }}>
             <ScrollView >
                 <View style={{ backgroundColor: "#191919", padding: 0 }}>
-                    <PageHeader Title={userActivity?.ActivityName} />
+                    <PageHeader Title={userActivity?.ActivityName} UserID={userIdFromSearch} />
                     <View style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 20, width: '50%' }}>
                         <ChartFrameSelect setChartTimeFrame={setChartTimeFrame} />
                     </View>
