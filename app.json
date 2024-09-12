@@ -3,6 +3,7 @@
     "name": "StatsUpNew",
     "slug": "StatsUpNew",
     "version": "1.0.0",
+    "scheme": "StatsUp",
     "web": {
       "bundler": "metro",
       "output": "static",

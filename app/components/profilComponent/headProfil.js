@@ -111,7 +111,7 @@ export default function HeadProfil() {
                     </Pressable>
                 }
                 <Text style={{ fontSize: 20, marginTop: 10, color: "black" }}>{userInfo?.FirstName} {userInfo?.LastName}</Text>
-                {myUserID !== userInfo?.UserID && <Button style={{ bgcolor: "#DD7A34", marginTop: 10 }} onPress={() => ToggleFollowOrUnfollow(userInfo?.UserID)}>{userInfo?.isFollowing === 1 ? "Unfollow" : "Follow"}</Button>}
+                {userInfo?.UserID && myUserID !== userInfo?.UserID && (<Button style={{ bgcolor: "#DD7A34", marginTop: 10 }} onPress={() => ToggleFollowOrUnfollow(userInfo?.UserID)}>{userInfo?.isFollowing === 1 ? "Unfollow" : "Follow"}</Button>)}
             </View>
         </View >
     )

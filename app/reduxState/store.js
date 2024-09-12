@@ -13,6 +13,7 @@ import CancelPopUpReducer from "./popUp/cancelPopUpSlice"
 import ShowDeleteReducer from "./popUp/showDelete"
 import showDelete from "./popUp/showDelete";
 import RoutingReducer from "./navigation/routingSlice"
+import timerReducer from './timer/timer'
 
 export const store = configureStore({
     reducer: {
@@ -28,7 +29,8 @@ export const store = configureStore({
         message: MessageReducer,
         cancelPopUp: CancelPopUpReducer,
         showDelete: ShowDeleteReducer,
-        globalNavigation: RoutingReducer
+        globalNavigation: RoutingReducer,
+        timer: timerReducer
     },
 });
 

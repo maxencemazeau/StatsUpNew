@@ -9,6 +9,7 @@ import axios from "axios"
 import { useDispatch } from "react-redux"
 import { AddRoute } from "../../reduxState/navigation/routingSlice"
 import { useRouter } from 'expo-router';
+import FeedSkeleton from "../skeleton/feedSkeleton"
 
 export default function FeedResults() {
 
@@ -26,8 +27,6 @@ export default function FeedResults() {
         queryKey: ["feedResult"]
     })
 
-    console.log(feedResult)
-
     const navigateTo = (UserID) => {
         dispatch(AddRoute('/pages/feed/feed'))
         router.push({
@@ -37,27 +36,31 @@ export default function FeedResults() {
     }
 
     return (
-        <View style={{ paddingLeft: 20, paddingRight: 20 }}>
-            {feedResult?.map(feed => (
-                <Pressable key={feed.ActivityHistoryID} style={styles.container} onPress={() => navigateTo(feed.UserID)}>
-                    <Button style={styles.groupButton} icon={<Avatar circular size="$3">
-                        <Avatar.Image
-                            source={require("../../assets/baseProfilPhoto.png")}
-                        />
-                        <Avatar.Fallback bc="lightgrey" />
-                    </Avatar>} onPress={() => navigateTo("/profil/profil")}></Button>
-                    <View style={{ flex: 1, width: "100%" }}>
-                        <Text style={{ fontSize: 14, color: "black", marginBottom: 5, fontWeight: "bold" }}>{feed.FirstName} {feed.LastName}</Text>
-                        <Text style={{
-                            fontSize: 13, color: "black", marginBottom: 3,
-                            color: feed.Succeed === 1 ? 'green' : feed.Succeed === null || feed.Succeed === 0 ? 'black' : 'red'
-                        }}>{feed.text}</Text>
-                        <Text style={{ fontSize: 11, color: "grey", alignSelf: "flex-end" }}>{feed.TimeStamp}</Text>
-                    </View>
+        <>
+            {isLoading === true ? <FeedSkeleton /> :
+                <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+                    {feedResult?.map(feed => (
+                        <Pressable key={feed.ActivityHistoryID} style={styles.container} onPress={() => navigateTo(feed.UserID)}>
+                            <Button style={styles.groupButton} icon={<Avatar circular size="$3">
+                                <Avatar.Image
+                                    source={require("../../assets/baseProfilPhoto.png")}
+                                />
+                                <Avatar.Fallback bc="lightgrey" />
+                            </Avatar>} onPress={() => navigateTo("/profil/profil")}></Button>
+                            <View style={{ flex: 1, width: "100%" }}>
+                                <Text style={{ fontSize: 14, color: "black", marginBottom: 5, fontWeight: "bold" }}>{feed.FirstName} {feed.LastName}</Text>
+                                <Text style={{
+                                    fontSize: 13, color: "black", marginBottom: 3,
+                                    color: feed.Succeed === 1 ? 'green' : feed.Succeed === null || feed.Succeed === 0 ? 'black' : 'red'
+                                }}>{feed.text}</Text>
+                                <Text style={{ fontSize: 11, color: "grey", alignSelf: "flex-end" }}>{feed.TimeStamp}</Text>
+                            </View>
 
-                </Pressable>
-            ))}
-        </View>
+                        </Pressable>
+                    ))}
+                </View>
+            }
+        </>
     )
 }
 

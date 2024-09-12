@@ -9,6 +9,7 @@ import { getProfilInfoAndStats } from '../../axiosPath/axiosPath';
 import { useQuery, useQueryClient } from "react-query";
 import axios from 'axios'
 import useGetUserId from '../../hooks/useGetUserId';
+import HeadProfilSkeleton from '../../components/skeleton/headProfilSkeleton';
 
 const theUserProfil = createContext()
 
@@ -37,7 +38,11 @@ export default function Profil() {
             <View style={{ height: '95%' }}>
                 <ScrollView>
                     <View>
-                        <HeadProfil />
+                        {isLoading === true ?
+                            <HeadProfilSkeleton />
+                            :
+                            <HeadProfil />
+                        }
                         <MainStatsProfil />
                         <Highlight />
                         <ActivityProfilList />

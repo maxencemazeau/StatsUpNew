@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { View, StyleSheet, TouchableWithoutFeedback, Pressable } from "react-native";
 import { useRouter } from "expo-router"
 import { getActivity, deleteActivity, deleteActivityHistory, addActivityHistory } from "../../axiosPath/axiosPath";
 import axios from 'axios'
@@ -8,13 +8,15 @@ import { useQuery, useQueryClient } from "react-query";
 import { Check, Trash2 } from "@tamagui/lucide-icons";
 import HomeCardSkeleton from "../skeleton/homeCardSkeleton";
 import { Message } from '../../reduxState/message/messageSlice';
-import { Card, Button, SizableText, Paragraph } from "tamagui";
+import { Card, Button, SizableText, Paragraph, Separator } from "tamagui";
 import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
 import useGetUserId from "../../hooks/useGetUserId";
 import { todayFormattedDate } from "../../utils/todayFormattedDate";
 import { AddRoute } from "../../reduxState/navigation/routingSlice";
+import { startTimer, stopTimer, resetTimer } from '../../reduxState/timer/timer';
+import { getCurrentTime } from "../../utils/getCurrentTime";
 
 export default function ActivityCard({ activityOffset, appState }) {
 
@@ -25,7 +27,12 @@ export default function ActivityCard({ activityOffset, appState }) {
     const UserId = useGetUserId()
     const FormattedDate = todayFormattedDate('fullDate');
     const [activityListDuplicate, setActivityListDuplicate] = useState([])
+    const [activityPressed, setActivityPressed] = useState(0)
     const router = useRouter()
+    const isRunning = useSelector(state => state.timer.isRunning);
+    const [time, setTime] = useState(0)
+    const timer = useSelector((state) => state.timer.startHour)
+    const timerActivityId = useSelector((state) => state.timer.activityId)
 
     const { data: activityList, isLoading } = useQuery({
         queryFn: async () => LoadUserActivies(),
@@ -136,10 +143,38 @@ export default function ActivityCard({ activityOffset, appState }) {
             updateActivityHistory()
         } else {
             setActivityListDuplicate([])
+            if (timer !== 0) {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
+                const minutes = now.getMinutes().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
+                const seconds = now.getSeconds().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
+
+                const currentTime = `${hours}:${minutes}:${seconds}`; // Format HH:MM:SS
+                setTime(subtractTimes(currentTime, timer));
+            }
         }
     }, [appState])
 
+    useEffect(() => {
+        if (timer !== 0 && timerActivityId !== 0) {
+            setActivityPressed(timerActivityId)
+            const currentTime = getCurrentTime()
+            setTime(subtractTimes(currentTime, timer));
+        }
+    }, [])
 
+    function timeToSeconds(time) {
+        const [hours, minutes, seconds] = time.split(':').map(Number);
+        return (hours * 3600) + (minutes * 60) + seconds;
+    }
+
+    function subtractTimes(time1, time2) {
+        const timeInSeconds1 = timeToSeconds(time1);
+        const timeInSeconds2 = timeToSeconds(time2);
+
+        // Calculate the difference in seconds
+        return Math.abs(timeInSeconds1 - timeInSeconds2);
+    }
 
     const navigateToDetails = async (activityID) => {
         await updateActivityHistory()
@@ -150,6 +185,47 @@ export default function ActivityCard({ activityOffset, appState }) {
             params: { activityID: activityID, userIdFromSearch: UserId }
         });
     }
+
+    const handleTimerPress = (activityID, Count, ActivityHistoryID) => {
+        const currentTime = getCurrentTime()
+        if (activityPressed === activityID) {
+            setActivityPressed(0)
+            setTime(0)
+            dispatch(stopTimer(currentTime))
+            updateActivityChecked(activityID, Count, ActivityHistoryID)
+        } else {
+            if (activityPressed !== 0) {
+                updateActivityChecked(activityPressed, Count, ActivityHistoryID)
+            }
+            setActivityPressed(activityID)
+            setTime(0)
+            dispatch(resetTimer())
+            dispatch(startTimer({ currentTime, activityID }))
+
+        }
+    }
+
+    useEffect(() => {
+        let interval;
+
+        if (isRunning) {
+            interval = setInterval(() => {
+                setTime((prevTime) => prevTime + 1);
+            }, 1000);
+        } else if (!isRunning && time !== 0) {
+            clearInterval(interval);
+        }
+
+        return () => clearInterval(interval);
+    }, [isRunning, time]);
+
+    const formatTime = (totalSeconds) => {
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
 
     return (
         <>
@@ -170,6 +246,13 @@ export default function ActivityCard({ activityOffset, appState }) {
                                     onPress={() => updateActivityChecked(activities.ActivityID, activities.Count, activities.ActivityHistoryID)} />
                             </Card.Header>
                         </TouchableWithoutFeedback>
+                        <Separator />
+                        <Pressable style={{ ...styles.cardHeader, paddingLeft: 20, paddingTop: 10, paddingBottom: 10, paddingRight: 20 }} onPress={() => handleTimerPress(activities.ActivityID, activities.Count, activities.ActivityHistoryID)}>
+                            <SizableText size={'$6'} style={{ color: activityPressed === activities.ActivityID ? "red" : "green", fontWeight: "bold" }}>
+                                {activityPressed === activities.ActivityID ? "STOP" : "START"}
+                            </SizableText>
+                            <Paragraph style={styles.typography}>{activityPressed === activities.ActivityID ? formatTime(time) : 0}</Paragraph>
+                        </Pressable>
                     </Card>
 
                 ))}
