@@ -149,7 +149,7 @@ export default function ActivityCard({ activityOffset, appState }) {
 
     useEffect(() => {
         if (appState == "background") {
-            updateActivityHistory()
+            //updateActivityHistory()
         } else {
             setActivityListDuplicate([])
             if (timerStartHour !== 0) {
