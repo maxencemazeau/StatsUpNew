@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { View, StyleSheet, TouchableWithoutFeedback, Pressable } from "react-native";
 import { useRouter } from "expo-router"
-import { getActivity, deleteActivity, deleteActivityHistory, addActivityHistory } from "../../axiosPath/axiosPath";
+import { getActivity, deleteActivity, deleteActivityHistory, addActivityHistory, updateTimeActivityHistory } from "../../axiosPath/axiosPath";
 import axios from 'axios'
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useQueryClient } from "react-query";
@@ -18,6 +18,7 @@ import { AddRoute } from "../../reduxState/navigation/routingSlice";
 import { startTimer, stopTimer, resetTimer } from '../../reduxState/timer/timer';
 import { getCurrentTime } from "../../utils/getCurrentTime";
 import { convertTimeToHour } from "../../utils/convertTimeToHour";
+import { timeStamp } from "console";
 
 export default function ActivityCard({ activityOffset, appState }) {
 
@@ -73,15 +74,13 @@ export default function ActivityCard({ activityOffset, appState }) {
 
     const updateActivityChecked = async (id, count, historyID, pressed) => {
         const FormattedDate = todayFormattedDate('fullDate')
-        console.log(pressed)
+
         const foundActivity = activityList.find(activity =>
             activity.ActivityID === id && activity.TimeStamp === FormattedDate
         );
 
-        console.log(historyID)
         if (foundActivity !== undefined) {
             if (pressed === true) {
-                console.log("la")
                 queryClient.setQueryData('activityList', oldData => {
                     if (!oldData) return;
                     return oldData.map(activities =>
@@ -116,42 +115,46 @@ export default function ActivityCard({ activityOffset, appState }) {
 
     }
 
-    const updateActivityHistory = async (ActivityID, TimeStamp, Count, action, Frequence, hours = 0) => {
-
-        if (action !== 0) {
-            console.log("post")
-            await axios.post(addActivityHistory, {
-                params: {
-                    ActivityID,
-                    TimeStamp,
-                    Count,
-                    Frequence,
-                    UserID: UserId,
-                    HoursSpent: hours
-                }
-            })
-        } else {
-            console.log("delete")
-            await axios.delete(deleteActivityHistory, {
-                params: {
-                    ActivityID,
-                    TimeStamp,
-                    Count,
-                    Frequence,
-                    UserID: UserId,
-                }
-            })
+    const updateActivityHistory = (ActivityID, TimeStamp, Count, action, Frequence, hours = 0) => {
+        switch (action) {
+            case 0:
+                axios.delete(deleteActivityHistory, {
+                    params: {
+                        ActivityID,
+                        TimeStamp,
+                        Count,
+                        Frequence,
+                        UserID: UserId,
+                    }
+                })
+                break;
+            case 1:
+                axios.post(addActivityHistory, {
+                    params: {
+                        ActivityID,
+                        TimeStamp,
+                        Count,
+                        Frequence,
+                        UserID: UserId,
+                        HoursSpent: hours
+                    }
+                })
+                break;
+            case 2:
+                axios.put(updateTimeActivityHistory, {
+                    params: {
+                        ActivityID,
+                        HoursSpent: hours
+                    }
+                })
+                break;
         }
-        //}
     }
 
 
 
     useEffect(() => {
-        if (appState == "background") {
-            //updateActivityHistory()
-        } else {
-            setActivityListDuplicate([])
+        if (appState !== "background") {
             if (timerStartHour !== 0) {
                 const currentTime = getCurrentTime() // Format HH:MM:SS
                 setTime(subtractTimes(currentTime, timerStartHour));
@@ -182,13 +185,11 @@ export default function ActivityCard({ activityOffset, appState }) {
 
 
     const navigateToDetails = async (activityID) => {
-        // await updateActivityHistory()
-        // setActivityListDuplicate([])
-        // dispatch(AddRoute('/pages/home/home'))
-        // router.push({
-        //     pathname: '/pages/activity/activityDetail',
-        //     params: { activityID: activityID, userIdFromSearch: UserId }
-        // });
+        dispatch(AddRoute('/pages/home/home'))
+        router.push({
+            pathname: '/pages/activity/activityDetail',
+            params: { activityID: activityID, userIdFromSearch: UserId }
+        });
     }
 
     const handleTimerPress = (activityID, count, historyID) => {
@@ -196,16 +197,19 @@ export default function ActivityCard({ activityOffset, appState }) {
         if (activityPressed === activityID) {
             dispatch(stopTimer(currentTime))
             const hours = convertTimeToHour(formatTime(time))
-            const getActivityFrequence = activityList.find(activity => activity.ActivityID === activityID);
-            setActivityListDuplicate({ ActivityID: activityID, TimeStamp: FormattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence, HoursSpent: hours })
+
             updateActivityChecked(activityID, count, historyID, false)
-            updateActivityHistory()
+            const activityTimed = activityList.find(activity => activity.ActivityID === activityID);
+            updateActivityHistory(activityTimed.ActivityID, activityTimed.TimeStamp, activityTimed.Count, 2, activityTimed.Frequence, hours)
             setActivityPressed(0)
             setTime(0)
             dispatch(resetTimer())
         } else {
             if (activityPressed !== 0) {
-                //updateActivityChecked(activityPressed, count, historyID)
+                const hours = convertTimeToHour(formatTime(time))
+                updateActivityChecked(activityPressed, count, historyID, false)
+                const activityTimed = activityList.find(activity => activity.ActivityID === activityPressed);
+                updateActivityHistory(activityTimed.ActivityID, activityTimed.TimeStamp, activityTimed.Count, 2, activityTimed.Frequence, hours)
             }
             dispatch(stopTimer(currentTime))
             setActivityPressed(activityID)

@@ -30,9 +30,11 @@ export default function Profil() {
 
     const { data: userProfil, isLoading } = useQuery({
         queryFn: async () => LoadUserProfilAnbStats(),
-        queryKey: ["userProfil", UserID],
+        queryKey: ["userProfil", UserID]
     })
 
+
+    console.log(userProfil)
     return (
         <theUserProfil.Provider value={{ userProfil, userIdFromSearch, userInfo, setUserInfo, userIdFromSearch, UserID, myUserID }}>
             <View style={{ height: '95%' }}>

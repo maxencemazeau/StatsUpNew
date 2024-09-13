@@ -1,9 +1,8 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { ArrowLeft } from '@tamagui/lucide-icons';
-import { useRouter, useLocalSearchParams } from "expo-router"
-import { Button, Text } from "tamagui"
-import { useQuery, useQueryClient } from "react-query";
+import { useLocalSearchParams } from "expo-router"
+import { Text } from "tamagui"
+import { useQuery } from "react-query";
 import axios from "axios"
 import ActivityHistory from "../../components/activity/activityHistory";
 import ActivityInformation from "../../components/activity/activityInformation";
@@ -12,17 +11,14 @@ import useGetUserId from "../../hooks/useGetUserId";
 import ChartFrameSelect from "../../components/charts/chartFrameSelect";
 import ActivityChart from "../../components/charts/ActivityChart";
 import PageHeader from "../../components/pageHeader";
-import { useSelector } from "react-redux";
 
 export default function ActivityDetail() {
 
     const { activityID, userIdFromSearch } = useLocalSearchParams();
     const [bestActivityStreak, setBestActivityStreak] = useState(0)
     const [activityStats, setActivityStats] = useState([])
-    const router = useRouter()
     const UserId = useGetUserId()
     const [chartTimeFrame, setChartTimeFrame] = useState(1)
-    const route = useSelector((state) => state.globalNavigation.value)
 
     const { data: userActivity, isLoading } = useQuery({
         queryFn: async () => LoadActivity(),
@@ -32,14 +28,20 @@ export default function ActivityDetail() {
     const LoadActivity = async () => {
         const response = await axios.get(getUserActivityByID, { params: { ActivityID: activityID, UserID: UserId } });
         setActivityStats(response.data.activityStats)
+        convertFloatToHour(response.data.activityStats.totalTime)
         setBestActivityStreak(response.data.bestStreak)
         return response.data.activity[0]
     };
 
-    const navigateBack = () => {
-        router.push('/pages/home/home');
-    }
+    const convertFloatToHour = (time) => {
 
+        // Extraire les heures et les minutes à partir du flottant
+        const hours = Math.floor(time); // Heures
+        const minutes = Math.round((time - hours) * 60); // Minutes
+
+        // Retourner les heures et minutes
+        setActivityStats(prevState => ({ ...prevState, Hour: hours, minutes: minutes }))
+    }
 
     return (
         <View style={{ height: '95%' }}>
@@ -71,6 +73,10 @@ export default function ActivityDetail() {
                             <View style={styles.statsTextcontainer}>
                                 <Text style={styles.statsTextLabel}>Reached</Text>
                                 <Text style={styles.statsTextValue}>{activityStats.activityNbSucceed} / {activityStats.totalGoalNumber}</Text>
+                            </View>
+                            <View style={styles.statsTextcontainer}>
+                                <Text style={styles.statsTextLabel}>Time</Text>
+                                <Text style={styles.statsTextValue}>{activityStats.Hour > 10 ? activityStats.Hour + "h" : activityStats.Hour + "h" + activityStats.minutes}</Text>
                             </View>
                         </View>
                     </View>

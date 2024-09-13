@@ -40,7 +40,7 @@ export default function Highlight() {
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.title}>Most time on an activity</Text>
-                    <Text style={styles.stats}>TIME</Text>
+                    <Text style={styles.stats}>{userProfil?.Hour > 10 ? userProfil?.Hour + "h" : userProfil?.Hour + "h" + userProfil?.minutes}</Text>
                 </View>
             </View>
         </View>
