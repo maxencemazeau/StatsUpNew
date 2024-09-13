@@ -21,6 +21,7 @@ const timerSlice = createSlice({
         },
         resetTimer: (state) => {
             state.startHour = 0
+            activityId = 0
             state.isRunning = false;
         }
     },

@@ -17,6 +17,7 @@ import { todayFormattedDate } from "../../utils/todayFormattedDate";
 import { AddRoute } from "../../reduxState/navigation/routingSlice";
 import { startTimer, stopTimer, resetTimer } from '../../reduxState/timer/timer';
 import { getCurrentTime } from "../../utils/getCurrentTime";
+import { convertTimeToHour } from "../../utils/convertTimeToHour";
 
 export default function ActivityCard({ activityOffset, appState }) {
 
@@ -26,12 +27,12 @@ export default function ActivityCard({ activityOffset, appState }) {
     const dispatch = useDispatch()
     const UserId = useGetUserId()
     const FormattedDate = todayFormattedDate('fullDate');
-    const [activityListDuplicate, setActivityListDuplicate] = useState([])
+    const [activityListDuplicate, setActivityListDuplicate] = useState({})
     const [activityPressed, setActivityPressed] = useState(0)
     const router = useRouter()
     const isRunning = useSelector(state => state.timer.isRunning);
     const [time, setTime] = useState(0)
-    const timer = useSelector((state) => state.timer.startHour)
+    const timerStartHour = useSelector((state) => state.timer.startHour)
     const timerActivityId = useSelector((state) => state.timer.activityId)
 
     const { data: activityList, isLoading } = useQuery({
@@ -70,20 +71,32 @@ export default function ActivityCard({ activityOffset, appState }) {
         }
     }
 
-    const updateActivityChecked = async (id, count, historyID) => {
+    const updateActivityChecked = async (id, count, historyID, pressed) => {
         const FormattedDate = todayFormattedDate('fullDate')
-
+        console.log(pressed)
         const foundActivity = activityList.find(activity =>
             activity.ActivityID === id && activity.TimeStamp === FormattedDate
         );
-        const foundInDuplicate = activityListDuplicate?.find(activityDuplicate => activityDuplicate.ActivityID === id)
+
+        console.log(historyID)
         if (foundActivity !== undefined) {
-            queryClient.setQueryData('activityList', oldData => {
-                if (!oldData) return;
-                return oldData.map(activities =>
-                    activities.ActivityID === id ? { ...activities, TimeStamp: null, Count: count - 1 } : activities
-                );
-            });
+            if (pressed === true) {
+                console.log("la")
+                queryClient.setQueryData('activityList', oldData => {
+                    if (!oldData) return;
+                    return oldData.map(activities =>
+                        activities.ActivityID === id ? { ...activities, TimeStamp: null, Count: count - 1 } : activities
+                    );
+                });
+
+                updateActivityHistory(
+                    id,
+                    FormattedDate,
+                    count - 1,
+                    0,
+                    foundActivity ? foundActivity.Frequence : null
+                )
+            }
         } else {
             queryClient.setQueryData('activityList', oldData => {
                 if (!oldData) return;
@@ -91,49 +104,45 @@ export default function ActivityCard({ activityOffset, appState }) {
                     activities.ActivityID === id ? { ...activities, TimeStamp: FormattedDate, Count: count + 1 } : activities
                 );
             });
+
+            updateActivityHistory(
+                id,
+                FormattedDate,
+                count + 1,
+                1,
+                foundActivity ? foundActivity.Frequence : null
+            )
         }
 
-        const getActivityFrequence = activityList.find(activity => activity.ActivityID === id);
-
-        if (foundInDuplicate !== undefined) {
-            if (foundActivity !== undefined) {
-                setActivityListDuplicate(prevState => prevState.map(activities => (
-                    activities.ActivityID === id ? { ...activities, TimeStamp: FormattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0, Frequence: getActivityFrequence.Frequence } : activities
-                )))
-            } else {
-                setActivityListDuplicate(prevState => prevState.map(activities => (
-                    activities.ActivityID === id ? { ...activities, TimeStamp: FormattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence } : activities
-                )))
-            }
-        } else {
-            if (foundActivity !== undefined) {
-                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: FormattedDate, Count: count - 1, ActivityHistoryID: historyID, action: 0, Frequence: getActivityFrequence.Frequence }])
-            } else {
-                setActivityListDuplicate(prevState => [...prevState, { ActivityID: id, TimeStamp: FormattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence }])
-            }
-        }
     }
 
-    const updateActivityHistory = async () => {
-        for (i = 0; i < activityListDuplicate.length; i++) {
-            if (activityListDuplicate[i].action !== 0) {
-                await axios.post(addActivityHistory, {
-                    params: {
-                        ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
-                        ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp,
-                        Count: activityListDuplicate[i].Count, Frequence: activityListDuplicate[i].Frequence,
-                        UserID: UserId
-                    }
-                })
-            } else {
-                await axios.delete(deleteActivityHistory, {
-                    params: {
-                        ActivityHistoryID: activityListDuplicate[i].ActivityHistoryID,
-                        ActivityID: activityListDuplicate[i].ActivityID, TimeStamp: activityListDuplicate[i].TimeStamp, Count: activityListDuplicate[i].Count
-                    }
-                })
-            }
+    const updateActivityHistory = async (ActivityID, TimeStamp, Count, action, Frequence, hours = 0) => {
+
+        if (action !== 0) {
+            console.log("post")
+            await axios.post(addActivityHistory, {
+                params: {
+                    ActivityID,
+                    TimeStamp,
+                    Count,
+                    Frequence,
+                    UserID: UserId,
+                    HoursSpent: hours
+                }
+            })
+        } else {
+            console.log("delete")
+            await axios.delete(deleteActivityHistory, {
+                params: {
+                    ActivityID,
+                    TimeStamp,
+                    Count,
+                    Frequence,
+                    UserID: UserId,
+                }
+            })
         }
+        //}
     }
 
 
@@ -143,23 +152,18 @@ export default function ActivityCard({ activityOffset, appState }) {
             updateActivityHistory()
         } else {
             setActivityListDuplicate([])
-            if (timer !== 0) {
-                const now = new Date();
-                const hours = now.getHours().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
-                const minutes = now.getMinutes().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
-                const seconds = now.getSeconds().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
-
-                const currentTime = `${hours}:${minutes}:${seconds}`; // Format HH:MM:SS
-                setTime(subtractTimes(currentTime, timer));
+            if (timerStartHour !== 0) {
+                const currentTime = getCurrentTime() // Format HH:MM:SS
+                setTime(subtractTimes(currentTime, timerStartHour));
             }
         }
     }, [appState])
 
     useEffect(() => {
-        if (timer !== 0 && timerActivityId !== 0) {
+        if (timerStartHour !== 0 && timerActivityId !== 0) {
             setActivityPressed(timerActivityId)
             const currentTime = getCurrentTime()
-            setTime(subtractTimes(currentTime, timer));
+            setTime(subtractTimes(currentTime, timerStartHour));
         }
     }, [])
 
@@ -176,32 +180,38 @@ export default function ActivityCard({ activityOffset, appState }) {
         return Math.abs(timeInSeconds1 - timeInSeconds2);
     }
 
+
     const navigateToDetails = async (activityID) => {
-        await updateActivityHistory()
-        setActivityListDuplicate([])
-        dispatch(AddRoute('/pages/home/home'))
-        router.push({
-            pathname: '/pages/activity/activityDetail',
-            params: { activityID: activityID, userIdFromSearch: UserId }
-        });
+        // await updateActivityHistory()
+        // setActivityListDuplicate([])
+        // dispatch(AddRoute('/pages/home/home'))
+        // router.push({
+        //     pathname: '/pages/activity/activityDetail',
+        //     params: { activityID: activityID, userIdFromSearch: UserId }
+        // });
     }
 
-    const handleTimerPress = (activityID, Count, ActivityHistoryID) => {
+    const handleTimerPress = (activityID, count, historyID) => {
         const currentTime = getCurrentTime()
         if (activityPressed === activityID) {
+            dispatch(stopTimer(currentTime))
+            const hours = convertTimeToHour(formatTime(time))
+            const getActivityFrequence = activityList.find(activity => activity.ActivityID === activityID);
+            setActivityListDuplicate({ ActivityID: activityID, TimeStamp: FormattedDate, Count: count + 1, ActivityHistoryID: historyID, action: 1, Frequence: getActivityFrequence.Frequence, HoursSpent: hours })
+            updateActivityChecked(activityID, count, historyID, false)
+            updateActivityHistory()
             setActivityPressed(0)
             setTime(0)
-            dispatch(stopTimer(currentTime))
-            updateActivityChecked(activityID, Count, ActivityHistoryID)
+            dispatch(resetTimer())
         } else {
             if (activityPressed !== 0) {
-                updateActivityChecked(activityPressed, Count, ActivityHistoryID)
+                //updateActivityChecked(activityPressed, count, historyID)
             }
+            dispatch(stopTimer(currentTime))
             setActivityPressed(activityID)
             setTime(0)
             dispatch(resetTimer())
             dispatch(startTimer({ currentTime, activityID }))
-
         }
     }
 
@@ -243,7 +253,7 @@ export default function ActivityCard({ activityOffset, appState }) {
                                         <Paragraph style={styles.typography}>No goal linked</Paragraph>}
                                 </View>
                                 <Button icon={<Check size="$1" />} style={{ backgroundColor: activities.TimeStamp === FormattedDate ? "#DD7A34" : "grey", borderRadius: 25, height: 50 }}
-                                    onPress={() => updateActivityChecked(activities.ActivityID, activities.Count, activities.ActivityHistoryID)} />
+                                    onPress={() => updateActivityChecked(activities.ActivityID, activities.Count, activities.ActivityHistoryID, true)} />
                             </Card.Header>
                         </TouchableWithoutFeedback>
                         <Separator />
