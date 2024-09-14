@@ -3,7 +3,8 @@ import { View } from "react-native"
 import { Input, Button } from "tamagui"
 import debounce from 'lodash.debounce';
 import axios from "axios"
-import { searchListContext } from "../../pages/searchFriend/searchFriend";
+//import { searchListContext } from "../../pages/searchFriend/searchFriend";
+import { searchListContext } from "../../context/searchFriendContext"
 import { getSearchUser } from "../../axiosPath/axiosPath"
 import useGetUserId from "../../hooks/useGetUserId";
 

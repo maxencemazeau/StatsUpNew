@@ -3,7 +3,8 @@ import { Image, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 're
 import { ArrowLeft, User, Camera } from '@tamagui/lucide-icons';
 import { Text, Button } from "tamagui"
 import { useRouter } from 'expo-router'
-import { theUserProfil } from '../../pages/profil/profil';
+//import { theUserProfil } from '../../pages/profil/profil';
+import { theUserProfil } from '../../context/profilContext';
 import useGetUserId from '../../hooks/useGetUserId';
 import { followOrUnFollow } from '../../utils/followOrUnfollow';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 export default function HeadProfil() {
 
-    const [image, setImage] = useState("");
+    const [image, setImage] = useState("../../assets/baseProfilPhoto.png");
     const { userInfo, setUserInfo, UserID } = useContext(theUserProfil)
     const myUserID = useGetUserId()
     const dispatch = useDispatch()

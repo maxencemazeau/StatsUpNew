@@ -4,10 +4,11 @@ import { ArrowLeft } from "@tamagui/lucide-icons"
 import { Link } from 'expo-router'
 import { View } from "react-native"
 import SearchResults from "../../components/searchFriend/searchResults"
+import { searchListContext } from "../../context/searchFriendContext"
 
-const searchListContext = createContext()
+// const searchListContext = createContext()
 
-export { searchListContext }
+// export { searchListContext }
 
 export default function SearchFriend() {
 

@@ -1,7 +1,8 @@
 import React, { useContext } from 'react'
 import { View, StyleSheet } from "react-native"
 import { Text, Separator } from "tamagui"
-import { theUserProfil } from '../../pages/profil/profil'
+//import { theUserProfil } from '../../pages/profil/profil'
+import { theUserProfil } from '../../context/profilContext'
 
 export default function MainStatsProfil() {
 

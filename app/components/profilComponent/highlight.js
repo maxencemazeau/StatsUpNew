@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet } from "react-native"
 import { Text } from "tamagui"
-import { theUserProfil } from '../../pages/profil/profil'
+//import { theUserProfil } from '../../pages/profil/profil'
+import { theUserProfil } from '../../context/profilContext'
 import axios from "axios"
 import { getBestGoalStreak } from '../../axiosPath/axiosPath'
 
@@ -40,7 +41,11 @@ export default function Highlight() {
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.title}>Most time on an activity</Text>
-                    <Text style={styles.stats}>{userProfil?.Hour > 10 ? userProfil?.Hour + "h" : userProfil?.Hour + "h" + userProfil?.minutes}</Text>
+                    {userProfil?.Hour !== undefined ?
+                        <Text style={styles.stats}>{userProfil?.Hour > 10 ? userProfil?.Hour + "h" : userProfil?.Hour + "h" + userProfil?.minutes}</Text>
+                        :
+                        <Text style={styles.stats}>None</Text>
+                    }
                 </View>
             </View>
         </View>

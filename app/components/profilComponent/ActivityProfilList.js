@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { View, StyleSheet, TouchableWithoutFeedback } from "react-native"
 import { Text, Separator } from "tamagui"
-import { theUserProfil } from '../../pages/profil/profil'
+import { theUserProfil } from '../../context/profilContext';
 import { useQuery, useQueryClient } from "react-query";
 import { useRouter } from 'expo-router';
 import axios from 'axios'

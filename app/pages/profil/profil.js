@@ -10,10 +10,10 @@ import { useQuery, useQueryClient } from "react-query";
 import axios from 'axios'
 import useGetUserId from '../../hooks/useGetUserId';
 import HeadProfilSkeleton from '../../components/skeleton/headProfilSkeleton';
+import { theUserProfil } from '../../context/profilContext';
+//const theUserProfil = createContext()
 
-const theUserProfil = createContext()
-
-export { theUserProfil }
+//export { theUserProfil }
 
 export default function Profil() {
 
@@ -33,8 +33,6 @@ export default function Profil() {
         queryKey: ["userProfil", UserID]
     })
 
-
-    console.log(userProfil)
     return (
         <theUserProfil.Provider value={{ userProfil, userIdFromSearch, userInfo, setUserInfo, userIdFromSearch, UserID, myUserID }}>
             <View style={{ height: '95%' }}>

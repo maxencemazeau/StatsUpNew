@@ -18,7 +18,6 @@ import { AddRoute } from "../../reduxState/navigation/routingSlice";
 import { startTimer, stopTimer, resetTimer } from '../../reduxState/timer/timer';
 import { getCurrentTime } from "../../utils/getCurrentTime";
 import { convertTimeToHour } from "../../utils/convertTimeToHour";
-import { timeStamp } from "console";
 
 export default function ActivityCard({ activityOffset, appState }) {
 
@@ -74,29 +73,53 @@ export default function ActivityCard({ activityOffset, appState }) {
 
     const updateActivityChecked = async (id, count, historyID, pressed) => {
         const FormattedDate = todayFormattedDate('fullDate')
-
+        let response
         const foundActivity = activityList.find(activity =>
             activity.ActivityID === id && activity.TimeStamp === FormattedDate
         );
 
         if (foundActivity !== undefined) {
             if (pressed === true) {
-                queryClient.setQueryData('activityList', oldData => {
-                    if (!oldData) return;
-                    return oldData.map(activities =>
-                        activities.ActivityID === id ? { ...activities, TimeStamp: null, Count: count - 1 } : activities
-                    );
-                });
 
-                updateActivityHistory(
+
+                response = await updateActivityHistory(
                     id,
                     FormattedDate,
                     count - 1,
                     0,
                     foundActivity ? foundActivity.Frequence : null
                 )
+
+                if (response === "Error") {
+                    dispatch(Message({ messageType: "ERROR", messageText: "An error occured please try again" }));
+                    dispatch(loadingError(true))
+                    return;
+                }
+
+                queryClient.setQueryData('activityList', oldData => {
+                    if (!oldData) return;
+                    return oldData.map(activities =>
+                        activities.ActivityID === id ? { ...activities, TimeStamp: null, Count: count - 1 } : activities
+                    );
+                });
             }
         } else {
+
+            if (pressed === true) {
+                response = await updateActivityHistory(
+                    id,
+                    FormattedDate,
+                    count + 1,
+                    1,
+                    foundActivity ? foundActivity.Frequence : null
+                )
+                if (response === "Error") {
+                    dispatch(Message({ messageType: "ERROR", messageText: "An error occured please try again" }));
+                    dispatch(loadingError(true))
+                    return;
+                }
+            }
+
             queryClient.setQueryData('activityList', oldData => {
                 if (!oldData) return;
                 return oldData.map(activities =>
@@ -104,21 +127,15 @@ export default function ActivityCard({ activityOffset, appState }) {
                 );
             });
 
-            updateActivityHistory(
-                id,
-                FormattedDate,
-                count + 1,
-                1,
-                foundActivity ? foundActivity.Frequence : null
-            )
         }
 
     }
 
-    const updateActivityHistory = (ActivityID, TimeStamp, Count, action, Frequence, hours = 0) => {
+    const updateActivityHistory = async (ActivityID, TimeStamp, Count, action, Frequence, hours = 0) => {
+        let response
         switch (action) {
             case 0:
-                axios.delete(deleteActivityHistory, {
+                response = await axios.delete(deleteActivityHistory, {
                     params: {
                         ActivityID,
                         TimeStamp,
@@ -129,7 +146,7 @@ export default function ActivityCard({ activityOffset, appState }) {
                 })
                 break;
             case 1:
-                axios.post(addActivityHistory, {
+                response = await axios.post(addActivityHistory, {
                     params: {
                         ActivityID,
                         TimeStamp,
@@ -141,7 +158,7 @@ export default function ActivityCard({ activityOffset, appState }) {
                 })
                 break;
             case 2:
-                axios.put(updateTimeActivityHistory, {
+                response = await axios.put(updateTimeActivityHistory, {
                     params: {
                         ActivityID,
                         HoursSpent: hours
@@ -149,6 +166,8 @@ export default function ActivityCard({ activityOffset, appState }) {
                 })
                 break;
         }
+
+        return response.data
     }
 
 
@@ -192,15 +211,26 @@ export default function ActivityCard({ activityOffset, appState }) {
         });
     }
 
-    const handleTimerPress = (activityID, count, historyID) => {
+    const handleTimerPress = async (activityID, count, historyID) => {
         const currentTime = getCurrentTime()
+        const FormattedDate = todayFormattedDate('fullDate')
+        let response
         if (activityPressed === activityID) {
-            dispatch(stopTimer(currentTime))
             const hours = convertTimeToHour(formatTime(time))
 
             updateActivityChecked(activityID, count, historyID, false)
             const activityTimed = activityList.find(activity => activity.ActivityID === activityID);
-            updateActivityHistory(activityTimed.ActivityID, activityTimed.TimeStamp, activityTimed.Count, 2, activityTimed.Frequence, hours)
+            if (activityTimed.Count === null || activityTimed.Count === 0) {
+                response = await updateActivityHistory(activityTimed.ActivityID, FormattedDate, activityTimed.Count + 1, 1, activityTimed.Frequence, hours)
+            } else {
+                response = await updateActivityHistory(activityTimed.ActivityID, FormattedDate, activityTimed.Count, 2, activityTimed.Frequence, hours)
+            }
+            if (response === "Error") {
+                dispatch(Message({ messageType: "ERROR", messageText: "An error occured please try again" }));
+                dispatch(loadingError(true))
+                return;
+            }
+            dispatch(stopTimer(currentTime))
             setActivityPressed(0)
             setTime(0)
             dispatch(resetTimer())
@@ -209,7 +239,16 @@ export default function ActivityCard({ activityOffset, appState }) {
                 const hours = convertTimeToHour(formatTime(time))
                 updateActivityChecked(activityPressed, count, historyID, false)
                 const activityTimed = activityList.find(activity => activity.ActivityID === activityPressed);
-                updateActivityHistory(activityTimed.ActivityID, activityTimed.TimeStamp, activityTimed.Count, 2, activityTimed.Frequence, hours)
+                if (activityTimed.Count === null || activityTimed.Count === 0) {
+                    response = await updateActivityHistory(activityTimed.ActivityID, FormattedDate, activityTimed.Count, 1, activityTimed.Frequence, hours)
+                } else {
+                    response = await updateActivityHistory(activityTimed.ActivityID, FormattedDate, activityTimed.Count, 2, activityTimed.Frequence, hours)
+                }
+
+                if (response === "Error") {
+                    dispatch(Message({ messageType: "ERROR", messageText: "An error occured please try again" }));
+                    return;
+                }
             }
             dispatch(stopTimer(currentTime))
             setActivityPressed(activityID)

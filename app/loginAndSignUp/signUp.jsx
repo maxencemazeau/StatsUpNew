@@ -27,6 +27,7 @@ export default function SignUp() {
         }
 
         try {
+            console.log(email)
             const response = await axios.post(userSignUp, {
                 email,
                 firstName,
@@ -83,7 +84,7 @@ export default function SignUp() {
                             size="$5"
                             style={{ ...styles.inputs }}
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChangeText={(Text) => setEmail(Text)}
                         />
                         <Input
                             label="First name"
@@ -91,7 +92,7 @@ export default function SignUp() {
                             size="$5"
                             style={styles.inputs}
                             value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
+                            onChangeText={(Text) => setFirstName(Text)}
                         />
                         <Input
                             label="Last name"
@@ -99,7 +100,7 @@ export default function SignUp() {
                             size="$5"
                             style={styles.inputs}
                             value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
+                            onChangeText={(Text) => setLastName(Text)}
                         />
                         <Input
                             label="Password"
@@ -108,7 +109,7 @@ export default function SignUp() {
                             style={styles.inputs}
                             type="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChangeText={(Text) => setPassword(Text)}
                         />
                         <Input
                             label="Confirm Password"
@@ -117,14 +118,14 @@ export default function SignUp() {
                             style={styles.inputs}
                             type="password"
                             value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            onChangeText={(Text) => setConfirmPassword(Text)}
                         />
                         <Button
                             size="$5"
                             style={{
                                 backgroundColor: "#DD7A34", width: "100%", marginBottom: 20,
                             }}
-                            onPress={handleSignUp}
+                            onPress={() => handleSignUp()}
                         >
                             SIGN UP
                         </Button>

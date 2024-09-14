@@ -1,7 +1,8 @@
 import React, { useState, useContext } from "react"
 import { TouchableWithoutFeedback, View } from "react-native"
 import { Button, Text, Avatar } from "tamagui"
-import { searchListContext } from "../../pages/searchFriend/searchFriend";
+//import { searchListContext } from "../../pages/searchFriend/searchFriend";
+import { searchListContext } from "../../context/searchFriendContext"
 import useGetUserId from "../../hooks/useGetUserId";
 import { followUser, unFollowUser } from "../../axiosPath/axiosPath";
 import axios from 'axios'

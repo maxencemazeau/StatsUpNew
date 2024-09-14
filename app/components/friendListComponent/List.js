@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react"
-import { TouchableWithoutFeedback, View } from "react-native"
+import { Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { Button, Text, Avatar } from "tamagui"
 import { useQuery } from "react-query";
 import useGetUserId from "../../hooks/useGetUserId";
@@ -42,7 +42,7 @@ export default function List() {
             <View style={{ paddingRight: 20, paddingLeft: 20 }}>
                 {friendList?.map(friends => (
                     <View key={friends.UserID} style={{ marginTop: 10, backgroundColor: "white", padding: 10, borderRadius: 10, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <TouchableWithoutFeedback onPress={() => navigateTo("/profil/profil", friends.UserID)}>
+                        <Pressable onPress={() => navigateTo("/profil/profil", friends.UserID)}>
                             <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
                                 <Avatar circular size="$3">
                                     <Avatar.Image
@@ -52,8 +52,8 @@ export default function List() {
                                 </Avatar>
                                 <Text color={"black"}>{friends.FirstName} {friends.LastName}</Text>
                             </View>
-                        </TouchableWithoutFeedback>
-                        <Button style={{ color: "#DD7A34", fontSize: 12 }}>View profile</Button>
+                        </Pressable>
+                        <Button style={{ color: "#DD7A34", fontSize: 12 }} onPress={() => navigateTo("/profil/profil", friends.UserID)}>View profile</Button>
                     </View>
                 ))}
             </View>
