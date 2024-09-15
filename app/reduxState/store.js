@@ -1,4 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { persistReducer, persistStore } from "redux-persist"
+import storage from "@react-native-async-storage/async-storage"
 import navigationReducer from "./navigation/navigationSlice"
 import activityOffsetReducer from "./offset/activityOffsetSlice"
 import goalOffsetReducer from "./offset/goalOffsetSlice";
@@ -15,6 +17,13 @@ import showDelete from "./popUp/showDelete";
 import RoutingReducer from "./navigation/routingSlice"
 import timerReducer from './timer/timer'
 
+const loginPersistConfig = {
+    key: 'login',
+    storage: storage
+}
+
+const persistLoginReducer = persistReducer(loginPersistConfig, loginReducer)
+
 export const store = configureStore({
     reducer: {
         navigation: navigationReducer,
@@ -22,7 +31,7 @@ export const store = configureStore({
         goalOffset: goalOffsetReducer,
         hasMoreActivityData: hasMoreActivityDataReducer,
         hasMoreGoalData: hasMoreGoalDataReducer,
-        login: loginReducer,
+        login: persistLoginReducer,
         isActivityLoading: isActivityLoadingReducer,
         isGoalLoading: isGoalLoadingReducer,
         loadingError: loadingErrorReducer,
@@ -32,5 +41,14 @@ export const store = configureStore({
         globalNavigation: RoutingReducer,
         timer: timerReducer
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                // Ignore actions related to redux-persist
+                ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+            },
+        }),
 });
+
+export const persistor = persistStore(store)
 
