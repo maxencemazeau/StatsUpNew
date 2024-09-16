@@ -19,8 +19,13 @@ export default function Login() {
     const router = useRouter()
 
     useEffect(() => {
-        dispatch(setLogout())
-    }, [])
+        const timer = setTimeout(() => {
+            dispatch(setLogout());
+        }, 2); // Délai de 2 ms
+
+        // Nettoyage pour éviter des fuites de mémoire si le composant est démonté avant la fin du timeout
+        return () => clearTimeout(timer);
+    }, []);
 
     const navigateToSignUp = () => {
         router.push('loginAndSignUp/signUp'); // Navigate to the SignUp screen

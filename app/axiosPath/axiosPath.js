@@ -1,4 +1,5 @@
-const baseUrl = `http://localhost:8080/`
+//const baseUrl = `http://localhost:8080/`
+const baseUrl = process.env.EXPO_PUBLIC_API_URL
 //const baseUrl = `https://statsuptest.onrender.com/`
 //const baseUrl = `http://192.168.0.13:8080/`;
 

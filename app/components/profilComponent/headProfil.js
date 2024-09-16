@@ -1,9 +1,9 @@
-import React, { useContext, useState, useEffect} from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { ArrowLeft, User, Camera, LogOut } from '@tamagui/lucide-icons';
 import { Text, Button } from "tamagui"
 import { useRouter } from 'expo-router'
-import { setLogout } from '../../reduxState/authentication/loginSlice'
+import { useQueryClient } from 'react-query'; // Importer le client de React Query
 import { theUserProfil } from '../../context/profilContext';
 import useGetUserId from '../../hooks/useGetUserId';
 import { followOrUnFollow } from '../../utils/followOrUnfollow';
@@ -12,7 +12,6 @@ import { changeProfilPhoto } from '../../axiosPath/axiosPath';
 import axios from "axios"
 import { AddRoute, DeleteRoute } from '../../reduxState/navigation/routingSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { persistor } from '../../reduxState/store';
 
 export default function HeadProfil() {
 
@@ -22,6 +21,7 @@ export default function HeadProfil() {
     const dispatch = useDispatch()
     const router = useRouter()
     const routes = useSelector((state) => state.globalNavigation.value)
+    const queryClient = useQueryClient(); // Obtenir le client de React Query
 
     useEffect(() => {
         setImage(userInfo?.Photo)
@@ -88,6 +88,7 @@ export default function HeadProfil() {
     }
 
     const logout = () => {
+        queryClient.resetQueries();
         router.push('/loginAndSignUp/login')
     }
 
@@ -99,18 +100,18 @@ export default function HeadProfil() {
                     onPress={() => navigateBack()}
                     style={{ backgroundColor: 'transparent' }}
                 />
-                <View style={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
-                {myUserID === userInfo?.UserID &&
-                    <Pressable>
-                        <Button
-                            icon={<User size="$2" color={"black"} style={{ alignSelf: "center" }} />}
-                            onPress={() => navigateTo(`/pages/friendList/friendList`)}
-                            style={{ backgroundColor: 'transparent' }}
-                        />
-                    </Pressable>
-                }
+                <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                    {myUserID === userInfo?.UserID &&
+                        <Pressable>
+                            <Button
+                                icon={<User size="$2" color={"black"} style={{ alignSelf: "center" }} />}
+                                onPress={() => navigateTo(`/pages/friendList/friendList`)}
+                                style={{ backgroundColor: 'transparent' }}
+                            />
+                        </Pressable>
+                    }
                     <Button style={{ backgroundColor: 'transparent' }} onPress={() => logout()}>
-                        <LogOut size={"$2"} color={"black"}/>
+                        <LogOut size={"$2"} color={"black"} />
                     </Button>
                 </View>
             </View>

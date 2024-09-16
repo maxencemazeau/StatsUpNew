@@ -48,7 +48,7 @@ function BottomMenu() {
                     <Group.Item>
                         <Button style={styles.groupButton} icon={<Avatar circular size="$3">
                             <Avatar.Image
-                                source={User.user.Photo !== null ? { uri: User.user.Photo } : require("../assets/baseProfilPhoto.png")}
+                                source={User?.user?.Photo !== null ? { uri: User?.user?.Photo } : require("../assets/baseProfilPhoto.png")}
                             />
                             <Avatar.Fallback bc="lightgrey" />
                         </Avatar>} onPress={() => navigateTo("/profil/profil")}></Button>

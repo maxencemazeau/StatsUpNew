@@ -5,7 +5,7 @@ import Login from "../app/loginAndSignUp/login"
 export default function Home() {
   return (
     <>
-          <Login />
+      <Login />
     </>
   );
 }
