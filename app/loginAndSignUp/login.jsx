@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { View, ScrollView, Image, Dimensions } from 'react-native';
-import { Link, useRouter } from "expo-router"
-import { Button, Input, Text, Separator } from "tamagui"
-import * as Font from 'expo-font';
-import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins'
-import { setLogin } from '../reduxState/authentication/loginSlice';
+import { useRouter } from "expo-router"
+import { Button, Input, Separator } from "tamagui"
+import { setLogin, setLogout } from '../reduxState/authentication/loginSlice';
 import { useDispatch } from 'react-redux';
 import axios from 'axios'
 import { userLogin } from '../axiosPath/axiosPath'
+import { persistor } from '../reduxState/authentication/loginSlice';
 
 export default function Login() {
 
@@ -18,6 +17,10 @@ export default function Login() {
 
     const dispatch = useDispatch()
     const router = useRouter()
+
+    useEffect(() => {
+        dispatch(setLogout())
+    }, [])
 
     const navigateToSignUp = () => {
         router.push('loginAndSignUp/signUp'); // Navigate to the SignUp screen

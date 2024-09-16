@@ -3,5 +3,5 @@ import { useSelector } from "react-redux"
 
 export default function useGetUserId() {
     const User = useSelector((state) => state.login.user)
-    return User.user.UserID
+    return User ? User.user.UserID : null
 }

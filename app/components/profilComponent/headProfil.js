@@ -1,9 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { Image, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
-import { ArrowLeft, User, Camera } from '@tamagui/lucide-icons';
+import React, { useContext, useState, useEffect} from 'react'
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { ArrowLeft, User, Camera, LogOut } from '@tamagui/lucide-icons';
 import { Text, Button } from "tamagui"
 import { useRouter } from 'expo-router'
-//import { theUserProfil } from '../../pages/profil/profil';
+import { setLogout } from '../../reduxState/authentication/loginSlice'
 import { theUserProfil } from '../../context/profilContext';
 import useGetUserId from '../../hooks/useGetUserId';
 import { followOrUnFollow } from '../../utils/followOrUnfollow';
@@ -12,6 +12,7 @@ import { changeProfilPhoto } from '../../axiosPath/axiosPath';
 import axios from "axios"
 import { AddRoute, DeleteRoute } from '../../reduxState/navigation/routingSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { persistor } from '../../reduxState/store';
 
 export default function HeadProfil() {
 
@@ -86,6 +87,10 @@ export default function HeadProfil() {
         });
     }
 
+    const logout = () => {
+        router.push('/loginAndSignUp/login')
+    }
+
     return (
         <View style={{ padding: 20, marginTop: 20 }}>
             <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
@@ -94,15 +99,20 @@ export default function HeadProfil() {
                     onPress={() => navigateBack()}
                     style={{ backgroundColor: 'transparent' }}
                 />
+                <View style={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
                 {myUserID === userInfo?.UserID &&
-                    <TouchableWithoutFeedback>
+                    <Pressable>
                         <Button
                             icon={<User size="$2" color={"black"} style={{ alignSelf: "center" }} />}
                             onPress={() => navigateTo(`/pages/friendList/friendList`)}
                             style={{ backgroundColor: 'transparent' }}
                         />
-                    </TouchableWithoutFeedback>
+                    </Pressable>
                 }
+                    <Button style={{ backgroundColor: 'transparent' }} onPress={() => logout()}>
+                        <LogOut size={"$2"} color={"black"}/>
+                    </Button>
+                </View>
             </View>
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
                 <Image source={userInfo?.Photo !== null ? { uri: image } : require("../../assets/baseProfilPhoto.png")} style={style.image} />
