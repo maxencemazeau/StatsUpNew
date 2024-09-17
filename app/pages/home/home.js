@@ -13,6 +13,7 @@ import { LoadMoreActivity } from '../../hooks/apiCall/activity/loadMoreActivity'
 import { useQueryClient } from 'react-query';
 import { LoadMoreGoal } from '../../hooks/apiCall/goal/loadMoreGoal';
 import useGetUserId from '../../hooks/useGetUserId';
+import useGetUserToken from '../../hooks/useGetUserToken';
 
 export default function Home() {
   const active = useSelector((state) => state.navigation.value);
@@ -27,6 +28,8 @@ export default function Home() {
   const [appState, setAppState] = useState(AppState.currentState);
   const queryClient = useQueryClient()
   const UserId = useGetUserId()
+  const token = useGetUserToken()
+
   let newActivityOffset = activityOffset
   let newGoalOffset = goalOffset
 
@@ -48,7 +51,7 @@ export default function Home() {
   }, [appState]);
 
   const loadMoreData = async (event) => {
-    //event.persist();
+    event.persist();
     await new Promise((resolve) => setTimeout(resolve, 300));
     if (isCloseToBottom(event.nativeEvent)) {
       if (
@@ -59,13 +62,13 @@ export default function Home() {
       ) {
         dispatch(incrementActivityOffset());
         newActivityOffset += 6
-        LoadMoreActivity(dispatch, queryClient, newActivityOffset, hasNoMoreActivityData, isActivityLoading, UserId)
+        LoadMoreActivity(dispatch, queryClient, newActivityOffset, hasNoMoreActivityData, isActivityLoading, UserId, token)
       }
 
       if (active !== 'ACTIVITY' && !hasNoMoreGoalData && !isGoalLoading && loadingError == false) {
         dispatch(incrementGoalOffset());
         newGoalOffset += 6
-        LoadMoreGoal(dispatch, queryClient, newGoalOffset, UserId)
+        LoadMoreGoal(dispatch, queryClient, newGoalOffset, UserId, token)
       }
     }
   };

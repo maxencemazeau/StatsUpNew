@@ -20,6 +20,7 @@ export default function Login() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
+
             dispatch(setLogout());
         }, 2); // Délai de 2 ms
 

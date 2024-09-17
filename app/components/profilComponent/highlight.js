@@ -5,15 +5,21 @@ import { Text } from "tamagui"
 import { theUserProfil } from '../../context/profilContext'
 import axios from "axios"
 import { getBestGoalStreak } from '../../axiosPath/axiosPath'
+import useGetUserToken from '../../hooks/useGetUserToken'
 
 export default function Highlight() {
 
     const { userProfil, userIdFromSearch } = useContext(theUserProfil)
     const [bestStreak, setBeastStreak] = useState(0)
+    const token = useGetUserToken()
 
     useEffect(() => {
         const getActivityStats = async () => {
-            const response = await axios.get(getBestGoalStreak, { params: { UserId: userIdFromSearch } })
+            const response = await axios.get(getBestGoalStreak, {
+                params: { UserId: userIdFromSearch }, headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
             setBeastStreak(response.data)
         }
 

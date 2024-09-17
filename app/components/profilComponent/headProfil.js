@@ -12,6 +12,7 @@ import { changeProfilPhoto } from '../../axiosPath/axiosPath';
 import axios from "axios"
 import { AddRoute, DeleteRoute } from '../../reduxState/navigation/routingSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import useGetUserToken from '../../hooks/useGetUserToken';
 
 export default function HeadProfil() {
 
@@ -22,6 +23,7 @@ export default function HeadProfil() {
     const router = useRouter()
     const routes = useSelector((state) => state.globalNavigation.value)
     const queryClient = useQueryClient(); // Obtenir le client de React Query
+    const token = useGetUserToken()
 
     useEffect(() => {
         setImage(userInfo?.Photo)
@@ -57,6 +59,7 @@ export default function HeadProfil() {
             await axios.put(changeProfilPhoto, formData, {
                 params: { UserID: myUserID },
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data"
                 }
             });

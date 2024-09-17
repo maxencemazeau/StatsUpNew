@@ -6,11 +6,14 @@ import { loadingError } from '../../../reduxState/error/loadingErrorSlice';
 import { getActivity } from "../../../axiosPath/axiosPath";
 import { useQuery, useQueryClient } from 'react-query';
 
-export const LoadMoreActivity = async (dispatch, queryClient, activityOffset, hasNoMoreData, isMoreDataLoading, UserId) => {
-
+export const LoadMoreActivity = async (dispatch, queryClient, activityOffset, hasNoMoreData, isMoreDataLoading, UserId, token) => {
     try {
         dispatch(isActivityLoading(true))
-        const response = await axios.get(getActivity, { params: { id: UserId, offset: activityOffset } });
+        const response = await axios.get(getActivity, {
+            params: { id: UserId, offset: activityOffset }, headers: {
+                Authorization: `Bearer ${token}` // Pass token in the Authorization header
+            }
+        });
         dispatch(noMoreActivityData(response.data.noMoreData))
         queryClient.setQueryData("activityList", oldData => [
             ...oldData,
@@ -18,7 +21,7 @@ export const LoadMoreActivity = async (dispatch, queryClient, activityOffset, ha
         ]);
         dispatch(isActivityLoading(false))
     } catch (err) {
-        console.log(err)
+        console.log("Load More activity " + err)
         dispatch(isActivityLoading(false))
         dispatch(loadingError(true))
     }

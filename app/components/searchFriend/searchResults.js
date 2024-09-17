@@ -10,6 +10,7 @@ import { useRouter } from "expo-router";
 import { followOrUnFollow } from "../../utils/followOrUnfollow";
 import { useDispatch } from "react-redux";
 import { AddRoute } from "../../reduxState/navigation/routingSlice";
+import useGetUserToken from "../../hooks/useGetUserToken";
 
 export default function SearchResults() {
 
@@ -17,6 +18,7 @@ export default function SearchResults() {
     const currentUserId = useGetUserId()
     const router = useRouter()
     const dispatch = useDispatch()
+    const token = useGetUserToken()
 
     const ToggleFollowOrUnfollow = (UserID) => {
         let isUnfollow
@@ -31,7 +33,7 @@ export default function SearchResults() {
                 return item
             })
         })
-        followOrUnFollow(isUnfollow, UserID, currentUserId)
+        followOrUnFollow(isUnfollow, UserID, currentUserId, token)
     }
 
     const navigateTo = (page, resultsUserId) => {

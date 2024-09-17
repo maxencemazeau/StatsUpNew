@@ -9,6 +9,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useDispatch, useSelector } from 'react-redux';
 import PageHeader from "../pageHeader";
 import { AddRoute } from "../../reduxState/navigation/routingSlice";
+import useGetUserToken from "../../hooks/useGetUserToken";
 
 export default function List() {
 
@@ -16,9 +17,14 @@ export default function List() {
     const UserID = useGetUserId()
     const router = useRouter()
     const dispatch = useDispatch()
+    const token = useGetUserToken()
 
     const LoadFriendList = async () => {
-        const response = await axios.get(getFriendList, { params: { UserId: UserID } })
+        const response = await axios.get(getFriendList, {
+            params: { UserId: UserID }, headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return response.data
     }
 

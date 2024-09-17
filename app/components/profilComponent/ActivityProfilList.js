@@ -8,15 +8,21 @@ import axios from 'axios'
 import { getActivityProfilList } from '../../axiosPath/axiosPath';
 import { useDispatch } from 'react-redux';
 import { AddRoute } from '../../reduxState/navigation/routingSlice';
+import useGetUserToken from '../../hooks/useGetUserToken';
 
 export default function ActivityProfilList() {
 
     const { userIdFromSearch } = useContext(theUserProfil)
     const router = useRouter()
     const dispatch = useDispatch()
+    const token = useGetUserToken()
 
     const LoadUserProfilActivity = async () => {
-        const response = await axios.get(getActivityProfilList, { params: { UserId: userIdFromSearch } })
+        const response = await axios.get(getActivityProfilList, {
+            params: { UserId: userIdFromSearch }, headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return response.data
     }
 

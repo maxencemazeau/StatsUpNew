@@ -13,6 +13,7 @@ import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
 import useGetUserId from "../../hooks/useGetUserId";
+import useGetUserToken from "../../hooks/useGetUserToken";
 import { todayFormattedDate } from "../../utils/todayFormattedDate";
 import { AddRoute } from "../../reduxState/navigation/routingSlice";
 import { startTimer, stopTimer, resetTimer } from '../../reduxState/timer/timer';
@@ -34,6 +35,7 @@ export default function ActivityCard({ activityOffset, appState }) {
     const [time, setTime] = useState(0)
     const timerStartHour = useSelector((state) => state.timer.startHour)
     const timerActivityId = useSelector((state) => state.timer.activityId)
+    const token = useGetUserToken()
 
     const { data: activityList, isLoading } = useQuery({
         queryFn: async () => LoadUserActivies(),
@@ -42,7 +44,11 @@ export default function ActivityCard({ activityOffset, appState }) {
     })
 
     const LoadUserActivies = async () => {
-        const response = await axios.get(getActivity, { params: { id: UserId, offset: 0 } });
+        const response = await axios.get(getActivity, {
+            params: { id: UserId, offset: 0 }, headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data.activity
     };
 
@@ -55,7 +61,7 @@ export default function ActivityCard({ activityOffset, appState }) {
         try {
             dispatch(showDelete(false))
             dispatch(cancelPopUp(false))
-            const response = await axios.delete(deleteActivity, { params: { id } })
+            const response = await axios.delete(deleteActivity, { data: { ActivityID: id }, headers: { Authorization: `Bearer ${token}` } })
             if (response.data === "SUCCESS") {
                 queryClient.setQueryData('activityList', oldData => oldData.filter(activity => activity.ActivityID !== id))
                 dispatch(Message({ messageType: "SUCCESS", messageText: "Activity deleted" }));
@@ -136,34 +142,45 @@ export default function ActivityCard({ activityOffset, appState }) {
         switch (action) {
             case 0:
                 response = await axios.delete(deleteActivityHistory, {
-                    params: {
+                    data: {
                         ActivityID,
                         TimeStamp,
                         Count,
                         Frequence,
                         UserID: UserId,
-                    }
+                    },
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }, // Pass token in the Authorization header
                 })
                 break;
             case 1:
-                response = await axios.post(addActivityHistory, {
-                    params: {
+                response = await axios.post(addActivityHistory,
+                    {
                         ActivityID,
                         TimeStamp,
                         Count,
                         Frequence,
                         UserID: UserId,
                         HoursSpent: hours
-                    }
-                })
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Pass token in the Authorization header
+                        }
+                    })
+
                 break;
             case 2:
                 response = await axios.put(updateTimeActivityHistory, {
-                    params: {
-                        ActivityID,
-                        HoursSpent: hours
-                    }
-                })
+                    ActivityID,
+                    HoursSpent: hours
+                },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Pass token in the Authorization header
+                        }
+                    })
                 break;
         }
 

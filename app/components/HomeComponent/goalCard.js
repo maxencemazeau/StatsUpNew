@@ -14,6 +14,7 @@ import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice";
 import { showDelete } from "../../reduxState/popUp/showDelete";
 import useGetUserId from "../../hooks/useGetUserId";
 import { AddRoute } from "../../reduxState/navigation/routingSlice";
+import useGetUserToken from "../../hooks/useGetUserToken";
 
 export default function GoalCard({ goalOffset }) {
 
@@ -23,6 +24,7 @@ export default function GoalCard({ goalOffset }) {
     const dispatch = useDispatch()
     const UserId = useGetUserId()
     const router = useRouter()
+    const token = useGetUserToken()
 
     const { data: goalList } = useQuery({
         queryFn: async () => LoadUserGoals(),
@@ -31,7 +33,11 @@ export default function GoalCard({ goalOffset }) {
     })
 
     const LoadUserGoals = async () => {
-        const response = await axios.get(getUserGoals, { params: { id: UserId, offset: 0 } });
+        const response = await axios.get(getUserGoals, {
+            params: { id: UserId, offset: 0 }, headers: {
+                Authorization: `Bearer ${token}` // Pass token in the Authorization header
+            }
+        });
         return response.data.goal
     };
 
@@ -44,7 +50,7 @@ export default function GoalCard({ goalOffset }) {
         try {
             dispatch(showDelete(false))
             dispatch(cancelPopUp(false))
-            const response = await axios.delete(deleteGoal, { params: { id } })
+            const response = await axios.delete(deleteGoal, { data: { GoalID: id }, headers: { Authorization: `Bearer ${token}` } })
             if (response.data === "SUCCESS") {
                 queryClient.setQueryData('goalList', oldData => oldData.filter(goal => goal.GoalsID !== id))
                 dispatch(Message({ messageType: "SUCCESS", messageText: "Goal deleted" }));

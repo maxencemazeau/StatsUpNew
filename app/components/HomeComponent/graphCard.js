@@ -5,10 +5,12 @@ import { useQuery, useQueryClient } from "react-query";
 import { getTotalActivityCompleted } from "../../axiosPath/axiosPath";
 import useGetUserId from "../../hooks/useGetUserId";
 import axios from "axios"
+import useGetUserToken from "../../hooks/useGetUserToken";
 
 export default function GraphCard() {
 
     const UserId = useGetUserId()
+    const token = useGetUserToken()
 
     const { data: totalActivityCompleted, isLoading } = useQuery({
         queryFn: async () => getTotalCompleted(),
@@ -17,12 +19,13 @@ export default function GraphCard() {
     })
 
     const getTotalCompleted = async () => {
-        const response = await axios.get(getTotalActivityCompleted, { params: { id: UserId } });
-        console.log(response.data.TotalActivityCompleted)
+        const response = await axios.get(getTotalActivityCompleted, {
+            params: { id: UserId }, headers: {
+                Authorization: `Bearer ${token}` // Pass token in the Authorization header
+            }
+        });
         return response.data.TotalActivityCompleted
     };
-
-    console.log(totalActivityCompleted)
 
     return (
         <View maxWidth="md" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", paddingTop: 20, paddingRight: 20, paddingLeft: 20, paddingBottom: 0 }}>

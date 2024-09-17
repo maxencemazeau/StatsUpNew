@@ -11,6 +11,7 @@ import axios from 'axios'
 import useGetUserId from '../../hooks/useGetUserId';
 import HeadProfilSkeleton from '../../components/skeleton/headProfilSkeleton';
 import { theUserProfil } from '../../context/profilContext';
+import useGetUserToken from '../../hooks/useGetUserToken';
 //const theUserProfil = createContext()
 
 //export { theUserProfil }
@@ -21,9 +22,14 @@ export default function Profil() {
     const [userInfo, setUserInfo] = useState([])
     const myUserID = useGetUserId()
     const userIdFromSearch = UserID
+    const token = useGetUserToken()
 
     const LoadUserProfilAnbStats = async () => {
-        const response = await axios.get(getProfilInfoAndStats, { params: { UserId: UserID, myUserId: myUserID } })
+        const response = await axios.get(getProfilInfoAndStats, {
+            params: { UserId: UserID, myUserId: myUserID }, headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         setUserInfo(response.data.userInfo[0])
         return response.data.userProfil[0]
     }

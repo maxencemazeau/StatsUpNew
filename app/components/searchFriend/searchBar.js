@@ -7,15 +7,17 @@ import axios from "axios"
 import { searchListContext } from "../../context/searchFriendContext"
 import { getSearchUser } from "../../axiosPath/axiosPath"
 import useGetUserId from "../../hooks/useGetUserId";
+import useGetUserToken from "../../hooks/useGetUserToken";
 
 export default function SearchBar() {
 
     const UserId = useGetUserId()
+    const token = useGetUserToken()
     const { searchResults, setSearchResults } = useContext(searchListContext)
 
     const debouncedSearch = debounce(async (value) => {
         if (value.length > 0) {
-            const response = await axios.get(getSearchUser, { params: { UserID: UserId, search: value } })
+            const response = await axios.get(getSearchUser, { params: { UserID: UserId, search: value }, headers: { Authorization: `Bearer ${token}` } })
             setSearchResults(response.data)
         }
     }, 1000);

@@ -10,15 +10,21 @@ import { useDispatch } from "react-redux"
 import { AddRoute } from "../../reduxState/navigation/routingSlice"
 import { useRouter } from 'expo-router';
 import FeedSkeleton from "../skeleton/feedSkeleton"
+import useGetUserToken from "../../hooks/useGetUserToken"
 
 export default function FeedResults() {
 
     const UserID = useGetUserId()
     const dispatch = useDispatch()
     const router = useRouter()
+    const token = useGetUserToken()
 
     const LoadFeed = async () => {
-        const response = await axios.get(getFeed, { params: { UserID: UserID } })
+        const response = await axios.get(getFeed, {
+            params: { UserID: UserID }, headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return response.data
     }
 
@@ -37,7 +43,7 @@ export default function FeedResults() {
 
     return (
         <>
-            {isLoading === true ? <FeedSkeleton /> :
+            {isLoading === true ? <View style={{ paddingLeft: 20, paddingRight: 20 }}><FeedSkeleton /></View> :
                 <View style={{ paddingLeft: 20, paddingRight: 20 }}>
                     {feedResult?.map(feed => (
                         <Pressable key={feed.ActivityHistoryID} style={styles.container} onPress={() => navigateTo(feed.UserID)}>
