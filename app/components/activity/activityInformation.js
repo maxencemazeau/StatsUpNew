@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Keyboard } from 'react-native'
 import { Text, Input, Button, Form, SizableText } from 'tamagui'
-import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-form';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Message } from '../../reduxState/message/messageSlice';
 import { loadingError } from '../../reduxState/error/loadingErrorSlice';
@@ -16,6 +16,7 @@ import { noMoreActivityData } from '../../reduxState/offset/hasMoreDataActivity'
 import { noMoreGoalData } from '../../reduxState/offset/hasMoreDataGoal';
 import { resetActivityOffset } from '../../reduxState/offset/activityOffsetSlice';
 import { resetGoalOffset } from '../../reduxState/offset/goalOffsetSlice';
+import useGetUserToken from '../../hooks/useGetUserToken';
 
 export default function ActivityInformation({ activityID }) {
 
@@ -28,19 +29,15 @@ export default function ActivityInformation({ activityID }) {
     let checkActivityDuplicate = 0
     let checkGoalDuplicate = 0
     const dispatch = useDispatch()
-
+    const token = useGetUserToken()
     const queryClient = useQueryClient();
-
-
-    // Get the cached data from the query key
-    const userActivity = queryClient.getQueryData(['userActivity', activityID]) || {};
-
+    const [userActivity, setUserActivity] = useState(queryClient.getQueryData(['userActivity', activityID]) || {})
     const defaultValues = {
         activityName: userActivity?.ActivityName || '',
         selectedIdGoal: userActivity?.GoalsID || 0,
         newGoalName: userActivity?.GoalName || '',
         timeFrame: userActivity?.TimeFrameID || '',
-        Frequence: userActivity?.Frequence || '',
+        frequence: userActivity?.Frequence || '',
     }
 
     const {
@@ -57,25 +54,33 @@ export default function ActivityInformation({ activityID }) {
             if (userActivity.GoalName) {
                 setShowGoalNameInput(true);
             }
+            reset({
+                selectedIdGoal: userActivity.GoalsID || 0,
+                newGoalName: userActivity.GoalName || '',
+                timeFrame: userActivity.TimeFrameID || '',
+                frequence: userActivity.Frequence.toString() || '',
+            })
         }
     }, [userActivity]);
 
 
     const onSubmit = async (data) => {
         try {
+            Keyboard.dismiss()
             if (hasActivityChanged == true) {
                 if (data.activityName !== defaultValues.activityName) {
-                    checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId)
+                    checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId, token)
                 }
                 if (checkActivityDuplicate == 0) {
                     const activityResponse = await axios.put(updateActivity, {
-                        params: {
-                            ActivityID: activityID,
-                            ActivityName: data.activityName,
-                            GoalsId: data.selectedIdGoal,
-                            UserId: UserId,
-                        },
-                    });
+                        ActivityID: activityID,
+                        ActivityName: data.activityName,
+                        GoalsId: data.selectedIdGoal,
+                        UserId: UserId,
+                    },
+                        {
+                            headers: { Authorization: `Bearer ${token}` }
+                        });
 
                     if (activityResponse.data === 1) {
                         dispatch(Message({ messageType: "SUCCESS", messageText: "Activity update" }));
@@ -101,19 +106,17 @@ export default function ActivityInformation({ activityID }) {
 
             if (hasGoalChanged == true) {
                 if (data.newGoalName !== defaultValues.newGoalName) {
-                    checkGoalDuplicate = await CheckDuplicate("Goal", data.newGoalName, UserId)
+                    checkGoalDuplicate = await CheckDuplicate("Goal", data.newGoalName, UserId, token)
                 }
 
                 if (checkGoalDuplicate == 0) {
                     const goalResponse = await axios.put(updateGoal, {
-                        params: {
-                            GoalsId: data.selectedIdGoal,
-                            GoalName: data.newGoalName,
-                            TimeFrameID: data.timeFrame,
-                            Frequence: data.Frequence,
-                            UserId: UserId,
-                        }
-                    })
+                        GoalsId: data.selectedIdGoal,
+                        GoalName: data.newGoalName,
+                        TimeFrameID: data.timeFrame,
+                        Frequence: data.Frequence,
+                        UserId: UserId,
+                    }, { headers: { Authorization: `Bearer ${token}` } })
 
                     if (goalResponse.data === 1) {
                         dispatch(Message({ messageType: "SUCCESS", messageText: "Goal updated" }));
@@ -223,6 +226,8 @@ export default function ActivityInformation({ activityID }) {
                                         onChange={onChange}
                                         checkActivityChanged={checkActivityChanged}
                                         UserId={UserId}
+                                        token={token}
+                                        setUserActivity={setUserActivity}
                                     />
                                     {errors.selectedIdGoal && (
                                         <Text color="red">Select a goal for the activity</Text>
@@ -243,7 +248,7 @@ export default function ActivityInformation({ activityID }) {
                                                 style={styles.inputField}
                                                 value={value}
                                                 onBlur={() => { onBlur(); checkGoalChanged("newGoalName", value) }}
-                                                onChangeText={onChange}
+                                                onChangeText={(Text) => { onChange(Text); setGoalNameDuplicate(false) }}
                                             />
                                             {goalNameDuplicate && <Text color="red">The goal name already existe</Text>}
                                             {errors.newGoalName && <Text color="red">The goal name is required</Text>}
@@ -265,12 +270,11 @@ export default function ActivityInformation({ activityID }) {
                                     <View style={styles.inputWithText}>
                                         <Text style={styles.TextStyle}>Frequence</Text>
                                         <Controller
-                                            name="Frequence"
+                                            name="frequence"
                                             control={control}
                                             rules={{ required: true }}
                                             render={({ field: { onChange, onBlur, value } }) => (
                                                 <Input
-                                                    placeholder="Frequency"
                                                     style={styles.inputField}
                                                     value={value}
                                                     onBlur={() => { onBlur(); checkGoalChanged("frequence", value) }}
@@ -283,7 +287,7 @@ export default function ActivityInformation({ activityID }) {
                                 </View>
                                 <View style={styles.lineError}>
                                     {errors.timeFrame && <Text color="red">Select a time frame</Text>}
-                                    {errors.Frequence && <Text color="red">Enter a frequence</Text>}
+                                    {errors.frequence && <Text color="red">Enter a frequence</Text>}
                                 </View>
                             </>
                         )
@@ -331,7 +335,7 @@ const styles = StyleSheet.create({
     },
     TextStyle: {
         color: "black",
-        marginBottom:5,
-        marginTop:15
+        marginBottom: 5,
+        marginTop: 15
     }
 });

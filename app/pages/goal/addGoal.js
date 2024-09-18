@@ -9,7 +9,7 @@ import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-for
 import TimeFrameSelect from '../../components/activity/timeFrameSelect';
 import LinkedActivity from '../../components/goal/linkedActivity';
 
-export default function AddGoal({ UserId, SuccessOrError }) {
+export default function AddGoal({ UserId, SuccessOrError, token }) {
   const linkedActivity = [];
   const [nameDuplicate, setNameDuplicate] = useState(false);
 
@@ -27,14 +27,15 @@ export default function AddGoal({ UserId, SuccessOrError }) {
 
       if (checkDuplicate == 0) {
         const response = await axios.post(addGoal, {
-          params: {
-            GoalName: data.goalName,
-            LinkActivity: linkedActivity,
-            TimeFrame: data.timeFrame,
-            Frequence: data.Frequence,
-            UserId: UserId,
-          },
-        });
+          GoalName: data.goalName,
+          LinkActivity: linkedActivity,
+          TimeFrame: data.timeFrame,
+          Frequence: data.Frequence,
+          UserId: UserId,
+        },
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          });
         if (response.data == 1) {
           SuccessOrError('SUCCESS', 'Goal successfully created !');
         } else {
@@ -157,8 +158,8 @@ const styles = StyleSheet.create({
   },
   TextStyle: {
     color: "black",
-    marginBottom:5,
-    marginTop:15
+    marginBottom: 5,
+    marginTop: 15
   },
   inputWithText: {
     flex: 1

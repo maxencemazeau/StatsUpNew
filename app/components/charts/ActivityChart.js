@@ -5,6 +5,7 @@ import { Dimensions } from "react-native";
 import { getActivityChartData } from '../../axiosPath/axiosPath';
 import { months } from '../../data/months';
 import { weekDay } from '../../data/weekDay';
+import useGetUserToken from '../../hooks/useGetUserToken';
 
 export default function ActivityChart({ UserId, ChartTimeFrame, ActivityId }) {
 
@@ -14,11 +15,12 @@ export default function ActivityChart({ UserId, ChartTimeFrame, ActivityId }) {
     const [xDataArray, setXDataArray] = useState([])
     const [segmentNumber, setSegmentNumber] = useState(0)
     const [fromZero, setFromZero] = useState(false)
+    const token = useGetUserToken()
     let i = 1
 
     useEffect(() => {
         const getActivityData = async () => {
-            const response = await axios.get(getActivityChartData, { params: { UserId: UserId, ChartFrame: ChartTimeFrame, ActivityId: ActivityId } })
+            const response = await axios.get(getActivityChartData, { params: { UserId: UserId, ChartFrame: ChartTimeFrame, ActivityId: ActivityId }, headers: { Authorization: `Bearer ${token}` } })
             setChartData(response.data)
         }
 
@@ -58,10 +60,8 @@ export default function ActivityChart({ UserId, ChartTimeFrame, ActivityId }) {
                 case 2:
                     setChartLabel("")
                     matching = false
-                    let newArrayTest = []
                     let todayDate = new Date()
                     let dayMax = todayDate.getDate()
-                    let halfMonthDate = Math.ceil(dayMax / 2)
                     while (i <= dayMax) {
                         matching = false
                         for (j = 0; j < chartData.length; j++) {
@@ -144,7 +144,12 @@ export default function ActivityChart({ UserId, ChartTimeFrame, ActivityId }) {
                 setSegmentNumber(1)
                 setFromZero(false)
             } else {
-                setSegmentNumber(maxNbActivity)
+                let firstNumber = 1
+                if (maxNbActivity >= 10) {
+                    firstNumber = Number(String(maxNbActivity)[0]);
+                    firstNumber === 1 ? firstNumber = 2 : firstNumber = 1
+                }
+                setSegmentNumber(Math.floor(maxNbActivity / firstNumber))
                 setFromZero(true)
             }
         }

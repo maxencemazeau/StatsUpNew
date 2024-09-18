@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "react-query";
 import axios from "axios"
 import { getActiviHistory } from '../../axiosPath/axiosPath';
 import { Circle, CheckCircle2, XCircle, ChevronLeft, ChevronRight } from '@tamagui/lucide-icons';
+import useGetUserToken from '../../hooks/useGetUserToken';
 
 export default function ActivityHistory({ activityID }) {
 
@@ -14,6 +15,7 @@ export default function ActivityHistory({ activityID }) {
     const [noMoreHistory, setNoMoreHistory] = useState(false)
     const [isLeftButtonDisabled, setIsLeftButtonDisabled] = useState(false)
     const [isRightButtonDisabled, setIsRightButtonDisabled] = useState(false)
+    const token = useGetUserToken()
     const queryClient = useQueryClient()
 
 
@@ -23,7 +25,7 @@ export default function ActivityHistory({ activityID }) {
     })
 
     const LoadActivityHistory = async () => {
-        const response = await axios.get(getActiviHistory, { params: { ActivityID: activityID, Offset: offset } });
+        const response = await axios.get(getActiviHistory, { params: { ActivityID: activityID, Offset: offset }, headers: { Authorization: `Bearer ${token}` } });
         setNumberOfPage(response.data.numberOfPage)
         setNoMoreHistory(response.data.noMoreData)
         setIsLeftButtonDisabled(true)
@@ -35,7 +37,7 @@ export default function ActivityHistory({ activityID }) {
 
     const previousHistoryData = async () => {
         if (actualPageNumber > 1) {
-            const response = await axios.get(getActiviHistory, { params: { ActivityID: activityID, Offset: offset - 5 } });
+            const response = await axios.get(getActiviHistory, { params: { ActivityID: activityID, Offset: offset - 5 }, headers: { Authorization: `Bearer ${token}` } });
             queryClient.setQueryData("activityHistory", response.data.activityHistory);
             setOffset(prevState => prevState - 5)
             setActualPageNumber(prevState => prevState - 1)
@@ -50,7 +52,7 @@ export default function ActivityHistory({ activityID }) {
 
     const nextHistoryData = async () => {
         if (noMoreHistory === false) {
-            const response = await axios.get(getActiviHistory, { params: { ActivityID: activityID, Offset: offset + 5 } });
+            const response = await axios.get(getActiviHistory, { params: { ActivityID: activityID, Offset: offset + 5 }, headers: { Authorization: `Bearer ${token}` } });
             queryClient.setQueryData("activityHistory", response.data.activityHistory);
             setNoMoreHistory(response.data.noMoreData)
             setActualPageNumber(prevState => prevState + 1)

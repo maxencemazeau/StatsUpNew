@@ -1,15 +1,16 @@
 import { checkGoalNameDuplicate, checkActivityNameDuplicate } from "../axiosPath/axiosPath";
 import axios from "axios";
+import useGetUserToken from "../hooks/useGetUserToken";
 
-export const CheckDuplicate = async (tableName, Name, UserId) => {
+export const CheckDuplicate = async (tableName, Name, UserId, token) => {
     let duplicate = 0
     if (tableName === "Activity") {
-        const response = await axios.get(checkActivityNameDuplicate, { params: { UserID: UserId, ActivityName: Name } })
+        const response = await axios.get(checkActivityNameDuplicate, { params: { UserID: UserId, ActivityName: Name }, headers: { Authorization: `Bearer ${token}` } })
         if (response.data == 1) {
             duplicate = 1
         }
     } else {
-        const response = await axios.get(checkGoalNameDuplicate, { params: { UserID: UserId, GoalName: Name } })
+        const response = await axios.get(checkGoalNameDuplicate, { params: { UserID: UserId, GoalName: Name }, headers: { Authorization: `Bearer ${token}` } })
         if (response.data == 1) {
             duplicate = 1
         }

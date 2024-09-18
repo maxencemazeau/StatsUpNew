@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, StyleSheet, TouchableWithoutFeedback } from "react-native"
+import { View, StyleSheet, TouchableWithoutFeedback, Pressable } from "react-native"
 import { Text, Separator } from "tamagui"
 import { theUserProfil } from '../../context/profilContext';
 import { useQuery, useQueryClient } from "react-query";
@@ -47,7 +47,7 @@ export default function ActivityProfilList() {
                     <View style={{ display: 'flex', flexDirection: 'Column', justifyContent: 'center', borderRadius: 14, backgroundColor: "white", padding: 10, marginTop: 5 }}>
 
                         {userProfilActivity?.map((activities, index) => (
-                            <TouchableWithoutFeedback key={activities.ActivityID} onPress={() => navigateToDetail(activities.ActivityID)}>
+                            <Pressable key={activities.ActivityID} onPress={() => navigateToDetail(activities.ActivityID)}>
                                 <>
                                     {index !== 0 && <Separator height={1} borderColor={"#eeeeee"} />}
                                     <View style={styles.container}>
@@ -61,7 +61,7 @@ export default function ActivityProfilList() {
                                         </View>
                                     </View>
                                 </>
-                            </TouchableWithoutFeedback>
+                            </Pressable>
                         ))}
                     </View>
                 </>

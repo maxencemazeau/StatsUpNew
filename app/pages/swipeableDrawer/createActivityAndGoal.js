@@ -14,11 +14,12 @@ import { resetGoalOffset } from '../../reduxState/offset/goalOffsetSlice';
 import { useQueryClient } from 'react-query';
 import GoalForm from '../../components/goalComponent/goalForm';
 import useGetUserId from '../../hooks/useGetUserId';
+import useGetUserToken from '../../hooks/useGetUserToken';
 
 export default function CreateActivityAndGoal({ open, setOpen, position, setPosition }) {
   const [createNewActivityOrGoal, setCreateNewActivityOrGoal] = useState(0);
   const dispatch = useDispatch();
-  const User = useSelector((state) => state.login.user);
+  const token = useGetUserToken()
   const UserId = useGetUserId()
   const queryClient = useQueryClient();
 
@@ -97,9 +98,9 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
               </Pressable>
             </View>
             {createNewActivityOrGoal == 0 ? (
-              <AddActivity UserId={UserId} SuccessOrError={SuccessOrError} />
+              <AddActivity UserId={UserId} SuccessOrError={SuccessOrError} token={token} />
             ) : (
-              <GoalForm UserId={UserId} SuccessOrError={SuccessOrError} />
+              <GoalForm UserId={UserId} SuccessOrError={SuccessOrError} token={token} />
               // <AddGoal UserId={UserId} SuccessOrError={SuccessOrError} />
             )}
           </View>

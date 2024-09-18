@@ -1,12 +1,16 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { ChevronDown, ChevronUp, Check } from '@tamagui/lucide-icons'
-import { Text, Input, Button, Checkbox, Separator, Form, Select } from "tamagui"
-import { Adapt, Label, Sheet, XStack, YStack, getFontSize } from 'tamagui'
+import { Select } from "tamagui"
+import { Adapt, Sheet, YStack } from 'tamagui'
 import { timeFrame } from "../../data/timeFrame"
 
 export default function TimeFrameSelect({ defaultValue = 0, onChange, checkGoalChanged = null }) {
 
     const [val, setVal] = useState(defaultValue)
+
+    useEffect(() => {
+        setVal(defaultValue)
+    }, [defaultValue])
 
     const handleValueChange = (value) => {
         setVal(value);

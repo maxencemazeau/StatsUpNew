@@ -15,7 +15,7 @@ export default function PageHeader({ Title, Color = "white", UserID = 0 }) {
     const navigateBack = () => {
         const index = routes.length - 1
         const path = routes[index]
-        console.log(path)
+
         if (path === '/pages/profil/profil') {
             router.push({
                 pathname: path,

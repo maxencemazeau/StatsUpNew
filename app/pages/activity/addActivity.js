@@ -8,8 +8,9 @@ import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-for
 import LinkedGoalSelect from '../../components/activity/linkedGoalSelect';
 import TimeFrameSelect from '../../components/activity/timeFrameSelect';
 import { CheckDuplicate } from '../../utils/CheckDuplicate';
+import useGetUserToken from '../../hooks/useGetUserToken';
 
-export default function AddActivity({ UserId, SuccessOrError }) {
+export default function AddActivity({ UserId, SuccessOrError, token }) {
   const [nameDuplicate, setNameDuplicate] = useState(false);
   const [showGoalNameInput, setShowGoalNameInput] = useState(false);
   let checkActivityDuplicate = 0
@@ -103,6 +104,7 @@ export default function AddActivity({ UserId, SuccessOrError }) {
                     setShowGoalNameInput={setShowGoalNameInput}
                     onChange={onChange}
                     UserId={UserId}
+                    token={token}
                   />
                   {errors.selectedIdGoal && (
                     <Text color="red">Select a goal for the activity</Text>
@@ -210,7 +212,7 @@ const styles = StyleSheet.create({
   },
   TextStyle: {
     color: "black",
-    marginBottom:5,
-    marginTop:15
+    marginBottom: 5,
+    marginTop: 15
   }
 });

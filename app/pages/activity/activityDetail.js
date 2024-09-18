@@ -11,6 +11,7 @@ import useGetUserId from "../../hooks/useGetUserId";
 import ChartFrameSelect from "../../components/charts/chartFrameSelect";
 import ActivityChart from "../../components/charts/ActivityChart";
 import PageHeader from "../../components/pageHeader";
+import useGetUserToken from "../../hooks/useGetUserToken";
 
 export default function ActivityDetail() {
 
@@ -18,6 +19,7 @@ export default function ActivityDetail() {
     const [bestActivityStreak, setBestActivityStreak] = useState(0)
     const [activityStats, setActivityStats] = useState([])
     const UserId = useGetUserId()
+    const token = useGetUserToken()
     const [chartTimeFrame, setChartTimeFrame] = useState(1)
 
     const { data: userActivity, isLoading } = useQuery({
@@ -26,7 +28,7 @@ export default function ActivityDetail() {
     })
 
     const LoadActivity = async () => {
-        const response = await axios.get(getUserActivityByID, { params: { ActivityID: activityID, UserID: UserId } });
+        const response = await axios.get(getUserActivityByID, { params: { ActivityID: activityID, UserID: UserId }, headers: { Authorization: `Bearer ${token}` } });
         setActivityStats(response.data.activityStats)
         convertFloatToHour(response.data.activityStats.totalTime)
         setBestActivityStreak(response.data.bestStreak)

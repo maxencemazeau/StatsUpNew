@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { View, StyleSheet, Image } from "react-native"
-import { Home, Plus, Search } from "@tamagui/lucide-icons"
+import { Home, Plus, Search, User } from "@tamagui/lucide-icons"
 import { Button, Group, Avatar } from "tamagui"
 import { useRouter } from "expo-router"
 import AddActivity from "../pages/activity/addActivity";
@@ -16,7 +16,7 @@ function BottomMenu() {
     const [position, setPosition] = useState(0);
     const router = useRouter()
     const UserId = useGetUserId()
-    const User = useSelector((state) => state.login.user)
+    //const User = useSelector((state) => state.login.user)
     const dispatch = useDispatch()
 
     const toggle = () => {
@@ -46,12 +46,7 @@ function BottomMenu() {
                         <Button style={styles.groupButton} icon={<Search size="$2" color={"black"} />} onPress={() => navigateTo("/feed/feed")} />
                     </Group.Item>
                     <Group.Item>
-                        <Button style={styles.groupButton} icon={<Avatar circular size="$3">
-                            <Avatar.Image
-                                source={User?.user?.Photo !== null ? { uri: User?.user?.Photo } : require("../assets/baseProfilPhoto.png")}
-                            />
-                            <Avatar.Fallback bc="lightgrey" />
-                        </Avatar>} onPress={() => navigateTo("/profil/profil")}></Button>
+                        <Button style={styles.groupButton} icon={<User size="$2" color={"black"} />} onPress={() => navigateTo("/profil/profil")}></Button>
                     </Group.Item>
                 </Group>
             </View>

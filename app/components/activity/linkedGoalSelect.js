@@ -4,15 +4,16 @@ import { getAllUserGoal } from "../../axiosPath/axiosPath"
 import { Separator, Select } from "tamagui"
 import { Adapt, Text, Sheet, YStack, } from 'tamagui'
 import axios from "axios"
+import useGetUserToken from "../../hooks/useGetUserToken"
 
-export default function LinkedGoalSelect({ defaultValue = -1, forUpdate = false, setShowGoalNameInput, onChange, checkActivityChanged = null, UserId }) {
+export default function LinkedGoalSelect({ defaultValue = -1, forUpdate = false, setShowGoalNameInput, onChange, checkActivityChanged = null, UserId, token, setUserActivity = null }) {
 
     const [val, setVal] = useState(defaultValue)
     const [goalList, setGoalList] = useState([])
 
     useEffect(() => {
         const fetchGoal = async () => {
-            const response = await axios.get(getAllUserGoal, { params: { id: UserId } });
+            const response = await axios.get(getAllUserGoal, { params: { id: UserId }, headers: { Authorization: `Bearer ${token}` } });
             setGoalList(response.data)
         }
 
@@ -40,12 +41,19 @@ export default function LinkedGoalSelect({ defaultValue = -1, forUpdate = false,
         onChange(value)
         if (checkActivityChanged) {
             checkActivityChanged("linkedGoal", value)
+            if (setUserActivity !== null) {
+                const selectedGoalDetail = goalList.filter((goal) => goal.GoalsID === value)
+                setUserActivity((prevState) => ({
+                    ...prevState, GoalName: selectedGoalDetail[0].GoalName,
+                    GoalsID: selectedGoalDetail[0].GoalsID, Frequence: selectedGoalDetail[0].Frequence, TimeFrameID: selectedGoalDetail[0].TimeFrameID
+                }))
+            }
         }
     }
 
     return (
         <>
-            <Text width={90} color={"black"} style={{marginBottom:5, marginTop:15}}>Link goal</Text>
+            <Text width={90} color={"black"} style={{ marginBottom: 5, marginTop: 15 }}>Link goal</Text>
             <Select value={val} onValueChange={(value) => { setVal(value); handleValueChange(value); }} onBlur={() => handleBlur(val)} disablePreventBodyScroll defaultValue={-1}>
                 <Select.Trigger iconAfter={<ChevronDown color={"black"} size={20} />} style={{ backgroundColor: "white", height: 50 }}>
                     <Select.Value color={"black"} />
@@ -54,8 +62,8 @@ export default function LinkedGoalSelect({ defaultValue = -1, forUpdate = false,
                 <Adapt when="sm" platform="touch">
                     <Sheet
                         modal
-                        snapPoints={["fit"]}
-                        snapPointsMode="fit"
+                        snapPoints={[85, 50]}
+                        snapPointsMode="percent"
                         dismissOnSnapToBottom
                         animationConfig={{
                             type: 'spring',
