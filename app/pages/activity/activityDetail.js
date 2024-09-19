@@ -30,7 +30,9 @@ export default function ActivityDetail() {
     const LoadActivity = async () => {
         const response = await axios.get(getUserActivityByID, { params: { ActivityID: activityID, UserID: UserId }, headers: { Authorization: `Bearer ${token}` } });
         setActivityStats(response.data.activityStats)
-        convertFloatToHour(response.data.activityStats.totalTime)
+        if (response.data.activityStats.totalTime !== 0) {
+            convertFloatToHour(response.data.activityStats.totalTime)
+        }
         setBestActivityStreak(response.data.bestStreak)
         return response.data.activity[0]
     };

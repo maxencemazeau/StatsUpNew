@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Keyboard } from 'react-native';
 import { Text, Input, Button, Checkbox, Form, Card } from 'tamagui';
 import { Check } from '@tamagui/lucide-icons';
 import { CheckDuplicate } from '../../utils/CheckDuplicate';
@@ -11,8 +11,9 @@ import TimeFrameSelect from '../../components/activity/timeFrameSelect';
 import LinkedActivity from '../../components/goal/linkedActivity';
 import useGetUserId from '../../hooks/useGetUserId';
 
-export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
-    const linkedActivity = [];
+export default function GoalForm({ UserId, SuccessOrError, goalID = 0, token }) {
+    //const linkedActivity = [];
+    const [linkedActivity, setLinkedActivity] = useState([])
     const [nameDuplicate, setNameDuplicate] = useState(false);
     const [hasGoalChanged, setHasGoalChanged] = useState(false);
     let userGoal = []
@@ -27,45 +28,43 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
     const defaultValues = {
         goalName: userGoal?.GoalName || '',
         timeFrame: userGoal?.TimeFrameID || 0,
-        Frequence: userGoal?.Frequence || 0,
+        frequence: userGoal?.Frequence === null ? 0 : userGoal?.Frequence.toString() || '',
     }
 
     const {
         control,
         handleSubmit,
-        formState: { errors },
-        refresh
+        formState: { errors }
     } = useForm({ defaultValues });
     const onSubmit = async (data) => {
         try {
-
+            Keyboard.dismiss()
             if (hasGoalChanged !== true && linkedActivity.length === 0) {
                 return
             }
             let response = []
-            const checkDuplicate = await CheckDuplicate("Goal", data.goalName, UserId)
+            const checkDuplicate = await CheckDuplicate("Goal", data.goalName, UserId, token)
 
             if (checkDuplicate == 0) {
                 if (goalID === 0) {
                     response = await axios.post(addGoal, {
-                        params: {
-                            GoalName: data.goalName,
-                            LinkActivity: linkedActivity,
-                            TimeFrame: data.timeFrame,
-                            Frequence: data.Frequence,
-                            UserId: UserId,
-                        },
-                    });
+                        GoalName: data.goalName,
+                        LinkActivity: linkedActivity,
+                        TimeFrame: data.timeFrame,
+                        Frequence: data.frequence,
+                        UserId: UserId,
+                    }, { headers: { Authorization: `Bearer ${token}` } }
+                    );
                 } else {
                     response = await axios.put(updateGoal, {
-                        params: {
-                            GoalsId: goalID,
-                            GoalName: data.goalName,
-                            TimeFrameID: data.timeFrame,
-                            Frequence: data.Frequence,
-                            LinkActivity: linkedActivity
-                        },
-                    });
+                        GoalsId: goalID,
+                        GoalName: data.goalName,
+                        TimeFrameID: data.timeFrame,
+                        Frequence: data.frequence,
+                        LinkActivity: linkedActivity
+                    },
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    );
                 }
                 if (response.data == 1) {
                     setHasGoalChanged(false)
@@ -100,7 +99,7 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
                 }
                 break;
             case "frequence":
-                if (inputValue !== defaultValues.Frequence) {
+                if (inputValue !== defaultValues.frequence) {
                     setHasGoalChanged(true)
                 }
                 break;
@@ -155,7 +154,7 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
                                 <View style={styles.inputWithText}>
                                     <Text style={styles.TextStyle}>Frequence</Text>
                                     <Controller
-                                        name="Frequence"
+                                        name="frequence"
                                         control={control}
                                         rules={{ required: true }}
                                         render={({ field: { onChange, onBlur, value } }) => (
@@ -175,7 +174,7 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0 }) {
                                 {errors.Frequence && <Text color="red">Enter a frequence</Text>}
                             </View>
                         </>
-                        <LinkedActivity linkedActivity={linkedActivity} UserId={UserId} GoalID={goalID} />
+                        <LinkedActivity setLinkedActivity={setLinkedActivity} linkedActivity={linkedActivity} UserId={UserId} GoalID={goalID} token={token} />
                         <Button
                             style={{ backgroundColor: '#DD7A34', marginTop: 1, height: 50 }}
                             onPress={handleSubmit(onSubmit)}>

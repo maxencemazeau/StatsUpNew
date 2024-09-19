@@ -15,15 +15,15 @@ import PageHeader from "../../components/pageHeader";
 import { getUserGoalByID } from "../../axiosPath/axiosPath";
 import LinkedActivityStats from "../../components/goalComponent/linkedActivityStats";
 import { useDispatch } from "react-redux";
+import useGetUserToken from "../../hooks/useGetUserToken";
 
 export default function GoalDetail() {
 
     const { goalID } = useLocalSearchParams();
-    const router = useRouter()
     const UserId = useGetUserId()
-    const linkedActivity = [];
     const queryClient = useQueryClient();
     const dispatch = useDispatch()
+    const token = useGetUserToken()
 
     const { data: goalInfo, isLoading } = useQuery({
         queryFn: async () => LoadGoalInfo(),
@@ -31,7 +31,7 @@ export default function GoalDetail() {
     })
 
     const LoadGoalInfo = async () => {
-        const response = await axios.get(getUserGoalByID, { params: { GoalsID: goalID, UserID: UserId } });
+        const response = await axios.get(getUserGoalByID, { params: { GoalsID: goalID, UserID: UserId }, headers: { Authorization: `Bearer ${token}` } });
         return response.data[0]
     };
 
@@ -57,12 +57,12 @@ export default function GoalDetail() {
                         <PageHeader Title={goalInfo?.GoalName} />
                         <View style={{ padding: 20 }}>
                             {goalInfo?.TimeFrameID &&
-                                <LinkedActivityStats goalID={goalID} TimeFrameID={goalInfo.TimeFrameID} />
+                                <LinkedActivityStats goalID={goalID} TimeFrameID={goalInfo.TimeFrameID} token={token} />
                             }
                         </View>
                     </View>
                     <View style={{ padding: 20 }}>
-                        {!isLoading && <GoalForm UserID={UserId} SuccessOrError={SuccessOrError} goalID={goalID} />}
+                        {!isLoading && <GoalForm UserID={UserId} SuccessOrError={SuccessOrError} goalID={goalID} token={token} />}
                     </View>
                 </ScrollView >
             </View>

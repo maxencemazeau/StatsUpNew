@@ -41,7 +41,7 @@ export default function LinkedGoalSelect({ defaultValue = -1, forUpdate = false,
         onChange(value)
         if (checkActivityChanged) {
             checkActivityChanged("linkedGoal", value)
-            if (setUserActivity !== null) {
+            if (setUserActivity !== null && value !== -1) {
                 const selectedGoalDetail = goalList.filter((goal) => goal.GoalsID === value)
                 setUserActivity((prevState) => ({
                     ...prevState, GoalName: selectedGoalDetail[0].GoalName,

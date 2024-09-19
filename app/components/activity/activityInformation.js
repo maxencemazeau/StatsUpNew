@@ -37,7 +37,7 @@ export default function ActivityInformation({ activityID }) {
         selectedIdGoal: userActivity?.GoalsID || 0,
         newGoalName: userActivity?.GoalName || '',
         timeFrame: userActivity?.TimeFrameID || '',
-        frequence: userActivity?.Frequence || '',
+        frequence: userActivity?.Frequence !== null ? userActivity?.Frequence.toString() : '' || '',
     }
 
     const {
@@ -58,7 +58,7 @@ export default function ActivityInformation({ activityID }) {
                 selectedIdGoal: userActivity.GoalsID || 0,
                 newGoalName: userActivity.GoalName || '',
                 timeFrame: userActivity.TimeFrameID || '',
-                frequence: userActivity.Frequence.toString() || '',
+                frequence: userActivity.Frequence !== null ? userActivity.Frequence.toString() : '' || '',
             })
         }
     }, [userActivity]);
@@ -71,6 +71,7 @@ export default function ActivityInformation({ activityID }) {
                 if (data.activityName !== defaultValues.activityName) {
                     checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId, token)
                 }
+
                 if (checkActivityDuplicate == 0) {
                     const activityResponse = await axios.put(updateActivity, {
                         ActivityID: activityID,
@@ -114,7 +115,7 @@ export default function ActivityInformation({ activityID }) {
                         GoalsId: data.selectedIdGoal,
                         GoalName: data.newGoalName,
                         TimeFrameID: data.timeFrame,
-                        Frequence: data.Frequence,
+                        Frequence: data.frequence,
                         UserId: UserId,
                     }, { headers: { Authorization: `Bearer ${token}` } })
 
@@ -141,6 +142,9 @@ export default function ActivityInformation({ activityID }) {
                     setGoalNameDuplicate(true);
                 }
             }
+
+            checkActivityDuplicate = 0
+            checkGoalDuplicate = 0
         } catch (err) {
             console.log(err);
         }

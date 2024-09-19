@@ -3,18 +3,17 @@ import { getAllActivityGoalStats } from "../../axiosPath/axiosPath";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "axios"
 import { View, StyleSheet } from "react-native"
-import { Separator, Text } from "tamagui"
 
-export default function LinkedActivityStats({ goalID, TimeFrameID }) {
+export default function LinkedActivityStats({ goalID, TimeFrameID, token }) {
 
     const LoadActivitiesStats = async () => {
-        const response = await axios.get(getAllActivityGoalStats, { params: { GoalID: goalID, TimeFrame: TimeFrameID } });
+        const response = await axios.get(getAllActivityGoalStats, { params: { GoalID: goalID, TimeFrame: TimeFrameID }, headers: { Authorization: `Bearer ${token}` } });
         return response.data
     };
 
     const { data: activitiesStats, isLoading } = useQuery({
         queryFn: async () => LoadActivitiesStats(),
-        queryKey: ["activitiesStats", goalID],
+        queryKey: ["activitiesStats", goalID]
     })
 
 
@@ -38,7 +37,11 @@ export default function LinkedActivityStats({ goalID, TimeFrameID }) {
                         </View>
                         <View style={styles.SubStatsContainer}>
                             <Text style={styles.statsTitle}>H:</Text>
-                            <Text style={styles.text}>200H</Text>
+                            {activities.Hour !== undefined ?
+                                <Text style={styles.text}>{activities.Hour > 10 ? activities.Hour + "h" : activities.Hour + "h" + activities.minutes}</Text>
+                                :
+                                <Text style={styles.text}>None</Text>
+                            }
                         </View>
                     </View>
                 </View>

@@ -77,7 +77,7 @@ export default function ActivityCard({ activityOffset, appState }) {
         }
     }
 
-    const updateActivityChecked = async (id, count, historyID, pressed) => {
+    const updateActivityChecked = async (id, count, historyID, pressed, GoalsID) => {
         const FormattedDate = todayFormattedDate('fullDate')
         let response
         const foundActivity = activityList.find(activity =>
@@ -117,7 +117,9 @@ export default function ActivityCard({ activityOffset, appState }) {
                     FormattedDate,
                     count + 1,
                     1,
-                    foundActivity ? foundActivity.Frequence : null
+                    foundActivity ? foundActivity.Frequence : null,
+                    0,
+                    GoalsID
                 )
                 if (response === "Error") {
                     dispatch(Message({ messageType: "ERROR", messageText: "An error occured please try again" }));
@@ -137,7 +139,7 @@ export default function ActivityCard({ activityOffset, appState }) {
 
     }
 
-    const updateActivityHistory = async (ActivityID, TimeStamp, Count, action, Frequence, hours = 0) => {
+    const updateActivityHistory = async (ActivityID, TimeStamp, Count, action, Frequence, hours = 0, GoalsID) => {
         let response
         switch (action) {
             case 0:
@@ -162,7 +164,8 @@ export default function ActivityCard({ activityOffset, appState }) {
                         Count,
                         Frequence,
                         UserID: UserId,
-                        HoursSpent: hours
+                        HoursSpent: hours,
+                        GoalsID
                     },
                     {
                         headers: {
@@ -228,7 +231,7 @@ export default function ActivityCard({ activityOffset, appState }) {
         });
     }
 
-    const handleTimerPress = async (activityID, count, historyID) => {
+    const handleTimerPress = async (activityID, count, historyID, GoalsID) => {
         const currentTime = getCurrentTime()
         const FormattedDate = todayFormattedDate('fullDate')
         let response
@@ -238,9 +241,9 @@ export default function ActivityCard({ activityOffset, appState }) {
             updateActivityChecked(activityID, count, historyID, false)
             const activityTimed = activityList.find(activity => activity.ActivityID === activityID);
             if (activityTimed.Count === null || activityTimed.Count === 0) {
-                response = await updateActivityHistory(activityTimed.ActivityID, FormattedDate, activityTimed.Count + 1, 1, activityTimed.Frequence, hours)
+                response = await updateActivityHistory(activityTimed.ActivityID, FormattedDate, activityTimed.Count + 1, 1, activityTimed.Frequence, hours, GoalsID)
             } else {
-                response = await updateActivityHistory(activityTimed.ActivityID, FormattedDate, activityTimed.Count, 2, activityTimed.Frequence, hours)
+                response = await updateActivityHistory(activityTimed.ActivityID, FormattedDate, activityTimed.Count, 2, activityTimed.Frequence, hours, GoalsID)
             }
             if (response === "Error") {
                 dispatch(Message({ messageType: "ERROR", messageText: "An error occured please try again" }));
@@ -313,11 +316,11 @@ export default function ActivityCard({ activityOffset, appState }) {
                                         <Paragraph style={styles.typography}>No goal linked</Paragraph>}
                                 </View>
                                 <Button icon={<Check size="$1" />} style={{ backgroundColor: activities.TimeStamp === FormattedDate ? "#DD7A34" : "grey", borderRadius: 25, height: 50 }}
-                                    onPress={() => updateActivityChecked(activities.ActivityID, activities.Count, activities.ActivityHistoryID, true)} />
+                                    onPress={() => updateActivityChecked(activities.ActivityID, activities.Count, activities.ActivityHistoryID, true, activities.GoalsID)} />
                             </Card.Header>
                         </TouchableWithoutFeedback>
                         <Separator />
-                        <Pressable style={{ ...styles.cardHeader, paddingLeft: 20, paddingTop: 10, paddingBottom: 10, paddingRight: 20 }} onPress={() => handleTimerPress(activities.ActivityID, activities.Count, activities.ActivityHistoryID)}>
+                        <Pressable style={{ ...styles.cardHeader, paddingLeft: 20, paddingTop: 10, paddingBottom: 10, paddingRight: 20 }} onPress={() => handleTimerPress(activities.ActivityID, activities.Count, activities.ActivityHistoryID, activities.GoalsID)}>
                             <SizableText size={'$6'} style={{ color: activityPressed === activities.ActivityID ? "red" : "green", fontWeight: "bold" }}>
                                 {activityPressed === activities.ActivityID ? "STOP" : "START"}
                             </SizableText>

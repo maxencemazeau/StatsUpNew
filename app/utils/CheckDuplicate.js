@@ -1,6 +1,5 @@
 import { checkGoalNameDuplicate, checkActivityNameDuplicate } from "../axiosPath/axiosPath";
 import axios from "axios";
-import useGetUserToken from "../hooks/useGetUserToken";
 
 export const CheckDuplicate = async (tableName, Name, UserId, token) => {
     let duplicate = 0

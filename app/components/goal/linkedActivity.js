@@ -5,7 +5,7 @@ import { Button, Card, Text, Checkbox } from 'tamagui';
 import { Check } from '@tamagui/lucide-icons';
 import { activityWithNoGoal, linkedActivityToGoal } from '../../axiosPath/axiosPath';
 
-export default function LinkedActivity({ linkedActivity, UserId, GoalID = 0 }) {
+export default function LinkedActivity({ setLinkedActivity, linkedActivity, UserId, GoalID = 0, token }) {
   const [activityList, setActivityList] = useState([]);
   const [noActivityWithoutGoal, setNoActivityWithoutGoal] = useState(false);
   const titleLinkedActivity = (GoalID > 0 ? "Linked Activity" : "Linkable activities")
@@ -15,9 +15,9 @@ export default function LinkedActivity({ linkedActivity, UserId, GoalID = 0 }) {
     const LoadActivitiesWithNoGoal = async () => {
       let response = []
       if (GoalID === 0) {
-        response = await axios.get(activityWithNoGoal, { params: { id: UserId } });
+        response = await axios.get(activityWithNoGoal, { params: { id: UserId }, headers: { Authorization: `Bearer ${token}` } });
       } else {
-        response = await axios.get(linkedActivityToGoal, { params: { GoalsID: GoalID } })
+        response = await axios.get(linkedActivityToGoal, { params: { GoalsID: GoalID }, headers: { Authorization: `Bearer ${token}` } })
       }
       if (response.data.length > 0) {
         setActivityList(response.data);
@@ -30,11 +30,20 @@ export default function LinkedActivity({ linkedActivity, UserId, GoalID = 0 }) {
   }, [GoalID]);
 
   const AddOrRemoveLinkedActivity = (id, isChecked) => {
-    if (isChecked == true) {
-      linkedActivity.push(id);
-    } else {
-      linkedActivity = linkedActivity.filter((item) => item !== id);
-    }
+    setLinkedActivity(prevState => {
+      const existingIndex = prevState.findIndex(activity => activity.ActivityID === id);
+
+      if (existingIndex !== -1) {
+        // L'activité existe déjà, on la met à jour
+        return prevState.map((activity, index) =>
+          index === existingIndex ? { ...activity, isChecked: isChecked } : activity
+        );
+      } else {
+        // L'activité n'existe pas, on l'ajoute
+        return [...prevState, { ActivityID: id, isChecked: isChecked }];
+      }
+    });
+
     setActivityList(prevList =>
       prevList.map(activity =>
         activity.ActivityID === id
