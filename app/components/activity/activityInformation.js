@@ -25,17 +25,17 @@ export default function ActivityInformation({ activityID }) {
     const [showGoalNameInput, setShowGoalNameInput] = useState(false);
     const [hasActivityChanged, setHasActivityChanged] = useState(false);
     const [hasGoalChanged, setHasGoalChanged] = useState(false);
+
     const UserId = useGetUserId()
     let checkActivityDuplicate = 0
     let checkGoalDuplicate = 0
     const dispatch = useDispatch()
     const token = useGetUserToken()
     const queryClient = useQueryClient();
-    const defaultValueForSelectGoal = userActivity?.GoalsID !== null ? userActivity?.GoalsID : -1
     const [userActivity, setUserActivity] = useState(queryClient.getQueryData(['userActivity', activityID]) || {})
     const defaultValues = {
         activityName: userActivity?.ActivityName || '',
-        selectedIdGoal: userActivity?.GoalsID || 0,
+        selectedIdGoal: userActivity?.GoalsID || -1,
         newGoalName: userActivity?.GoalName || '',
         timeFrame: userActivity?.TimeFrameID || '',
         frequence: userActivity?.Frequence !== null ? userActivity?.Frequence.toString() : '' || '',
@@ -56,14 +56,13 @@ export default function ActivityInformation({ activityID }) {
                 setShowGoalNameInput(true);
             }
             reset({
-                selectedIdGoal: userActivity.GoalsID || 0,
-                newGoalName: userActivity.GoalName || '',
-                timeFrame: userActivity.TimeFrameID || '',
-                frequence: userActivity.Frequence !== null ? userActivity.Frequence.toString() : '' || '',
+                selectedIdGoal: userActivity?.GoalsID || -1,
+                newGoalName: userActivity?.GoalName || '',
+                timeFrame: userActivity?.TimeFrameID || '',
+                frequence: userActivity?.Frequence !== null ? userActivity?.Frequence.toString() : '' || '',
             })
         }
     }, [userActivity]);
-
 
     const onSubmit = async (data) => {
         try {
@@ -179,7 +178,7 @@ export default function ActivityInformation({ activityID }) {
                 }
                 break;
             case "frequence":
-                if (inputValue !== defaultValues.Frequence) {
+                if (inputValue !== defaultValues.frequence) {
                     setHasGoalChanged(true)
                 }
                 break;
@@ -225,7 +224,7 @@ export default function ActivityInformation({ activityID }) {
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
                                     <LinkedGoalSelect
-                                        defaultValue={defaultValueForSelectGoal}
+                                        defaultValue={defaultValues.selectedIdGoal}
                                         forUpdate={true}
                                         setShowGoalNameInput={setShowGoalNameInput}
                                         onChange={onChange}

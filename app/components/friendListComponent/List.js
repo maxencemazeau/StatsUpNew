@@ -20,12 +20,16 @@ export default function List() {
     const token = useGetUserToken()
 
     const LoadFriendList = async () => {
-        const response = await axios.get(getFriendList, {
-            params: { UserId: UserID }, headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        return response.data
+        try {
+            const response = await axios.get(getFriendList, {
+                params: { UserId: UserID }, headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            return response.data
+        } catch (err) {
+            console.log(err.response.data)
+        }
     }
 
     const { data: friendList, isLoading } = useQuery({
@@ -52,7 +56,7 @@ export default function List() {
                             <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
                                 <Avatar circular size="$3">
                                     <Avatar.Image
-                                    // source={require("../assets/maxence.jpg")}
+                                        source={friends.Photo !== null ? { uri: friends.Photo } : require("../../assets/baseProfilPhoto.png")}
                                     />
                                     <Avatar.Fallback bc="lightgrey" />
                                 </Avatar>

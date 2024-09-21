@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { RESET_ALL } from '../action'
 
 const initialState = { value: [] }
 
@@ -13,7 +14,10 @@ const routingSlice = createSlice({
 
             state.value.pop() // Suppression de l'élément
         }
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(RESET_ALL, () => initialState);
+    },
 });
 
 

@@ -1,13 +1,42 @@
 import React from "react"
 import { View, StyleSheet } from "react-native";
-import { Text, Button } from "tamagui";
+import { Button } from "tamagui";
 import { ArrowLeft } from '@tamagui/lucide-icons';
+import { useRouter } from 'expo-router'
+import useGetUserId from '../../hooks/useGetUserId';
+import { useDispatch, useSelector } from "react-redux";
 
 export default function HeadProfilSkeleton() {
+
+    const dispatch = useDispatch()
+    const myUserID = useGetUserId()
+    const router = useRouter()
+    const routes = useSelector((state) => state.globalNavigation.value)
+
+    const navigateBack = () => {
+        const index = routes.length - 1
+        const path = routes[index]
+        dispatch(DeleteRoute())
+        if (path === '/pages/friendList/friendList') {
+            router.push({
+                pathname: path,
+                params: { UserIdParams: myUserID }
+            });
+        } else {
+            router.push(path);
+        }
+    }
 
     return (
         <>
             <View style={{ padding: 20, marginTop: 20 }}>
+                <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Button
+                        icon={<ArrowLeft size="$2" color={`black`} />}
+                        onPress={() => navigateBack()}
+                        style={{ backgroundColor: 'transparent' }}
+                    />
+                </View>
                 <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
                     <View style={styles.image} />
                     <View style={styles.skeletonText}></View>

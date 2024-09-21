@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { RESET_ALL } from '../action'
 
 const initialState = { value: 0 }
 
@@ -12,7 +13,10 @@ const activitySlice = createSlice({
         resetActivityOffset: (state) => {
             state.value = initialState.value;
         },
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(RESET_ALL, () => initialState);
+    },
 })
 
 export const { incrementActivityOffset, resetActivityOffset } = activitySlice.actions

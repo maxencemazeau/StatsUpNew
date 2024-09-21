@@ -56,7 +56,7 @@ export default function LinkedActivity({ setLinkedActivity, linkedActivity, User
     );
   };
 
-  console.log(linkedActivity)
+
   return (
     <>
       <View style={{ ...styles.checkboxContainer, marginTop: 10 }}>

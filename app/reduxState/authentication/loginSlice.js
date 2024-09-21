@@ -1,7 +1,6 @@
 
-// src/app/reduxState/login/loginSlice.js
-
 import { createSlice } from '@reduxjs/toolkit';
+import { RESET_ALL } from '../action'
 
 const initialState = {
   isLoggedIn: false,
@@ -21,8 +20,12 @@ const loginSlice = createSlice({
       state.isLoggedIn = false;
       state.user = null;
     },
+    resetLoginState: () => initialState
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_ALL, () => initialState);
   },
 });
 
-export const { setLogin, setLogout } = loginSlice.actions;
+export const { setLogin, setLogout, resetLoginState } = loginSlice.actions;
 export default loginSlice.reducer;

@@ -13,6 +13,7 @@ import axios from "axios"
 import { AddRoute, DeleteRoute } from '../../reduxState/navigation/routingSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import useGetUserToken from '../../hooks/useGetUserToken';
+import { resetAll } from '../../reduxState/action';
 
 export default function HeadProfil() {
 
@@ -92,6 +93,7 @@ export default function HeadProfil() {
 
     const logout = () => {
         queryClient.resetQueries();
+        dispatch(resetAll())
         router.push('/loginAndSignUp/login')
     }
 
@@ -105,17 +107,19 @@ export default function HeadProfil() {
                 />
                 <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                     {myUserID === userInfo?.UserID &&
-                        <Pressable>
-                            <Button
-                                icon={<User size="$2" color={"black"} style={{ alignSelf: "center" }} />}
-                                onPress={() => navigateTo(`/pages/friendList/friendList`)}
-                                style={{ backgroundColor: 'transparent' }}
-                            />
-                        </Pressable>
+                        <>
+                            <Pressable>
+                                <Button
+                                    icon={<User size="$2" color={"black"} style={{ alignSelf: "center" }} />}
+                                    onPress={() => navigateTo(`/pages/friendList/friendList`)}
+                                    style={{ backgroundColor: 'transparent' }}
+                                />
+                            </Pressable>
+                            <Button style={{ backgroundColor: 'transparent' }} onPress={() => logout()}>
+                                <LogOut size={"$2"} color={"black"} />
+                            </Button>
+                        </>
                     }
-                    <Button style={{ backgroundColor: 'transparent' }} onPress={() => logout()}>
-                        <LogOut size={"$2"} color={"black"} />
-                    </Button>
                 </View>
             </View>
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>

@@ -25,7 +25,6 @@ export default function GoalCard({ goalOffset }) {
     const UserId = useGetUserId()
     const router = useRouter()
     const token = useGetUserToken()
-
     const { data: goalList } = useQuery({
         queryFn: async () => LoadUserGoals(),
         queryKey: ["goalList"],
@@ -50,7 +49,7 @@ export default function GoalCard({ goalOffset }) {
         try {
             dispatch(showDelete(false))
             dispatch(cancelPopUp(false))
-            const response = await axios.delete(deleteGoal, { data: { GoalID: id }, headers: { Authorization: `Bearer ${token}` } })
+            const response = await axios.put(deleteGoal, { GoalID: id }, { headers: { Authorization: `Bearer ${token}` } })
             if (response.data === "SUCCESS") {
                 queryClient.setQueryData('goalList', oldData => oldData.filter(goal => goal.GoalsID !== id))
                 dispatch(Message({ messageType: "SUCCESS", messageText: "Goal deleted" }));

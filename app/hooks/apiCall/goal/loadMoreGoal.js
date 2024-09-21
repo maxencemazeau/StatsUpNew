@@ -7,7 +7,6 @@ import { isGoalLoading } from "../../../reduxState/offset/goalLoadingSlice";
 export const LoadMoreGoal = async (dispatch, queryClient, goalOffset, UserId, token) => {
 
     try {
-        console.log("ici" + goalOffset)
         dispatch(isGoalLoading(true))
         const response = await axios.get(getUserGoals, {
             params: { id: UserId, offset: goalOffset }, headers: {

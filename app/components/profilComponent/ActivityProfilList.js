@@ -53,7 +53,7 @@ export default function ActivityProfilList() {
                                     <View style={styles.container}>
                                         <View style={styles.subContainer}>
                                             <Text style={{ color: "black", fontSize: 16 }}>{activities.ActivityName}</Text>
-                                            <Text style={{ color: 'grey', fontSize: 14 }}>{activities.GoalName}, {activities.Frequence} per {activities.Frame}</Text>
+                                            <Text style={{ color: 'grey', fontSize: 14 }}>{activities.GoalName}, {activities.Frequence} {activities.Frame}</Text>
                                         </View>
                                         <View style={styles.subContainer}>
                                             <Text style={{ color: '#DD7A34', alignSelf: 'flex-end', fontWeight: "bold", fontSize: 16 }}>{activities.TotalActivity}</Text>

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { RESET_ALL } from '../action'
 
 const initialState = { startHour: 0, isRunning: false, endHour: 0, activityId: 0 }
 
@@ -24,6 +25,9 @@ const timerSlice = createSlice({
             activityId = 0
             state.isRunning = false;
         }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(RESET_ALL, () => initialState);
     },
 });
 

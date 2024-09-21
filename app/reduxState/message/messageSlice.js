@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { RESET_ALL } from '../action'
 
 const initialState = {
     messageType: "",
@@ -13,7 +14,10 @@ const MessageSlice = createSlice({
             state.messageType = action.payload.messageType;
             state.messageText = action.payload.messageText;
         },
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(RESET_ALL, () => initialState);
+    },
 })
 
 export const { Message } = MessageSlice.actions
