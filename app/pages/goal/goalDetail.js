@@ -1,6 +1,6 @@
-import React, { useState } from "react"
+import React from "react"
 import { View, ScrollView } from 'react-native';
-import { useRouter, useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams } from "expo-router"
 import { Message } from "../../reduxState/message/messageSlice";
 import { loadingError } from "../../reduxState/error/loadingErrorSlice";
 import { noMoreActivityData } from '../../reduxState/offset/hasMoreDataActivity';

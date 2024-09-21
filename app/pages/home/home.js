@@ -53,6 +53,7 @@ export default function Home() {
   const loadMoreData = async (event) => {
     event.persist();
     await new Promise((resolve) => setTimeout(resolve, 300));
+
     if (isCloseToBottom(event.nativeEvent)) {
       if (
         active === 'ACTIVITY' &&
@@ -74,7 +75,7 @@ export default function Home() {
   };
 
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-    return layoutMeasurement.height + contentOffset.y >= contentSize.height;
+    return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
   };
 
   return (
@@ -82,7 +83,7 @@ export default function Home() {
       <ScrollView onScroll={loadMoreData} scrollEventThrottle={16}>
         <TopHomeBar />
         <GraphCard />
-        <ProgressBar />
+        {/* <ProgressBar /> */}
         <HomeNavigation />
         {active === 'ACTIVITY' ? (
           <ActivityCard activityOffset={activityOffset} appState={appState} />

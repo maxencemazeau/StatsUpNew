@@ -1,14 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Input, Button, Form } from 'tamagui';
-import { Check } from '@tamagui/lucide-icons';
 import axios from 'axios';
-import { addActivity, checkActivityNameDuplicate } from '../../axiosPath/axiosPath';
-import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-form';
+import { addActivity } from '../../axiosPath/axiosPath';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
 import LinkedGoalSelect from '../../components/activity/linkedGoalSelect';
 import TimeFrameSelect from '../../components/activity/timeFrameSelect';
 import { CheckDuplicate } from '../../utils/CheckDuplicate';
-import useGetUserToken from '../../hooks/useGetUserToken';
 
 export default function AddActivity({ UserId, SuccessOrError, token }) {
   const [nameDuplicate, setNameDuplicate] = useState(false);
@@ -24,29 +22,30 @@ export default function AddActivity({ UserId, SuccessOrError, token }) {
   } = useForm();
   const onSubmit = async (data) => {
     try {
-      checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId)
+      checkActivityDuplicate = await CheckDuplicate("Activity", data.activityName, UserId, token)
 
       if (checkActivityDuplicate == 0) {
         if (data.selectedIdGoal !== 0) {
           createNewGoal = false
         } else {
           createNewGoal = true
-          checkGoalDuplicate = await CheckDuplicate("Goal", data.newGoalName, UserId)
+          checkGoalDuplicate = await CheckDuplicate("Goal", data.newGoalName, UserId, token)
         }
-
+        data.selectedIdGoal === -1 ? data.selectedIdGoal = null : data.selectedIdGoal
         if (checkGoalDuplicate == 0) {
 
           const response = await axios.post(addActivity, {
-            params: {
-              ActivityName: data.activityName,
-              GoalsId: data.selectedIdGoal,
-              CreateNewGoal: createNewGoal,
-              GoalName: data.newGoalName,
-              TimeFrame: data.timeFrame,
-              Frequence: data.Frequence,
-              UserId: UserId,
-            },
-          });
+            ActivityName: data.activityName,
+            GoalsId: data.selectedIdGoal,
+            CreateNewGoal: createNewGoal,
+            GoalName: data.newGoalName,
+            TimeFrame: data.timeFrame,
+            Frequence: data.Frequence,
+            UserId: UserId,
+          },
+            {
+              headers: { Authorization: `Bearer ${token}` }
+            });
           if (response.data.success == 1) {
             SuccessOrError('SUCCESS', 'Activity successfully created !', createNewGoal);
           } else {
@@ -71,7 +70,7 @@ export default function AddActivity({ UserId, SuccessOrError, token }) {
             <Controller
               name="activityName"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: true, maxLength: 20 }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <>
                   <Text style={styles.TextStyle}>Activity Name</Text>
@@ -117,7 +116,7 @@ export default function AddActivity({ UserId, SuccessOrError, token }) {
                 <Controller
                   name="newGoalName"
                   control={control}
-                  rules={{ required: true }}
+                  rules={{ required: true, maxLength: 20 }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <>
                       <Text style={styles.TextStyle}>Goal name</Text>

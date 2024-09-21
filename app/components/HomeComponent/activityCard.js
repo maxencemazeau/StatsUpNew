@@ -110,14 +110,16 @@ export default function ActivityCard({ activityOffset, appState }) {
                 });
             }
         } else {
-
+            const activityfrequence = activityList.find(activity =>
+                activity.ActivityID === id
+            );
             if (pressed === true) {
                 response = await updateActivityHistory(
                     id,
                     FormattedDate,
                     count + 1,
                     1,
-                    foundActivity ? foundActivity.Frequence : null,
+                    activityfrequence.Frequence,
                     0,
                     GoalsID
                 )
@@ -225,6 +227,8 @@ export default function ActivityCard({ activityOffset, appState }) {
 
     const navigateToDetails = async (activityID) => {
         dispatch(AddRoute('/pages/home/home'))
+        dispatch(showDelete(false))
+        dispatch(cancelPopUp(false))
         router.push({
             pathname: '/pages/activity/activityDetail',
             params: { activityID: activityID, userIdFromSearch: UserId }

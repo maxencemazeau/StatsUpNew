@@ -62,7 +62,7 @@ export default function SignUp() {
             <View style={{ height: "100%", padding: 0 }}>
                 <ScrollView>
                     <View style={{ display: "flex", alignItems: 'center', height: containerHeight / 2.5, backgroundColor: "white", padding: 20 }}>
-                        <Image source={require("../assets/H.png")} style={{ height: "40%", width: "50%", top: "30%" }}></Image>
+                        <Image source={require("../assets/Nom_Noir.png")} style={{ height: "50%", width: "100%", top: "40%", resizeMode: 'contain' }}></Image>
                     </View>
                     <View style={{
                         height: containerHeight / 1.5, backgroundColor: "white", padding: 20, borderTopWidth: 1, borderColor: 'transparent',  // Hide the border color if not needed

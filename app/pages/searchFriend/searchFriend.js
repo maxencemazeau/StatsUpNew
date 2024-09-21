@@ -6,10 +6,6 @@ import { View } from "react-native"
 import SearchResults from "../../components/searchFriend/searchResults"
 import { searchListContext } from "../../context/searchFriendContext"
 
-// const searchListContext = createContext()
-
-// export { searchListContext }
-
 export default function SearchFriend() {
 
     const [searchResults, setSearchResults] = useState([])

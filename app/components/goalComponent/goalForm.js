@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Keyboard } from 'react-native';
-import { Text, Input, Button, Checkbox, Form, Card } from 'tamagui';
-import { Check } from '@tamagui/lucide-icons';
+import { Text, Input, Button, Form } from 'tamagui';
 import { CheckDuplicate } from '../../utils/CheckDuplicate';
 import { useQueryClient } from 'react-query';
 import axios from 'axios';
-import { addGoal, checkGoalNameDuplicate, updateGoal } from '../../axiosPath/axiosPath';
-import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-form';
+import { addGoal, updateGoal } from '../../axiosPath/axiosPath';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
 import TimeFrameSelect from '../../components/activity/timeFrameSelect';
 import LinkedActivity from '../../components/goal/linkedActivity';
-import useGetUserId from '../../hooks/useGetUserId';
 
 export default function GoalForm({ UserId, SuccessOrError, goalID = 0, token }) {
-    //const linkedActivity = [];
+
     const [linkedActivity, setLinkedActivity] = useState([])
     const [nameDuplicate, setNameDuplicate] = useState(false);
     const [hasGoalChanged, setHasGoalChanged] = useState(false);
@@ -171,7 +169,7 @@ export default function GoalForm({ UserId, SuccessOrError, goalID = 0, token }) 
                             </View>
                             <View style={styles.lineError}>
                                 {errors.timeFrame && <Text color="red">Select a time frame</Text>}
-                                {errors.Frequence && <Text color="red">Enter a frequence</Text>}
+                                {errors.frequence && <Text color="red">Enter a frequence</Text>}
                             </View>
                         </>
                         <LinkedActivity setLinkedActivity={setLinkedActivity} linkedActivity={linkedActivity} UserId={UserId} GoalID={goalID} token={token} />

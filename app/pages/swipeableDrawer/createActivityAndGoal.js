@@ -100,8 +100,8 @@ export default function CreateActivityAndGoal({ open, setOpen, position, setPosi
             {createNewActivityOrGoal == 0 ? (
               <AddActivity UserId={UserId} SuccessOrError={SuccessOrError} token={token} />
             ) : (
-              <GoalForm UserId={UserId} SuccessOrError={SuccessOrError} token={token} />
-              // <AddGoal UserId={UserId} SuccessOrError={SuccessOrError} />
+              //<GoalForm UserId={UserId} SuccessOrError={SuccessOrError} token={token} />
+              <AddGoal UserId={UserId} SuccessOrError={SuccessOrError} token={token} />
             )}
           </View>
         </Sheet.Frame>

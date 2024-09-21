@@ -31,6 +31,7 @@ export default function ActivityInformation({ activityID }) {
     const dispatch = useDispatch()
     const token = useGetUserToken()
     const queryClient = useQueryClient();
+    const defaultValueForSelectGoal = userActivity?.GoalsID !== null ? userActivity?.GoalsID : -1
     const [userActivity, setUserActivity] = useState(queryClient.getQueryData(['userActivity', activityID]) || {})
     const defaultValues = {
         activityName: userActivity?.ActivityName || '',
@@ -224,7 +225,7 @@ export default function ActivityInformation({ activityID }) {
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
                                     <LinkedGoalSelect
-                                        defaultValue={userActivity.GoalsID}
+                                        defaultValue={defaultValueForSelectGoal}
                                         forUpdate={true}
                                         setShowGoalNameInput={setShowGoalNameInput}
                                         onChange={onChange}

@@ -1,13 +1,13 @@
 import React, { useState } from "react"
-import { View, StyleSheet, Image } from "react-native"
+import { View, StyleSheet } from "react-native"
 import { Home, Plus, Search, User } from "@tamagui/lucide-icons"
-import { Button, Group, Avatar } from "tamagui"
+import { Button, Group } from "tamagui"
 import { useRouter } from "expo-router"
-import AddActivity from "../pages/activity/addActivity";
 import CreateActivityAndGoal from "../pages/swipeableDrawer/createActivityAndGoal";
-import { Sheet, Text } from "tamagui";
 import useGetUserId from "../hooks/useGetUserId"
-import { useSelector, useDispatch } from "react-redux"
+import { useDispatch } from "react-redux"
+import { showDelete } from "../reduxState/popUp/showDelete"
+import { cancelPopUp } from "../reduxState/popUp/cancelPopUpSlice"
 import { AddRoute } from "../reduxState/navigation/routingSlice"
 
 function BottomMenu() {
@@ -16,15 +16,18 @@ function BottomMenu() {
     const [position, setPosition] = useState(0);
     const router = useRouter()
     const UserId = useGetUserId()
-    //const User = useSelector((state) => state.login.user)
     const dispatch = useDispatch()
 
     const toggle = () => {
-        setModal(prevState => !prevState)
+        dispatch(showDelete(false))
+        dispatch(cancelPopUp(false))
+        setOpen((x) => !x)
     }
 
     const navigateTo = (page) => {
         dispatch(AddRoute(`/pages/home/home`))
+        dispatch(showDelete(false))
+        dispatch(cancelPopUp(false))
         router.push({
             // pathname: '/pages/searchFriend/searchFriend'
             pathname: `/pages${page}`,
@@ -40,7 +43,7 @@ function BottomMenu() {
                         <Button style={styles.groupButton} icon={<Home size="$2" color={"black"} />} onPress={() => navigateTo("/home/home")} />
                     </Group.Item>
                     <Group.Item>
-                        <Button style={styles.groupButton} icon={<Plus size="$2" color={"black"} />} onPress={() => setOpen((x) => !x)} />
+                        <Button style={styles.groupButton} icon={<Plus size="$2" color={"black"} />} onPress={() => toggle()} />
                     </Group.Item>
                     <Group.Item>
                         <Button style={styles.groupButton} icon={<Search size="$2" color={"black"} />} onPress={() => navigateTo("/feed/feed")} />

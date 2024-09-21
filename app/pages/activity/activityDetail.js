@@ -30,20 +30,20 @@ export default function ActivityDetail() {
     const LoadActivity = async () => {
         const response = await axios.get(getUserActivityByID, { params: { ActivityID: activityID, UserID: UserId }, headers: { Authorization: `Bearer ${token}` } });
         setActivityStats(response.data.activityStats)
-        if (response.data.activityStats.totalTime !== 0) {
-            convertFloatToHour(response.data.activityStats.totalTime)
-        }
+        convertFloatToHour(response.data.activityStats.totalTime)
         setBestActivityStreak(response.data.bestStreak)
         return response.data.activity[0]
     };
 
     const convertFloatToHour = (time) => {
 
-        // Extraire les heures et les minutes à partir du flottant
-        const hours = Math.floor(time); // Heures
-        const minutes = Math.round((time - hours) * 60); // Minutes
+        let hours = 0
+        let minutes = 0
+        if (time !== null && time !== 0 && time !== undefined) {
+            hours = Math.floor(time); // Heures
+            minutes = Math.round((time - hours) * 60); // Minutes
+        }
 
-        // Retourner les heures et minutes
         setActivityStats(prevState => ({ ...prevState, Hour: hours, minutes: minutes }))
     }
 
@@ -68,7 +68,7 @@ export default function ActivityDetail() {
                         }}>
                             <View style={styles.statsTextcontainer}>
                                 <Text style={styles.statsTextLabel}>Total</Text>
-                                <Text style={styles.statsTextValue}>{activityStats.totalActivityCompleted}</Text>
+                                <Text style={styles.statsTextValue}>{activityStats.totalActivityCompleted > 0 ? activityStats.totalActivityCompleted : 0}</Text>
                             </View>
                             <View style={styles.statsTextcontainer}>
                                 <Text style={styles.statsTextLabel}>Best Streak</Text>

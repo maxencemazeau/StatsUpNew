@@ -73,21 +73,21 @@ export default function ActivityHistory({ activityID }) {
                                 <>
                                     <CheckCircle2 color={"green"} />
                                     <Text style={{ fontSize: 14, color: 'green' }}>
-                                        {history.Count}/{history.Frequence}
+                                        {history.Count}/{history.Frequence === null ? 0 : history.Frequence}
                                     </Text>
                                 </>
                             ) : history.Succeed === -1 ? (
                                 <>
                                     <XCircle color={"#D34146"} />
                                     <Text style={{ fontSize: 14, color: '#D34146' }}>
-                                        {history.Count}/{history.Frequence}
+                                        {history.Count}/{history.Frequence === null ? 0 : history.Frequence}
                                     </Text>
                                 </>
                             ) : (
                                 <>
                                     <Circle color={"grey"} />
                                     <Text style={{ fontSize: 14, color: 'grey' }}>
-                                        {history.Count}/{history.Frequence}
+                                        {history.Count}/{history.Frequence === null ? 0 : history.Frequence}
                                     </Text>
                                 </>
                             )}

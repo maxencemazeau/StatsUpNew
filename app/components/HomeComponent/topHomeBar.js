@@ -5,6 +5,8 @@ import { Button } from "tamagui"
 import { useRouter } from "expo-router"
 import { useDispatch } from "react-redux"
 import { AddRoute } from "../../reduxState/navigation/routingSlice"
+import { showDelete } from "../../reduxState/popUp/showDelete"
+import { cancelPopUp } from "../../reduxState/popUp/cancelPopUpSlice"
 
 export default function TopHomeBar() {
 
@@ -13,6 +15,8 @@ export default function TopHomeBar() {
 
   const navigateTo = () => {
     dispatch(AddRoute('/pages/home/home'))
+    dispatch(showDelete(false))
+    dispatch(cancelPopUp(false))
     router.push({
       pathname: '/pages/searchFriend/searchFriend'
     });

@@ -1,43 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text, Input, Button, Checkbox, Form, Card } from 'tamagui';
-import { Check } from '@tamagui/lucide-icons';
+import React, { useState } from 'react';
+import { View, StyleSheet, Keyboard } from 'react-native';
+import { Text, Input, Button, Form } from 'tamagui';
 import { CheckDuplicate } from '../../utils/CheckDuplicate';
+import { useQueryClient } from 'react-query';
 import axios from 'axios';
-import { addGoal, checkGoalNameDuplicate } from '../../axiosPath/axiosPath';
-import { useForm, SubmitHandler, FormProvider, Controller } from 'react-hook-form';
+import { addGoal, updateGoal } from '../../axiosPath/axiosPath';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
 import TimeFrameSelect from '../../components/activity/timeFrameSelect';
 import LinkedActivity from '../../components/goal/linkedActivity';
 
-export default function AddGoal({ UserId, SuccessOrError, token }) {
-  const linkedActivity = [];
+export default function AddGoal({ UserId, SuccessOrError, goalID = 0, token }) {
+
+  const [linkedActivity, setLinkedActivity] = useState([])
   const [nameDuplicate, setNameDuplicate] = useState(false);
+  const [hasGoalChanged, setHasGoalChanged] = useState(false);
+  let userGoal = []
+
+  const defaultValues = {
+    goalName: '',
+    timeFrame: 0,
+    frequence: '',
+  }
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
-  } = useForm();
+    formState: { errors }
+  } = useForm({ defaultValues });
   const onSubmit = async (data) => {
     try {
-      // const checkDuplicate = await axios.get(checkGoalNameDuplicate, {
-      //   params: { UserID: UserId, GoalName: data.goalName },
-      // });
-      const checkDuplicate = await CheckDuplicate("Goal", data.goalName, UserId)
+      Keyboard.dismiss()
+
+      let response = []
+      const checkDuplicate = await CheckDuplicate("Goal", data.goalName, UserId, token)
 
       if (checkDuplicate == 0) {
-        const response = await axios.post(addGoal, {
+        response = await axios.post(addGoal, {
           GoalName: data.goalName,
           LinkActivity: linkedActivity,
           TimeFrame: data.timeFrame,
-          Frequence: data.Frequence,
+          Frequence: data.frequence,
           UserId: UserId,
-        },
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+        }, { headers: { Authorization: `Bearer ${token}` } }
+        );
+
         if (response.data == 1) {
-          SuccessOrError('SUCCESS', 'Goal successfully created !');
+          setHasGoalChanged(false)
+          SuccessOrError('SUCCESS', `Goal successfully created !`);
         } else {
           SuccessOrError('ERROR', 'An unexpected error occurred');
         }
@@ -50,28 +59,49 @@ export default function AddGoal({ UserId, SuccessOrError, token }) {
     }
   };
 
+  const checkGoalChanged = (inputName, inputValue) => {
+    switch (inputName) {
+      case "goalName":
+        if (inputValue !== defaultValues.goalName) {
+          setHasGoalChanged(true)
+        }
+        break;
+      case "timeFrame":
+        if (inputValue !== defaultValues.timeFrame) {
+          setHasGoalChanged(true)
+        }
+        break;
+      case "frequence":
+        if (inputValue !== defaultValues.frequence) {
+          setHasGoalChanged(true)
+        }
+        break;
+    }
+  }
+
 
   return (
     <>
       <View>
-        <Text sixe="$4">Create a new goal</Text>
+        {goalID === 0 &&
+          <Text sixe="$4">Create a new goal</Text>
+        }
         <FormProvider {...control}>
           <Form>
             <Text style={styles.TextStyle}>Goal name</Text>
             <Controller
               name="goalName"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: true, maxLength: 20 }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <>
                   <Input
                     value={value}
                     onBlur={onBlur}
-                    onChangeText={onChange}
+                    onChangeText={(text) => { onChange(text); checkGoalChanged("goalName", text) }}
                     style={{
                       width: '100%',
                       backgroundColor: 'white',
-                      marginTop: 10,
                       color: 'black',
                       height: 50,
                     }}
@@ -90,14 +120,14 @@ export default function AddGoal({ UserId, SuccessOrError, token }) {
                     control={control}
                     rules={{ required: true }}
                     render={({ field: { onChange, onBlur, value } }) => (
-                      <TimeFrameSelect onChange={onChange} />
+                      <TimeFrameSelect onChange={onChange} defaultValue={userGoal.TimeFrameID} checkGoalChanged={checkGoalChanged} />
                     )}
                   />
                 </View>
                 <View style={styles.inputWithText}>
                   <Text style={styles.TextStyle}>Frequence</Text>
                   <Controller
-                    name="Frequence"
+                    name="frequence"
                     control={control}
                     rules={{ required: true }}
                     render={({ field: { onChange, onBlur, value } }) => (
@@ -105,7 +135,7 @@ export default function AddGoal({ UserId, SuccessOrError, token }) {
                         style={styles.inputField}
                         value={value}
                         onBlur={onBlur}
-                        onChangeText={onChange}
+                        onChangeText={(text) => { onChange(text); checkGoalChanged("frequence", text) }}
                         keyboardType="numeric"
                       />
                     )}
@@ -114,10 +144,10 @@ export default function AddGoal({ UserId, SuccessOrError, token }) {
               </View>
               <View style={styles.lineError}>
                 {errors.timeFrame && <Text color="red">Select a time frame</Text>}
-                {errors.Frequence && <Text color="red">Enter a frequence</Text>}
+                {errors.frequence && <Text color="red">Enter a frequence</Text>}
               </View>
             </>
-            <LinkedActivity linkedActivity={linkedActivity} UserId={UserId} />
+            <LinkedActivity setLinkedActivity={setLinkedActivity} linkedActivity={linkedActivity} UserId={UserId} GoalID={goalID} token={token} />
             <Button
               style={{ backgroundColor: '#DD7A34', marginTop: 1, height: 50 }}
               onPress={handleSubmit(onSubmit)}>

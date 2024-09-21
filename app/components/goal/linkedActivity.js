@@ -29,30 +29,34 @@ export default function LinkedActivity({ setLinkedActivity, linkedActivity, User
     LoadActivitiesWithNoGoal();
   }, [GoalID]);
 
-  const AddOrRemoveLinkedActivity = (id, isChecked) => {
+  const AddOrRemoveLinkedActivity = (id, checked) => {
+
     setLinkedActivity(prevState => {
       const existingIndex = prevState.findIndex(activity => activity.ActivityID === id);
 
       if (existingIndex !== -1) {
+
         // L'activité existe déjà, on la met à jour
         return prevState.map((activity, index) =>
-          index === existingIndex ? { ...activity, isChecked: isChecked } : activity
+          index === existingIndex ? { ...activity, isChecked: !checked } : activity
         );
       } else {
+
         // L'activité n'existe pas, on l'ajoute
-        return [...prevState, { ActivityID: id, isChecked: isChecked }];
+        return [...prevState, { ActivityID: id, isChecked: !checked }];
       }
     });
 
     setActivityList(prevList =>
       prevList.map(activity =>
         activity.ActivityID === id
-          ? { ...activity, checked: isChecked }
+          ? { ...activity, checked: !checked }
           : activity
       )
     );
   };
 
+  console.log(linkedActivity)
   return (
     <>
       <View style={{ ...styles.checkboxContainer, marginTop: 10 }}>
@@ -70,7 +74,8 @@ export default function LinkedActivity({ setLinkedActivity, linkedActivity, User
             <Card key={activities.ActivityID} style={styles.container}>
               <Card.Header style={styles.activityCardHeader}>
                 <Text>{activities.ActivityName}</Text>
-                <Checkbox
+                <Button icon={activities.checked ? <Check color={'#DD7A34'} size="$1" /> : null} size="$3" style={{ backgroundColor: "white", width: 40 }} onPress={() => AddOrRemoveLinkedActivity(activities.ActivityID, activities.checked)} />
+                {/* <Checkbox
                   size="$8"
                   style={{ backgroundColor: 'white' }}
                   checked={activities.checked}
@@ -80,7 +85,7 @@ export default function LinkedActivity({ setLinkedActivity, linkedActivity, User
                   <Checkbox.Indicator>
                     <Check color={'#DD7A34'} />
                   </Checkbox.Indicator>
-                </Checkbox>
+                </Checkbox> */}
               </Card.Header>
             </Card>
           ))}

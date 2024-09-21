@@ -62,12 +62,14 @@ export default function GoalCard({ goalOffset }) {
                 dispatch(loadingError(true))
             }
         } catch (err) {
-            console.log(err)
+            console.log(err.response.data)
         }
     }
 
     const navigateToDetail = (goalId) => {
         dispatch(AddRoute('/pages/home/home'))
+        dispatch(showDelete(false))
+        dispatch(cancelPopUp(false))
         router.push({
             pathname: '/pages/goal/goalDetail',
             params: { goalID: goalId }
@@ -86,7 +88,7 @@ export default function GoalCard({ goalOffset }) {
                                 <SizableText style={styles.typography} size={"$6"} fontWeight="800">{goals.GoalName}</SizableText>
                                 <Paragraph style={styles.typography}>{goals.Frame} : 0/{goals.Frequence}</Paragraph>
                             </View>
-                            <Button icon={<ArrowRight size="$1" />} style={{ backgroundColor: "#DD7A34", borderRadius: 25, height: 50 }} />
+                            <Button icon={<ArrowRight size="$1" />} style={{ backgroundColor: "#DD7A34", borderRadius: 25, height: 50 }} onPress={() => navigateToDetail(goals.GoalsID)} />
                         </Card.Header>
                     </TouchableWithoutFeedback>
                 </Card>

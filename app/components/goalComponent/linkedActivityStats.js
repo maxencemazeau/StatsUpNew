@@ -2,7 +2,7 @@ import React from "react"
 import { getAllActivityGoalStats } from "../../axiosPath/axiosPath";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "axios"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, Text } from "react-native"
 
 export default function LinkedActivityStats({ goalID, TimeFrameID, token }) {
 
