@@ -1,5 +1,5 @@
 import React from "react"
-import { Pressable, View } from "react-native"
+import { View } from "react-native"
 import { Card, Text } from "tamagui"
 import { useQuery } from "react-query";
 import { getTotalActivityCompleted } from "../../axiosPath/axiosPath";

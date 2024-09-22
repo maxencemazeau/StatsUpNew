@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './reduxState/store';
 import { QueryClient, QueryClientProvider } from "react-query";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { TamaguiProvider } from 'tamagui';
 import config from '../tamagui.config';
 import { Screen } from 'expo-router/build/views/Screen';
@@ -16,6 +16,24 @@ export default function IndexLayout() {
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   });
+
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // Perform any pre-loading steps
+        persistor.persist();
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Artificial delay
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
 
   useEffect(() => {
     if (loaded) {

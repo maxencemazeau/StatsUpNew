@@ -1,28 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { View, ScrollView, Image, Dimensions } from 'react-native';
 import { useRouter } from "expo-router"
 import { Button, Input, Separator } from "tamagui"
-import { setLogin, setLogout } from '../reduxState/authentication/loginSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { setLogin } from '../reduxState/authentication/loginSlice';
+import { useDispatch } from 'react-redux';
 import axios from 'axios'
 import { userLogin } from '../axiosPath/axiosPath'
-import { persistor } from '../reduxState/authentication/loginSlice';
 
 export default function Login() {
 
     const [containerHeight, setContainerHeight] = useState(Dimensions.get('window').height);
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
-
     const dispatch = useDispatch()
     const router = useRouter()
 
-    useEffect(() => {
-        if (isLoggedIn === true) {
-            router.push('/pages/home/home');
-        }
-    }, [isLoggedIn])
 
     const navigateToSignUp = () => {
         router.push('loginAndSignUp/signUp'); // Navigate to the SignUp screen
