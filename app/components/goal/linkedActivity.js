@@ -75,17 +75,6 @@ export default function LinkedActivity({ setLinkedActivity, linkedActivity, User
               <Card.Header style={styles.activityCardHeader}>
                 <Text>{activities.ActivityName}</Text>
                 <Button icon={activities.checked ? <Check color={'#DD7A34'} size="$1" /> : null} size="$3" style={{ backgroundColor: "white", width: 40 }} onPress={() => AddOrRemoveLinkedActivity(activities.ActivityID, activities.checked)} />
-                {/* <Checkbox
-                  size="$8"
-                  style={{ backgroundColor: 'white' }}
-                  checked={activities.checked}
-                  onCheckedChange={(isChecked) =>
-                    AddOrRemoveLinkedActivity(activities.ActivityID, isChecked)
-                  }>
-                  <Checkbox.Indicator>
-                    <Check color={'#DD7A34'} />
-                  </Checkbox.Indicator>
-                </Checkbox> */}
               </Card.Header>
             </Card>
           ))}

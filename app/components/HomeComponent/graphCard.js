@@ -1,7 +1,7 @@
 import React from "react"
-import { View } from "react-native"
-import { Card, Text, Paragraph } from "tamagui"
-import { useQuery, useQueryClient } from "react-query";
+import { Pressable, View } from "react-native"
+import { Card, Text } from "tamagui"
+import { useQuery } from "react-query";
 import { getTotalActivityCompleted } from "../../axiosPath/axiosPath";
 import useGetUserId from "../../hooks/useGetUserId";
 import axios from "axios"
@@ -37,8 +37,8 @@ export default function GraphCard() {
 
             </Card>
             <View style={{ width: 20 }} />
-            <Card style={{ padding: 10, flex: 1, backgroundColor: "white" }}>
-                <Text color={"black"}>Something will be here</Text>
+            <Card style={{ padding: 10, flex: 1, justifyContent: "center", alignItems: 'center', backgroundColor: "white" }}>
+                <Text color={"black"}>Coming Soon</Text>
             </Card>
         </View>
     )

@@ -3,7 +3,7 @@ import { View, ScrollView, Image, Dimensions } from 'react-native';
 import { useRouter } from "expo-router"
 import { Button, Input, Separator } from "tamagui"
 import { setLogin, setLogout } from '../reduxState/authentication/loginSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios'
 import { userLogin } from '../axiosPath/axiosPath'
 import { persistor } from '../reduxState/authentication/loginSlice';
@@ -11,22 +11,18 @@ import { persistor } from '../reduxState/authentication/loginSlice';
 export default function Login() {
 
     const [containerHeight, setContainerHeight] = useState(Dimensions.get('window').height);
-    const { width, height } = Dimensions.get('window');
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
 
     const dispatch = useDispatch()
     const router = useRouter()
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-
-            dispatch(setLogout());
-        }, 2); // Délai de 2 ms
-
-        // Nettoyage pour éviter des fuites de mémoire si le composant est démonté avant la fin du timeout
-        return () => clearTimeout(timer);
-    }, []);
+        if (isLoggedIn === true) {
+            router.push('/pages/home/home');
+        }
+    }, [isLoggedIn])
 
     const navigateToSignUp = () => {
         router.push('loginAndSignUp/signUp'); // Navigate to the SignUp screen
@@ -39,15 +35,17 @@ export default function Login() {
         }
 
         try {
-            const response = await axios.post(userLogin, {
-                email: email,
-                password: password,
+            const response = await axios.get(userLogin, {
+                params: {
+                    email: email,
+                    password: password,
+                }
             })
 
             dispatch(setLogin(response.data));
             router.push('/pages/home/home');
         } catch (error) {
-            console.error(error)
+            console.error(error.response.data)
             alert("An error occurred during login. Please try again.")
 
         }
