@@ -6,12 +6,15 @@ import { setLogin } from '../reduxState/authentication/loginSlice';
 import { useDispatch } from 'react-redux';
 import axios from 'axios'
 import { userLogin } from '../axiosPath/axiosPath'
+import { resetAll } from '../reduxState/action';
+import { useQueryClient } from 'react-query';
 
 export default function Login() {
 
     const [containerHeight, setContainerHeight] = useState(Dimensions.get('window').height);
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const queryClient = useQueryClient()
     const dispatch = useDispatch()
     const router = useRouter()
 
@@ -25,6 +28,9 @@ export default function Login() {
             alert("Please enter your email and password")
             return
         }
+
+        dispatch(resetAll())
+        queryClient.resetQueries()
 
         try {
             const response = await axios.get(userLogin, {
