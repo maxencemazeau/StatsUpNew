@@ -1,8 +1,9 @@
 // src/pages/SignUp.js
 
 import React, { useState } from 'react';
-import { View, ScrollView, Image, Dimensions, StyleSheet } from 'react-native';
-import { Text, Input, Button, Separator, Checkbox } from 'tamagui';
+import { View, ScrollView, Image, Dimensions, StyleSheet, Pressable } from 'react-native';
+import { Text, Input, Button, Separator } from 'tamagui';
+import { Check } from '@tamagui/lucide-icons';
 import { Link, useRouter } from "expo-router";
 import axios from 'axios';
 import { userSignUp } from '../axiosPath/axiosPath';
@@ -19,6 +20,7 @@ export default function SignUp() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const dispatch = useDispatch();
     const router = useRouter(); // Use this for Expo Router navigation
+    const [termChecked, setTermChecked] = useState(false)
 
     const handleSignUp = async () => {
         if (password !== confirmPassword) {
@@ -26,8 +28,18 @@ export default function SignUp() {
             return;
         }
 
+        if (email === '' || firstName === '' || lastName === '' || password === '' || confirmPassword === '') {
+            alert('Please fill in all fields');
+            return
+        }
+
+        if (termChecked === false) {
+            alert("You must agree with the term of use to proceed")
+            return
+        }
+
         try {
-            console.log(email)
+
             const response = await axios.post(userSignUp, {
                 email,
                 firstName,
@@ -57,6 +69,10 @@ export default function SignUp() {
         router.push('loginAndSignUp/login'); // Navigate to the SignUp screen
     };
 
+    const termOfUseChange = () => {
+        setTermChecked(prevState => !prevState)
+    }
+
     return (
         <>
             <View style={{ height: "100%", padding: 0 }}>
@@ -65,7 +81,7 @@ export default function SignUp() {
                         <Image source={require("../assets/Nom_Noir.png")} style={{ height: "50%", width: "100%", top: "40%", resizeMode: 'contain' }}></Image>
                     </View>
                     <View style={{
-                        height: containerHeight / 1.5, backgroundColor: "white", padding: 20, borderTopWidth: 1, borderColor: 'transparent',  // Hide the border color if not needed
+                        height: containerHeight / 1.5, backgroundColor: "white", paddingLeft: 20, paddingRight: 20, borderTopWidth: 1, borderColor: 'transparent',  // Hide the border color if not needed
                         shadowColor: '#000',
                         shadowOffset: { width: 0, height: -2 },
                         shadowOpacity: 0.3,
@@ -120,7 +136,13 @@ export default function SignUp() {
                             value={confirmPassword}
                             onChangeText={(Text) => setConfirmPassword(Text)}
                         />
-
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                            <Button icon={termChecked === true ? <Check color={'#DD7A34'} size="$1" /> : null} size="$3" style={{ backgroundColor: "white", width: 40, borderWidth: 1, borderColor: "black" }}
+                                onPress={() => termOfUseChange()} />
+                            <Pressable onPress={() => router.push("/pages/termOfUse")}>
+                                <Text color={"#DD7A34"}>I agreed with the terms of use</Text>
+                            </Pressable>
+                        </View>
                         <Button
                             size="$5"
                             style={{
@@ -143,7 +165,7 @@ export default function SignUp() {
                         </Button>
                     </View>
                 </ScrollView >
-            </View>
+            </View >
         </>
     );
 }
