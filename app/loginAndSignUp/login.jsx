@@ -30,7 +30,6 @@ export default function Login() {
         }
 
         dispatch(resetAll())
-        queryClient.resetQueries()
 
         try {
             const response = await axios.get(userLogin, {

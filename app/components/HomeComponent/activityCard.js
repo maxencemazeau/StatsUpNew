@@ -39,8 +39,8 @@ export default function ActivityCard({ activityOffset, appState }) {
 
     const { data: activityList, isLoading } = useQuery({
         queryFn: async () => LoadUserActivies(),
-        queryKey: ["activityList"],
-        staleTime: Infinity,
+        queryKey: ["activityList", UserId],
+        //staleTime: Infinity,
     })
 
     const LoadUserActivies = async () => {

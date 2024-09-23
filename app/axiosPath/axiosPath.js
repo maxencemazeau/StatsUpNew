@@ -1,10 +1,10 @@
 //const baseUrl = `http://localhost:8080/`
 //const baseUrl = process.env.EXPO_PUBLIC_RENDER_API_URL
-const baseUrl = process.env.EXPO_PUBLIC_PANEL_API_URL
+//const baseUrl = process.env.EXPO_PUBLIC_PANEL_API_URL
 //const baseUrl = `http://0.0.0.0:10000`
 //const baseUrl = process.env.EXPO_PUBLIC_LOCAL_API_URL
 //const baseUrl = `https://statsuptest.onrender.com/`
-//const baseUrl = `http://192.168.0.13:8080/`;
+const baseUrl = `http://192.168.0.13:8080/`;
 
 export const getActivity = baseUrl + `userActivity`;
 export const getUserGoals = baseUrl + `userGoal`;

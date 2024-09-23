@@ -27,8 +27,8 @@ export default function GoalCard({ goalOffset }) {
     const token = useGetUserToken()
     const { data: goalList } = useQuery({
         queryFn: async () => LoadUserGoals(),
-        queryKey: ["goalList"],
-        staleTime: Infinity
+        queryKey: ["goalList", UserId],
+        //staleTime: Infinity
     })
 
     const LoadUserGoals = async () => {

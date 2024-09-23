@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { View, ScrollView, Image, Dimensions, StyleSheet } from 'react-native';
-import { Text, Input, Button, Separator } from 'tamagui';
+import { Text, Input, Button, Separator, Checkbox } from 'tamagui';
 import { Link, useRouter } from "expo-router";
 import axios from 'axios';
 import { userSignUp } from '../axiosPath/axiosPath';
@@ -120,6 +120,7 @@ export default function SignUp() {
                             value={confirmPassword}
                             onChangeText={(Text) => setConfirmPassword(Text)}
                         />
+
                         <Button
                             size="$5"
                             style={{

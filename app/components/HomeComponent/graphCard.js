@@ -1,21 +1,23 @@
 import React from "react"
-import { View } from "react-native"
+import { Pressable, View } from "react-native"
 import { Card, Text } from "tamagui"
 import { useQuery } from "react-query";
 import { getTotalActivityCompleted } from "../../axiosPath/axiosPath";
 import useGetUserId from "../../hooks/useGetUserId";
 import axios from "axios"
 import useGetUserToken from "../../hooks/useGetUserToken";
+import { useRouter } from "expo-router";
 
 export default function GraphCard() {
 
     const UserId = useGetUserId()
     const token = useGetUserToken()
+    const router = useRouter()
 
     const { data: totalActivityCompleted, isLoading } = useQuery({
         queryFn: async () => getTotalCompleted(),
-        queryKey: ["totalActivityCompleted"],
-        staleTime: Infinity,
+        queryKey: ["totalActivityCompleted", UserId],
+        //staleTime: Infinity,
     })
 
     const getTotalCompleted = async () => {
@@ -38,7 +40,9 @@ export default function GraphCard() {
             </Card>
             <View style={{ width: 20 }} />
             <Card style={{ padding: 10, flex: 1, justifyContent: "center", alignItems: 'center', backgroundColor: "white" }}>
-                <Text color={"black"}>Coming Soon</Text>
+                <Pressable onPress={() => router.push("/")}>
+                    <Text color={"black"}>Coming Soon</Text>
+                </Pressable>
             </Card>
         </View>
     )
