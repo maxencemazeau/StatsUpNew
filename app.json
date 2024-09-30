@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "StatsUpNew",
-    "slug": "StatsUpNew",
-    "version": "1.0.0",
+    "name": "StatsUp",
+    "slug": "StatsUp",
+    "version": "1.0.1",
     "scheme": "StatsUp",
     "web": {
       "bundler": "metro",
@@ -51,6 +51,7 @@
         "foregroundImage": "app/assets/IconAndroid.png",
         "backgroundColor": "#ffffff"
       },
+      "versionCode": 2,
       "package": "com.golami.StatsUpNew"
     },
     "extra": {
